@@ -1,7 +1,6 @@
 #include "generators.hpp"
 #include <random>
 #include <limits>
-#include <iostream>
 #include <bit>
 using namespace std;
 
@@ -155,6 +154,10 @@ vector<string> generators::generateStrings(int n, int maxLen)
 
 	return v;
 }
+
+//
+// template generator
+//
 
 template<typename T>
 vector<T> generators::generate(int n)

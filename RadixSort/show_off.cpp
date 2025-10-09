@@ -1,3 +1,4 @@
+#pragma region HEADERS
 #include "show_off.hpp"
 #include "radix_sort.hpp"
 #include "generators.hpp"
@@ -10,14 +11,15 @@
 #include <type_traits>
 
 using namespace std;
+#pragma endregion
 
 #pragma region FIELDS DEFINITION
 const vector<int> show_off::RUN_METHOD = 
 { 
-	0, // SORT 
+	1, // SORT 
 	1, // SORT_PAR
-	0, // STABLE_SORT
-	0, // STABLE_SORT_PAR
+	1, // STABLE_SORT
+	1, // STABLE_SORT_PAR
 	1  // RADIX_SORT
 };
 
