@@ -25,5 +25,8 @@ public:
 	static std::vector<double> generateDoubles(int n);
 	static std::vector<std::string> generateStringsFixed(int n, int len);
 	static std::vector<std::string> generateStrings(int n, int maxLen);
+	
+	template<typename T>
+	static std::vector<T> generate(int n);
 };
 

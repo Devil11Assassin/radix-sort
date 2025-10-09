@@ -276,5 +276,7 @@ int main()
 	//runShitString();
 	//runShitULL();
 	//show_off::showOff(0, 0, 1, 0);
-	show_off::validate(1, 1, 1, 1, 1, 1, 1);
+	show_off::showOff(1, 1, 1, 1, 1, 1, 1);
+	//show_off::showOff(0, 0, 0, 0, 0, 0, 1);
+	//show_off::validate(1, 1, 1, 1, 1, 1, 1);
 }

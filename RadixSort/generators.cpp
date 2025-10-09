@@ -155,3 +155,30 @@ vector<string> generators::generateStrings(int n, int maxLen)
 
 	return v;
 }
+
+template<typename T>
+vector<T> generators::generate(int n)
+{
+	if constexpr (is_same_v<T, int>)
+		return generateInts(n);
+	else if constexpr (is_same_v<T, unsigned int>)
+		return generateUnsignedInts(n);
+	else if constexpr (is_same_v<T, long long>)
+		return generateLLs(n);
+	else if constexpr (is_same_v<T, unsigned long long>)
+		return generateULLs(n);
+	else if constexpr (is_same_v<T, float>)
+		return generateFloats(n);
+	else if constexpr (is_same_v<T, double>)
+		return generateDoubles(n);
+	else if constexpr (is_same_v<T, string>)
+		return generateStrings(n, 20);
+}
+
+template vector<int> generators::generate<int>(int);
+template vector<unsigned int> generators::generate<unsigned int>(int);
+template vector<long long> generators::generate<long long>(int);
+template vector<unsigned long long> generators::generate<unsigned long long>(int);
+template vector<float> generators::generate<float>(int);
+template vector<double> generators::generate<double>(int);
+template vector<string> generators::generate<string>(int);
