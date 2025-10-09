@@ -138,7 +138,7 @@ void runShitString()
 	//this_thread::sleep_for(chrono::seconds(1));
 
 	start = chrono::high_resolution_clock::now();
-	radix_sort::sortM(vRadix);
+	radix_sort::sort(vRadix);
 	end = chrono::high_resolution_clock::now();
 	time = chrono::duration_cast<chrono::microseconds>(end - start).count();
 	cout << "radix_sort = " << time << "\n";
@@ -179,7 +179,7 @@ void runShitULL()
 	//this_thread::sleep_for(chrono::seconds(1));
 
 	start = chrono::high_resolution_clock::now();
-	radix_sort::sortM(vRadix);
+	radix_sort::sort(vRadix);
 	end = chrono::high_resolution_clock::now();
 	time = chrono::duration_cast<chrono::microseconds>(end - start).count();
 	cout << "radix_sort = " << time << "\n";
@@ -271,9 +271,9 @@ int main()
 {
 	//runTest();
 	//runShit();
-	//runShitFloat();
-	//runShitString();
+	runShitFloat();
 	runShitDouble();
-	//runShitULL();
+	runShitString();
+	runShitULL();
 	//show_off::showOff(1, 1, 1, 1);
 }
