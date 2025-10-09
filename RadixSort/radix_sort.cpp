@@ -3,24 +3,54 @@
 #include <thread>
 #include <compare>
 #include <atomic>
+#include <type_traits>
 using namespace std;
 
-#pragma region int
-void radix_sort::getCountVectorThreadInt(vector<int>& v, vector<int>& count, int l, int r, int shiftBits, int mask, int invertMask)
+template<typename T>
+void radix_sort::insertionSort(vector<T>& v, int l, int r)
 {
-	if (shiftBits != 24)
+	for (int i = l + 1; i < r; i++)
+	{
+		T val = move(v[i]);
+		int j = i - 1;
+
+		if constexpr (is_same_v<T, float> || is_same_v<T, double>)
+		{
+			while (j >= l && strong_order(val, v[j]) < 0)
+			{
+				v[j + 1] = move(v[j]);
+				j--;
+			}
+		}
+		else
+		{
+			while (j >= l && val < v[j])
+			{
+				v[j + 1] = move(v[j]);
+				j--;
+			}
+		}
+
+		v[j + 1] = move(val);
+	}
+}
+
+#pragma region int
+void radix_sort::getCountVectorThreadInt(vector<int>& v, vector<int>& count, int l, int r, int curShift, int MASK, int INVERT_MASK)
+{
+	if (curShift != 24)
 	{
 		for (int i = l; i < r; i++)
-			count[(static_cast<unsigned int>(v[i]) >> shiftBits) & mask]++;
+			count[(static_cast<unsigned int>(v[i]) >> curShift) & MASK]++;
 	}
 	else
 	{
 		for (int i = l; i < r; i++)
-			count[((static_cast<unsigned int>(v[i]) >> shiftBits) & mask) ^ invertMask]++;
+			count[((static_cast<unsigned int>(v[i]) >> curShift) & MASK) ^ INVERT_MASK]++;
 	}
 }
 
-void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int shiftBits, int base, int mask, int invertMask)
+void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int curShift, int BASE, int MASK, int INVERT_MASK)
 {
 	constexpr int SIZE_THRESHOLD = 8000000;
 	constexpr double BUCKET_THRESHOLD = 1000000.0;
@@ -30,15 +60,15 @@ void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int shiftBit
 
 	if (threadCount <= 1 || size < SIZE_THRESHOLD)
 	{
-		if (shiftBits != 24)
+		if (curShift != 24)
 		{
 			for (const auto& num : v)
-				count[(static_cast<unsigned int>(num) >> shiftBits) & mask]++;
+				count[(static_cast<unsigned int>(num) >> curShift) & MASK]++;
 		}
 		else
 		{
 			for (const auto& num : v)
-				count[((static_cast<unsigned int>(num) >> shiftBits) & mask) ^ invertMask]++;
+				count[((static_cast<unsigned int>(num) >> curShift) & MASK) ^ INVERT_MASK]++;
 		}
 	}
 	else
@@ -47,13 +77,13 @@ void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int shiftBit
 		int bucketSize = size / threadCount;
 
 		vector<thread> threads;
-		vector<vector<int>> counts(threadCount, vector<int>(base));
+		vector<vector<int>> counts(threadCount, vector<int>(BASE));
 
 		for (int i = 0; i < threadCount; i++)
 		{
 			int start = i * bucketSize;
 			int end = (i == threadCount - 1) ? size : start + bucketSize;
-			threads.emplace_back(getCountVectorThreadInt, ref(v), ref(counts[i]), start, end, shiftBits, mask, invertMask);
+			threads.emplace_back(getCountVectorThreadInt, ref(v), ref(counts[i]), start, end, curShift, MASK, INVERT_MASK);
 		}
 
 		for (auto& t : threads)
@@ -61,26 +91,9 @@ void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int shiftBit
 
 		for (int curThread = 0; curThread < threadCount; curThread++)
 		{
-			for (int i = 0; i < base; i++)
+			for (int i = 0; i < BASE; i++)
 				count[i] += counts[curThread][i];
 		}
-	}
-}
-
-void radix_sort::insertionSort(vector<int>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		int val = v[i];
-		int j = i - 1;
-
-		while (j >= l && v[j] > val)
-		{
-			v[j + 1] = v[j];
-			j--;
-		}
-
-		v[j + 1] = val;
 	}
 }
 
@@ -172,23 +185,6 @@ void radix_sort::getCountVector(vector<unsigned int>& v, vector<int>& count, int
 			for (int i = 0; i < base; i++)
 				count[i] += counts[curThread][i];
 		}
-	}
-}
-
-void radix_sort::insertionSort(vector<unsigned int>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		unsigned int val = v[i];
-		int j = i - 1;
-
-		while (j >= l && v[j] > val)
-		{
-			v[j + 1] = v[j];
-			j--;
-		}
-
-		v[j + 1] = val;
 	}
 }
 
@@ -295,23 +291,6 @@ void radix_sort::getCountVector(vector<ll>& v, vector<int>& count, int l, int r,
 			for (int i = 0; i < base; i++)
 				count[i] += counts[curThread][i];
 		}
-	}
-}
-
-void radix_sort::insertionSort(vector<ll>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		ll val = v[i];
-		int j = i - 1;
-
-		while (j >= l && v[j] > val)
-		{
-			v[j + 1] = v[j];
-			j--;
-		}
-
-		v[j + 1] = val;
 	}
 }
 
@@ -546,23 +525,6 @@ void radix_sort::getCountVector(vector<ull>& v, vector<int>& count, int shiftBit
 	}
 }
 
-void radix_sort::insertionSort(vector<ull>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		ull val = v[i];
-		int j = i - 1;
-
-		while (j >= l && v[j] > val)
-		{
-			v[j + 1] = v[j];
-			j--;
-		}
-
-		v[j + 1] = val;
-	}
-}
-
 void radix_sort::sortULL(std::vector<ull>& v, std::vector<ull>& tmp, 
 	std::vector<RegionLL>& regions, std::unique_lock<std::mutex>& lkRegions, 
 	RegionLL initialRegion, bool multiThreaded)
@@ -747,23 +709,6 @@ void radix_sort::sort(std::vector<ull>& v)
 #pragma endregion
 
 #pragma region float
-void radix_sort::insertionSort(vector<float>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		float val = v[i];
-		int j = i - 1;
-
-		while (j >= l && strong_order(val, v[j]) < 0)
-		{
-			v[j + 1] = v[j];
-			j--;
-		}
-
-		v[j + 1] = val;
-	}
-}
-
 void radix_sort::sort(vector<float>& v)
 {
 	if (v.size() <= 100)
@@ -794,23 +739,6 @@ void radix_sort::sort(vector<float>& v)
 #pragma endregion
 
 #pragma region double
-void radix_sort::insertionSort(vector<double>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		double val = v[i];
-		int j = i - 1;
-
-		while (j >= l && strong_order(val, v[j]) < 0)
-		{
-			v[j + 1] = v[j];
-			j--;
-		}
-
-		v[j + 1] = val;
-	}
-}
-
 void radix_sort::sort(vector<double>& v)
 {
 	if (v.size() <= 100)
@@ -890,23 +818,6 @@ void radix_sort::getCountVector(vector<string>& v, vector<int>& count, int l, in
 			for (int i = 0; i < CHARS_ALLOC; i++)
 				count[i] += counts[curThread][i];
 		}
-	}
-}
-
-void radix_sort::insertionSort(vector<string>& v, int l, int r)
-{
-	for (int i = l + 1; i < r; i++)
-	{
-		string val = move(v[i]);
-		int j = i - 1;
-
-		while (j >= l && v[j] > val)
-		{
-			v[j + 1] = move(v[j]);
-			j--;
-		}
-
-		v[j + 1] = move(val);
 	}
 }
 
