@@ -115,7 +115,7 @@ void runShitDouble()
 
 void runShitString()
 {
-	int n = 10000000;
+	int n = 3e5;
 
 	vector<string> vSort(generators::generateStrings(n, 20));
 	vector<string> vRadix(vSort);
@@ -152,7 +152,7 @@ void runShitString()
 
 void runShitULL()
 {
-	int n = 100000000;
+	int n = 1e8;
 
 	//vector<unsigned long long> vSort(generators::generateULLs(n));
 	//vector<unsigned long long> vRadix(vSort);
@@ -270,8 +270,8 @@ int main()
 {
 	//runTest();
 	//runShit();
-	runShitString();
+	//runShitString();
 	//runShitDouble();
-	//runShitULL();
+	runShitULL();
 	//show_off::showOff(1, 1, 1, 1);
 }

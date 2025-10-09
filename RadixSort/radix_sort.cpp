@@ -1085,15 +1085,15 @@ void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
 	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
 
 	bool isIdle = false;
+	int iterationsIdle = 0;
+	const bool ALLOW_SLEEP = v.size() > 1e6;
 
 	while (true)
 	{
-		Region region;
-		
 		lkRegions.lock();
 		if (regions.size())
 		{
-			region = move(regions.back());
+			Region region = move(regions.back());
 			regions.pop_back();
 			lkRegions.unlock();
 
@@ -1101,7 +1101,11 @@ void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
 			{
 				isIdle = false;
 				runningCounter++;
+				iterationsIdle = 0;
 			}
+
+			sortNonRecursiveM(v, tmp, regions, lkRegions, region, 1);
+			stepsActive[threadIndex]++;
 		}
 		else
 		{
@@ -1117,12 +1121,14 @@ void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
 			if (runningCounter.load() == 0)
 				break;
 
-			continue;
-		}
+			iterationsIdle++;
 
-		sortNonRecursiveM(v, tmp, regions, lkRegions, region, 1);
-		
-		stepsActive[threadIndex]++;
+			if (ALLOW_SLEEP && iterationsIdle > 100)
+			{
+				iterationsIdle = 0;
+				this_thread::sleep_for(chrono::nanoseconds(1));
+			}
+		}	
 	}
 }
 
