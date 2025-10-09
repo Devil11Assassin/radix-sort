@@ -34,7 +34,7 @@ void runTest()
 
 void runShitFloat()
 {
-	int n = 100000000;
+	int n = 1e8;
 
 	vector<float> v(generators::generateFloats(n));
 	vector<float> vSort(v);
@@ -74,7 +74,7 @@ void runShitFloat()
 
 void runShitDouble()
 {
-	int n = 10000000;
+	int n = 1e8;
 
 	vector<double> v(generators::generateDoubles(n));
 	vector<double> vSort(v);
@@ -115,7 +115,7 @@ void runShitDouble()
 
 void runShitString()
 {
-	int n = 3e5;
+	int n = 1e7;
 
 	vector<string> vSort(generators::generateStrings(n, 20));
 	vector<string> vRadix(vSort);
@@ -166,9 +166,8 @@ void runShitULL()
 	auto start = chrono::high_resolution_clock::now();
 
 	//std::sort(vSort.begin(), vSort.end());
-	//std::sort(std::execution::par, vSort.begin(), vSort.end());
-	//std::sort(vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
 	std::sort(std::execution::par, vSort.begin(), vSort.end());
+	//std::sort(vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
 	//std::stable_sort(std::execution::par, vSort.begin(), vSort.end());
 	//std::stable_sort(vSort.begin(), vSort.end());
 	//std::stable_sort(vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
@@ -180,7 +179,7 @@ void runShitULL()
 	//this_thread::sleep_for(chrono::seconds(1));
 
 	start = chrono::high_resolution_clock::now();
-	radix_sort::sortTest(vRadix);
+	radix_sort::sortM(vRadix);
 	end = chrono::high_resolution_clock::now();
 	time = chrono::duration_cast<chrono::microseconds>(end - start).count();
 	cout << "radix_sort = " << time << "\n";
@@ -272,8 +271,9 @@ int main()
 {
 	//runTest();
 	//runShit();
+	//runShitFloat();
 	//runShitString();
-	//runShitDouble();
-	runShitULL();
+	runShitDouble();
+	//runShitULL();
 	//show_off::showOff(1, 1, 1, 1);
 }

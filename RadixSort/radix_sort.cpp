@@ -285,6 +285,45 @@ void radix_sort::getCountVector(vector<ull>& v, vector<int>& count, int shiftBit
 	}
 }
 
+void radix_sort::getCountVector(vector<ull>& v, vector<int>& count, int shiftBits, int base, int mask, int l, int r)
+{
+	const int idealSize = 8000000;
+	const double idealBucketSize = 1000000.0;
+
+	int size = r - l;
+	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+
+	if (threadCount <= 1 || size < idealSize)
+	{
+		for (int i = l; i < r; i++)
+			count[(v[i] >> shiftBits) & mask]++;
+	}
+	else
+	{
+		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
+		int bucketSize = size / threadCount;
+
+		vector<thread> threads;
+		vector<vector<int>> counts(threadCount, vector<int>(base));
+
+		for (int i = 0; i < threadCount; i++)
+		{
+			int start = l + i * bucketSize;
+			int end = (i == threadCount - 1) ? r : start + bucketSize;
+			threads.emplace_back(getCountVectorThreadULL, ref(v), ref(counts[i]), start, end, shiftBits, mask);
+		}
+
+		for (auto& t : threads)
+			t.join();
+
+		for (int curThread = 0; curThread < threadCount; curThread++)
+		{
+			for (int i = 0; i < base; i++)
+				count[i] += counts[curThread][i];
+		}
+	}
+}
+
 void radix_sort::insertionSort(vector<ull>& v, int l, int r)
 {
 	for (int i = l + 1; i < r; i++)
@@ -423,7 +462,7 @@ void radix_sort::sortNonRecursiveULL(vector<ull>& v, vector<ull>& tmp, int l, in
 	const int base = 256;
 	const int mask = 0xFF;
 
-	vector<Region> regions;
+	vector<RegionString> regions;
 	regions.reserve(v.size() / 10);
 	regions.emplace_back(l, r, len, -1);
 
@@ -431,7 +470,7 @@ void radix_sort::sortNonRecursiveULL(vector<ull>& v, vector<ull>& tmp, int l, in
 
 	while (regions.size())
 	{
-		Region region = move(regions.back());
+		RegionString region = move(regions.back());
 		regions.pop_back();
 
 		l = region.l;
@@ -527,6 +566,201 @@ void radix_sort::sortTest(vector<ull>& v)
 	sortRecursiveULL(v, tmp, 0, v.size(), n);
 	cout << threadsCreated.load() << '\n';
 }
+
+void radix_sort::sortNonRecursiveM(std::vector<ull>& v, std::vector<ull>& tmp, 
+	std::vector<RegionULL>& regions, std::unique_lock<std::mutex>& lkRegions, 
+	RegionULL initialRegion, bool multiThreaded)
+{
+	const int shiftBits = 8;
+	const int base = 256;
+	const int mask = 0xFF;
+
+	vector<RegionULL> regionsLocal;
+	regionsLocal.reserve(v.size() / 100);
+	regionsLocal.emplace_back(initialRegion);
+
+	while (regionsLocal.size())
+	{
+		RegionULL region = move(regionsLocal.back());
+		regionsLocal.pop_back();
+
+		int l = region.l;
+		int r = region.r;
+		int len = region.len;
+
+		if (r - l < 2 || len == 0)
+			continue;
+
+		if (r - l <= 100)
+		{
+			insertionSort(v, l, r);
+			continue;
+		}
+
+		const int curShift = (len - 1) * shiftBits;
+		vector<int> count(base);
+		vector<int> prefix(base);
+
+		getCountVector(v, count, curShift, base, mask, l, r);
+
+		prefix[0] = l;
+		for (int i = 1; i < base; i++)
+			prefix[i] = prefix[i - 1] + count[i - 1];
+
+		for (int i = l; i < r; i++)
+			tmp[prefix[(v[i] >> curShift) & mask]++] = v[i];
+
+		move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
+
+		len--;
+
+		if (len == 0)
+			continue;
+
+		if (!multiThreaded)
+		{
+			for (int i = 0, start = l; i < base; i++)
+			{
+				if (count[i])
+					regionsLocal.emplace_back(start, start + count[i], len);
+				start += count[i];
+			}
+		}
+		else
+		{
+			const int BUCKET_THRESHOLD = max((r - l) / 1000, 1000);
+
+			for (int i = 0, start = l; i < base; i++)
+			{
+				if (count[i] < BUCKET_THRESHOLD)
+					regionsLocal.emplace_back(start, start + count[i], len);
+				else
+				{
+					lkRegions.lock();
+					regions.emplace_back(start, start + count[i], len);
+					lkRegions.unlock();
+					threadsCreated++;
+				}
+				start += count[i];
+			}
+		}
+	}
+}
+
+void radix_sort::sortNonRecursiveThreadULL(std::vector<ull>& v, std::vector<ull>& tmp,
+	std::vector<RegionULL>& regions, std::mutex& regionsLock, std::atomic<int>& runningCounter,
+	int threadIndex, std::vector<ull>& stepsActive, std::vector<ull>& stepsIdle)
+{
+	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
+
+	bool isIdle = false;
+	int iterationsIdle = 0;
+	const bool ALLOW_SLEEP = v.size() > 1e6;
+
+	while (true)
+	{
+		lkRegions.lock();
+		if (regions.size())
+		{
+			RegionULL region = move(regions.back());
+			regions.pop_back();
+			lkRegions.unlock();
+
+			if (isIdle)
+			{
+				isIdle = false;
+				runningCounter++;
+				iterationsIdle = 0;
+			}
+
+			sortNonRecursiveM(v, tmp, regions, lkRegions, region, 1);
+			stepsActive[threadIndex]++;
+		}
+		else
+		{
+			lkRegions.unlock();
+			stepsIdle[threadIndex]++;
+
+			if (!isIdle)
+			{
+				isIdle = true;
+				runningCounter--;
+			}
+
+			if (runningCounter.load() == 0)
+				break;
+
+			iterationsIdle++;
+
+			if (ALLOW_SLEEP && iterationsIdle > 100)
+			{
+				iterationsIdle = 0;
+				this_thread::sleep_for(chrono::nanoseconds(1));
+			}
+		}
+	}
+}
+
+void radix_sort::sortM(std::vector<ull>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	vector<ull> tmp(v.size());
+
+	const int shiftBits = 8;
+	int len = 0;
+	ull maxVal = *max_element(v.begin(), v.end());
+
+	while (maxVal > 0)
+	{
+		len++;
+		maxVal >>= shiftBits;
+	}
+
+	threadsCreated.store(0);
+	int numOfThreads = thread::hardware_concurrency();
+	const int BUCKET_THRESHOLD = max(static_cast<int>(v.size() / 1000), 1000);
+
+	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
+	{
+		vector<RegionULL> tmpVector;
+		mutex tmpMutex;
+		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
+
+		sortNonRecursiveM(v, tmp, tmpVector, tmpLock, RegionULL(0, v.size(), len), 0);
+	}
+	else
+	{
+		vector<RegionULL> regions;
+		regions.reserve(v.size() / 1000);
+		regions.emplace_back(0, v.size(), len);
+
+		vector<int> isIdle(numOfThreads);
+		mutex regionsLock;
+		mutex idleLock;
+
+		vector<thread> threads;
+		vector<ull> stepsActive(numOfThreads);
+		vector<ull> stepsIdle(numOfThreads);
+
+		atomic<int> runningCounter = numOfThreads;
+
+		for (int i = 0; i < numOfThreads; i++)
+			threads.emplace_back(sortNonRecursiveThreadULL, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i, ref(stepsActive), ref(stepsIdle));
+
+		for (auto& t : threads)
+			t.join();
+
+		for (int i = 0; i < numOfThreads; i++)
+			cout << i << "\t" << stepsActive[i] << "\t" << stepsIdle[i] << "\n";
+	}
+	cout << threadsCreated.load() << '\n';
+}
+
 #pragma endregion
 
 #pragma region float
@@ -608,16 +842,16 @@ void radix_sort::sort(vector<double>& v)
 	for (int i = 0; i < size; i++)
 	{
 		memcpy(&vULL[i], &v[i], sizeof(double));
-		vULL[i] = (~vULL[i]) * (vULL[i] >> 63) + (vULL[i] ^ 0x8000000000000000) * ((vULL[i] >> 63) == 0);
-		//vUint[i] = (vUint[i] >> 31)? ~vUint[i] : vUint[i] | 0x80000000;
+		//vULL[i] = (~vULL[i]) * (vULL[i] >> 63) + (vULL[i] ^ 0x8000000000000000) * ((vULL[i] >> 63) == 0);
+		vULL[i] = (vULL[i] >> 63)? ~vULL[i] : vULL[i] ^ 0x8000000000000000;
 	}
 	
-	sort(vULL);
+	sortM(vULL);
 
 	for (int i = 0; i < size; i++)
 	{
-		vULL[i] = (~vULL[i]) * ((vULL[i] >> 63) == 0) + (vULL[i] ^ 0x8000000000000000) * (vULL[i] >> 63);
-		//vUint[i] = (vUint[i] >> 31) ? vUint[i] & 0x7FFFFFFF : ~vUint[i];
+		//vULL[i] = (~vULL[i]) * ((vULL[i] >> 63) == 0) + (vULL[i] ^ 0x8000000000000000) * (vULL[i] >> 63);
+		vULL[i] = (vULL[i] >> 63) ? vULL[i] ^ 0x8000000000000000 : ~vULL[i];
 		memcpy(&v[i], &vULL[i], sizeof(double));
 	}
 }
@@ -887,7 +1121,7 @@ void radix_sort::sortRecursive(vector<string>& v, vector<string>& tmp, int l, in
 void radix_sort::sortNonRecursive(vector<string>& v, vector<string>& tmp, int l, int r, int len, int curIndex)
 {
 	int regionIndex = 0;
-	vector<Region> regions;
+	vector<RegionString> regions;
 	regions.reserve(v.size() / 10);
 	regions.emplace_back(l, r, len, curIndex);
 
@@ -895,7 +1129,7 @@ void radix_sort::sortNonRecursive(vector<string>& v, vector<string>& tmp, int l,
 	
 	while (regions.size())
 	{
-		Region region = move(regions.back());
+		RegionString region = move(regions.back());
 		regions.pop_back();
 		
 		l = region.l;
@@ -997,16 +1231,16 @@ void radix_sort::sort(vector<string>& v)
 	cout << threadsCreated.load() << '\n';
 }
 
-void radix_sort::sortNonRecursiveM(vector<string>& v, vector<string>& tmp, vector<Region>& regions,
-	unique_lock<mutex>& lkRegions, Region initialRegion, bool multiThreaded)
+void radix_sort::sortNonRecursiveM(vector<string>& v, vector<string>& tmp, vector<RegionString>& regions,
+	unique_lock<mutex>& lkRegions, RegionString initialRegion, bool multiThreaded)
 {
-	vector<Region> regionsLocal;
+	vector<RegionString> regionsLocal;
 	regionsLocal.reserve(v.size() / 100);
 	regionsLocal.emplace_back(initialRegion);
 
 	while (regionsLocal.size())
 	{
-		Region region = move(regionsLocal.back());
+		RegionString region = move(regionsLocal.back());
 		regionsLocal.pop_back();
 
 		int l = region.l;
@@ -1050,9 +1284,9 @@ void radix_sort::sortNonRecursiveM(vector<string>& v, vector<string>& tmp, vecto
 
 		if (!multiThreaded)
 		{
-		for (int i = 0, start = l + count[256]; i < chars; i++)
-		{
-				if (count[i])
+			for (int i = 0, start = l + count[256]; i < chars; i++)
+			{
+				if (count[i] > 1)
 					regionsLocal.emplace_back(start, start + count[i], len, curIndex);
 				start += count[i];
 			}
@@ -1068,18 +1302,18 @@ void radix_sort::sortNonRecursiveM(vector<string>& v, vector<string>& tmp, vecto
 				else
 				{
 					lkRegions.lock();
-			regions.emplace_back(start, start + count[i], len, curIndex);
+					regions.emplace_back(start, start + count[i], len, curIndex);
 					lkRegions.unlock();
 					threadsCreated++;
 				}
-			start += count[i];
+				start += count[i];
+			}
 		}
 	}
 }
-}
 
 void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
-	vector<Region>& regions, mutex& regionsLock, atomic<int>& runningCounter,
+	vector<RegionString>& regions, mutex& regionsLock, atomic<int>& runningCounter,
 	int threadIndex, vector<ull>& stepsActive, vector<ull>& stepsIdle)
 {
 	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
@@ -1090,36 +1324,36 @@ void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
 
 	while (true)
 	{
-			lkRegions.lock();
-			if (regions.size())
-			{
-			Region region = move(regions.back());
-				regions.pop_back();
-				lkRegions.unlock();
+		lkRegions.lock();
+		if (regions.size())
+		{
+			RegionString region = move(regions.back());
+			regions.pop_back();
+			lkRegions.unlock();
 
-				if (isIdle)
-				{
-					isIdle = false;
-					runningCounter++;
+			if (isIdle)
+			{
+				isIdle = false;
+				runningCounter++;
 				iterationsIdle = 0;
-				}
+			}
 
 			sortNonRecursiveM(v, tmp, regions, lkRegions, region, 1);
 			stepsActive[threadIndex]++;
-			}
-			else
+		}
+		else
+		{
+			lkRegions.unlock();
+			stepsIdle[threadIndex]++;
+
+			if (!isIdle)
 			{
-				lkRegions.unlock();
-				stepsIdle[threadIndex]++;
+				isIdle = true;
+				runningCounter--;
+			}
 
-				if (!isIdle)
-				{
-					isIdle = true;
-					runningCounter--;
-				}
-
-				if (runningCounter.load() == 0)
-					break;
+			if (runningCounter.load() == 0)
+				break;
 
 			iterationsIdle++;
 
@@ -1153,15 +1387,15 @@ void radix_sort::sortM(vector<string>& v)
 
 	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
 	{
-		vector<Region> tmpVector;
+		vector<RegionString> tmpVector;
 		mutex tmpMutex;
 		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
 
-		sortNonRecursiveM(v, tmp, tmpVector, tmpLock, Region(0, v.size(), len, 0), 0);
+		sortNonRecursiveM(v, tmp, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
 	}
 	else
 	{
-		vector<Region> regions;
+		vector<RegionString> regions;
 		regions.reserve(v.size() / 1000);
 		regions.emplace_back(0, v.size(), len, 0);
 
