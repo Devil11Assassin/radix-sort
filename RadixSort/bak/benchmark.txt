@@ -1,0 +1,46 @@
+=========================
+
+INT
+SIZE = 100m
+
+sort = 9247 ms
+sort_par = 1540 ms
+stable_sort = 9387 ms
+stable_sort_par = 4061 ms
+radix_sort = 1101 ms
+
+=========================
+
+UNSIGNED INT
+SIZE = 100m
+
+sort = 9080 ms
+sort_par = 1546 ms
+stable_sort = 8944 ms
+stable_sort_par = 4072 ms
+radix_sort = 1127 ms
+
+=========================
+
+FLOAT
+SIZE = 100m
+
+sort = 11391 ms
+sort_par = 2044 ms
+stable_sort = 10932 ms
+stable_sort_par = 4430 ms
+radix_sort = 1267 ms
+
+=========================
+
+STRING
+LEN = [0, 20]
+SIZE = 50m
+
+sort = 29644 ms
+sort_par = 5686 ms
+stable_sort = 32116 ms
+stable_sort_par = 10115 ms
+radix_sort = 3192 ms
+
+=========================

@@ -1,0 +1,577 @@
+#include "radix_sort.hpp"
+#include <algorithm>
+#include <thread>
+#include <compare>
+using namespace std;
+
+#pragma region int
+void radix_sort::getCountVectorThreadInt(vector<int>& v, vector<int>& count, int l, int r, int shiftBits, int mask, int invertMask)
+{
+	if (shiftBits != 24)
+	{
+		for (int i = l; i < r; i++)
+			count[(static_cast<unsigned int>(v[i]) >> shiftBits) & mask]++;
+	}
+	else
+	{
+		for (int i = l; i < r; i++)
+			count[((static_cast<unsigned int>(v[i]) >> shiftBits) & mask) ^ invertMask]++;
+	}
+}
+
+void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int shiftBits, int base, int mask, int invertMask)
+{
+	const int idealSize = 8000000;
+	const double idealBucketSize = 1000000.0;
+
+	int size = v.size();
+	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+
+	if (threadCount <= 1 || size < idealSize)
+	{
+		if (shiftBits != 24)
+		{
+			for (const auto& num : v)
+				count[(static_cast<unsigned int>(num) >> shiftBits) & mask]++;
+		}
+		else
+		{
+			for (const auto& num : v)
+				count[((static_cast<unsigned int>(num) >> shiftBits) & mask) ^ invertMask]++;
+		}
+	}
+	else
+	{
+		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
+		int bucketSize = size / threadCount;
+
+		vector<thread> threads;
+		vector<vector<int>> counts(threadCount, vector<int>(base));
+
+		for (int i = 0; i < threadCount; i++)
+		{
+			int start = i * bucketSize;
+			int end = (i == threadCount - 1) ? size : start + bucketSize;
+			threads.emplace_back(getCountVectorThreadInt, ref(v), ref(counts[i]), start, end, shiftBits, mask, invertMask);
+		}
+
+		for (auto& t : threads)
+			t.join();
+
+		for (int curThread = 0; curThread < threadCount; curThread++)
+		{
+			for (int i = 0; i < base; i++)
+				count[i] += counts[curThread][i];
+		}
+	}
+}
+
+void radix_sort::insertionSort(vector<int>& v, int l, int r)
+{
+	for (int i = l + 1; i < r; i++)
+	{
+		int val = v[i];
+		int j = i - 1;
+
+		while (j >= l && v[j] > val)
+		{
+			v[j + 1] = v[j];
+			j--;
+		}
+
+		v[j + 1] = val;
+	}
+}
+
+void radix_sort::sort(vector<int>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	const int shiftBits = 8;
+	const int base = 256;
+	const int mask = 0xFF;
+	const int invertMask = 0x80;
+
+	vector<int> tmp(v.size());
+	int n = 4;
+	int curShift = 0;
+
+	while (n--)
+	{
+		vector<int> count(base);
+		vector<int> prefix(base);
+
+		getCountVector(v, count, curShift, base, mask, invertMask);
+
+		for (int i = 1; i < base; i++)
+			prefix[i] = prefix[i - 1] + count[i - 1];
+
+		if (curShift != 24)
+		{
+			for (const auto& num : v)
+				tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & mask]++] = num;
+		}
+		else
+		{
+			for (const auto& num : v)
+				tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & mask) ^ invertMask]++] = num;
+		}
+
+		swap(v, tmp);
+
+		curShift += shiftBits;
+	}
+}
+#pragma endregion
+
+#pragma region uint
+void radix_sort::getCountVectorThreadUnsignedInt(vector<unsigned int>& v, vector<int>& count, int l, int r, int shiftBits, int mask)
+{
+	for (int i = l; i < r; i++)
+		count[(v[i] >> shiftBits) & mask]++;
+}
+
+void radix_sort::getCountVector(vector<unsigned int>& v, vector<int>& count, int shiftBits, int base, int mask)
+{
+	const int idealSize = 8000000;
+	const double idealBucketSize = 1000000.0;
+
+	int size = v.size();
+	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+
+	if (threadCount <= 1 || size < idealSize)
+	{
+		for (const auto& num : v)
+			count[(num >> shiftBits) & mask]++;
+	}
+	else
+	{
+		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
+		int bucketSize = size / threadCount;
+
+		vector<thread> threads;
+		vector<vector<int>> counts(threadCount, vector<int>(base));
+
+		for (int i = 0; i < threadCount; i++)
+		{
+			int start = i * bucketSize;
+			int end = (i == threadCount - 1) ? size : start + bucketSize;
+			threads.emplace_back(getCountVectorThreadUnsignedInt, ref(v), ref(counts[i]), start, end, shiftBits, mask);
+		}
+
+		for (auto& t : threads)
+			t.join();
+
+		for (int curThread = 0; curThread < threadCount; curThread++)
+		{
+			for (int i = 0; i < base; i++)
+				count[i] += counts[curThread][i];
+		}
+	}
+}
+
+void radix_sort::insertionSort(vector<unsigned int>& v, int l, int r)
+{
+	for (int i = l + 1; i < r; i++)
+	{
+		unsigned int val = v[i];
+		int j = i - 1;
+
+		while (j >= l && v[j] > val)
+		{
+			v[j + 1] = v[j];
+			j--;
+		}
+
+		v[j + 1] = val;
+	}
+}
+
+void radix_sort::sort(vector<unsigned int>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	const int shiftBits = 8;
+	const int base = 256;
+	const int mask = 0xFF;
+
+	int n = 0;
+	unsigned int maxVal = *max_element(v.begin(), v.end());
+
+	while (maxVal > 0)
+	{
+		n++;
+		maxVal >>= shiftBits;
+	}
+
+	vector<unsigned int> tmp(v.size());
+	int curShift = 0;
+
+	while (n--)
+	{
+		vector<int> count(base);
+		vector<int> prefix(base);
+
+		getCountVector(v, count, curShift, base, mask);
+
+		for (int i = 1; i < base; i++)
+			prefix[i] = prefix[i - 1] + count[i - 1];
+
+		for (const auto& num : v)
+			tmp[prefix[(num >> curShift) & mask]++] = num;
+
+		swap(v, tmp);
+
+		curShift += shiftBits;
+	}
+}
+#pragma endregion
+
+#pragma region float
+void radix_sort::insertionSort(vector<float>& v, int l, int r)
+{
+	for (int i = l + 1; i < r; i++)
+	{
+		float val = v[i];
+		int j = i - 1;
+
+		while (j >= l && strong_order(val, v[j]) < 0)
+		{
+			v[j + 1] = v[j];
+			j--;
+		}
+
+		v[j + 1] = val;
+	}
+}
+
+void radix_sort::sort(vector<float>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	int size = v.size();
+	vector<unsigned int> vUint(size);
+	
+	for (int i = 0; i < size; i++)
+	{
+		memcpy(&vUint[i], &v[i], sizeof(float));
+		vUint[i] = (~vUint[i]) * (vUint[i] >> 31) + (vUint[i] ^ 0x80000000) * ((vUint[i] >> 31) == 0);
+		//vUint[i] = (vUint[i] >> 31)? ~vUint[i] : vUint[i] | 0x80000000;
+	}
+	
+	sort(vUint);
+
+	for (int i = 0; i < size; i++)
+	{
+		vUint[i] = (~vUint[i]) * ((vUint[i] >> 31) == 0) + (vUint[i] ^ 0x80000000) * (vUint[i] >> 31);
+		//vUint[i] = (vUint[i] >> 31) ? vUint[i] & 0x7FFFFFFF : ~vUint[i];
+		memcpy(&v[i], &vUint[i], sizeof(float));
+	}
+}
+#pragma endregion
+
+#pragma region string
+int radix_sort::getChar(const string& s, int index)
+{
+	return (index < s.length()) ? static_cast<unsigned char>(s[index]) : 256;
+}
+
+void radix_sort::getCountVectorThreadString(vector<string>& v, vector<int>& count, int l, int r, int curIndex)
+{
+	for (int i = l; i < r; i++)
+		count[getChar(v[i], curIndex)]++;
+}
+
+void radix_sort::getCountVector(vector<string>& v, vector<int>& count, int l, int r, int curIndex)
+{
+	const int idealSize = 8000000;
+	const double idealBucketSize = 1000000.0;
+
+	int size = r - l;
+	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+
+	if (threadCount <= 1 || size < idealSize)
+	{
+		for (int i = l; i < r; i++)
+			count[getChar(v[i], curIndex)]++;
+	}
+	else
+	{
+		int chars = 257;
+		
+		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
+		int bucketSize = size / threadCount;
+
+		vector<thread> threads;
+		vector<vector<int>> counts(threadCount, vector<int>(chars));
+
+		for (int i = 0; i < threadCount; i++)
+		{
+			int start = l + i * bucketSize;
+			int end = (i == threadCount - 1) ? r : start + bucketSize;
+			threads.emplace_back(getCountVectorThreadString, ref(v), ref(counts[i]), start, end, curIndex);
+		}
+
+		for (auto& t : threads)
+			t.join();
+
+		for (int curThread = 0; curThread < threadCount; curThread++)
+		{
+			for (int i = 0; i < chars; i++)
+				count[i] += counts[curThread][i];
+		}
+	}
+}
+
+void radix_sort::insertionSort(vector<string>& v, int l, int r)
+{
+	for (int i = l + 1; i < r; i++)
+	{
+		string val = move(v[i]);
+		int j = i - 1;
+
+		while (j >= l && v[j] > val)
+		{
+			v[j + 1] = move(v[j]);
+			j--;
+		}
+
+		v[j + 1] = move(val);
+	}
+}
+
+//void radix_sort::sortRecursive(vector<string>& v, vector<string>& tmp, int l, int r, int len, int curIndex)
+//{
+//	if (r - l < 2 || len == 0)
+//		return;
+//
+//	if (r - l <= 10)
+//	{
+//		insertionSort(v, l, r);
+//		return;
+//	}
+//
+//	int chars = 257;
+//
+//	vector<int> count(chars);
+//	vector<int> prefix(chars);
+//
+//	chars--;
+//
+//	getCountVector(v, count, l, r, curIndex);
+//	
+//	prefix[256] = l;
+//	prefix[0] = prefix[256] + count[256];
+//	for (int i = 1; i < chars; i++)
+//		prefix[i] = prefix[i - 1] + count[i - 1];
+//
+//	for (int i = l; i < r; i++)
+//		tmp[prefix[getChar(v[i], curIndex)]++] = move(v[i]);
+//
+//	vector<int>().swap(prefix);
+//	move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
+//
+//	len--;
+//	curIndex++;
+//
+//	if (len == 0)
+//		return;
+//
+//	for (int i = 0, start = l + count[256]; i < chars; i++)
+//	{
+//		if (count[i] > 1)
+//			sortRecursive(v, tmp, start, start + count[i], len, curIndex);
+//		start += count[i];
+//	}
+//}
+
+void radix_sort::sortRecursive(vector<string>& v, vector<string>& tmp, int l, int r, int len, int curIndex)
+{
+	if (r - l < 2 || len == 0)
+		return;
+
+	if (r - l <= 10)
+	{
+		insertionSort(v, l, r);
+		return;
+	}
+
+	int chars = 257;
+
+	vector<int> count(chars);
+	vector<int> prefix(chars);
+
+	chars--;
+
+	getCountVector(v, count, l, r, curIndex);
+	
+	prefix[256] = l;
+	prefix[0] = prefix[256] + count[256];
+	for (int i = 1; i < chars; i++)
+		prefix[i] = prefix[i - 1] + count[i - 1];
+
+	for (int i = l; i < r; i++)
+		tmp[prefix[getChar(v[i], curIndex)]++] = move(v[i]);
+
+	vector<int>().swap(prefix);
+	move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
+
+	len--;
+	curIndex++;
+
+	if (len == 0)
+		return;
+
+	const int idealBucketSize = max((r - l)/1000, 1000);
+	int numOfThreads = 0;
+	vector<thread> threads;
+	
+	for (int i = 0; i < chars; i++)
+	{
+		if (count[i] >= idealBucketSize)
+			numOfThreads++;
+	}
+
+	if (numOfThreads > 1)
+	{
+		threads.reserve(numOfThreads);
+
+		for (int i = 0, start = l + count[256]; i < chars; i++)
+		{
+			if (count[i] >= idealBucketSize)
+				threads.emplace_back(sortRecursive, ref(v), ref(tmp), start, start + count[i], len, curIndex);
+			
+			start += count[i];
+		}
+	}
+
+	for (int i = 0, start = l + count[256]; i < chars; i++)
+	{
+		if (count[i] < idealBucketSize)
+			sortRecursive(v, tmp, start, start + count[i], len, curIndex);
+		start += count[i];
+	}
+
+	for (auto& t : threads)
+		t.join();
+}
+
+void radix_sort::sortNonRecursive(vector<string>& v, vector<string>& tmp, int l, int r, int len, int curIndex)
+{
+	int regionIndex = 0;
+	vector<Region> regions;
+	regions.reserve(v.size() / 10);
+	regions.emplace_back(l, r, len, curIndex);
+
+	vector<thread> threads;
+	
+	while (regions.size())
+	{
+		Region region = move(regions.back());
+		regions.pop_back();
+		
+		l = region.l;
+		r = region.r;
+		len = region.len;
+		curIndex = region.curIndex;
+
+		if (r - l < 2 && len == 0)
+			continue;
+		
+		if (r - l <= 10)
+		{
+			insertionSort(v, l, r);
+			continue;
+		}
+		
+		int chars = 257;
+
+		vector<int> count(chars);
+		vector<int> prefix(chars);
+
+		chars--;
+
+		getCountVector(v, count, l, r, curIndex);
+
+		prefix[256] = l;
+		prefix[0] = prefix[256] + count[256];
+		for (int i = 1; i < chars; i++)
+			prefix[i] = prefix[i - 1] + count[i - 1];
+
+		for (int i = l; i < r; i++)
+			tmp[prefix[getChar(v[i], curIndex)]++] = move(v[i]);
+
+		vector<int>().swap(prefix);
+		move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
+
+		len--;
+		curIndex++;
+
+		if (len == 0)
+			continue;
+
+		const int idealBucketSize = max((r - l) / 1000, 1000);
+		int numOfThreads = 0;
+
+		for (int i = 0; i < chars; i++)
+		{
+			if (count[i] >= idealBucketSize)
+				numOfThreads++;
+		}
+
+		if (numOfThreads > 1)
+		{
+			for (int i = 0, start = l + count[256]; i < chars; i++)
+			{
+				if (count[i] >= idealBucketSize)
+					threads.emplace_back(sortNonRecursive, ref(v), ref(tmp), start, start + count[i], len, curIndex);
+
+				start += count[i];
+			}
+		}
+
+		for (int i = 0, start = l + count[256]; i < chars; i++)
+		{
+			if (count[i] < idealBucketSize)
+				regions.emplace_back(start, start + count[i], len, curIndex);
+			start += count[i];
+		}
+	}
+
+	for (auto& t : threads)
+		t.join();
+}
+
+void radix_sort::sort(vector<string>& v)
+{
+	if (v.size() <= 10)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	vector<string> tmp(v.size());
+
+	int len = (*max_element(v.begin(), v.end(),
+		[](const string& a, const string& b) {
+			return a.length() < b.length();
+		})).length();
+
+	if (len < 100)
+		sortRecursive(v, tmp, 0, v.size(), len, 0);
+	else
+		sortNonRecursive(v, tmp, 0, v.size(), len, 0);
+}
+#pragma endregion
