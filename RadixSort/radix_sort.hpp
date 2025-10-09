@@ -36,16 +36,15 @@ private:
 	template<typename T>
 	static void getCountVectorThread(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r);
 
+	template<typename T>
+	static void getCountVector(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r);
+
 #pragma region int
-private:
-	static void getCountVector(std::vector<int>& v, std::vector<int>& count, int curShift, int l, int r);
 public:
 	static void sort(std::vector<int>& v);
 #pragma endregion
 
 #pragma region uint
-private:
-	static void getCountVector(std::vector<unsigned int>& v, std::vector<int>& count, int curShift, int l, int r);
 public:
 	static void sort(std::vector<unsigned int>& v);
 #pragma endregion
@@ -53,7 +52,6 @@ public:
 #pragma region ll
 private:
 	typedef long long ll;
-	static void getCountVector(std::vector<ll>& v, std::vector<int>& count, int curShift, int l, int r);
 
 	struct RegionLL {
 		int l;
@@ -75,7 +73,6 @@ public:
 #pragma region ull
 private:
 	typedef unsigned long long ull;
-	static void getCountVector(std::vector<ull>& v, std::vector<int>& count, int curShift, int l, int r);
 
 	static void sortULL(std::vector<ull>& v, std::vector<ull>& tmp, 
 		std::vector<RegionLL>& regions, std::unique_lock<std::mutex>& lkRegions, 
@@ -109,7 +106,6 @@ private:
 	};
 
 	static int getChar(const std::string& s, int index);
-	static void getCountVector(std::vector<std::string>& v, std::vector<int>& count, int curIndex, int l, int r);
 	static void sortString(std::vector<std::string>& v, std::vector<std::string>& tmp, 
 		std::vector<RegionString>& regions, std::unique_lock<std::mutex>& lkRegions,
 		RegionString initialRegion, bool multiThreaded);
