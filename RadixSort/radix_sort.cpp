@@ -22,13 +22,13 @@ void radix_sort::getCountVectorThreadInt(vector<int>& v, vector<int>& count, int
 
 void radix_sort::getCountVector(vector<int>& v, vector<int>& count, int shiftBits, int base, int mask, int invertMask)
 {
-	const int idealSize = 8000000;
-	const double idealBucketSize = 1000000.0;
+	constexpr int SIZE_THRESHOLD = 8000000;
+	constexpr double BUCKET_THRESHOLD = 1000000.0;
 
 	int size = v.size();
-	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+	int threadCount = static_cast<int>(ceil(size / BUCKET_THRESHOLD));
 
-	if (threadCount <= 1 || size < idealSize)
+	if (threadCount <= 1 || size < SIZE_THRESHOLD)
 	{
 		if (shiftBits != 24)
 		{
@@ -92,10 +92,10 @@ void radix_sort::sort(vector<int>& v)
 		return;
 	}
 
-	const int shiftBits = 8;
-	const int base = 256;
-	const int mask = 0xFF;
-	const int invertMask = 0x80;
+	constexpr int SHIFT_BITS = 8;
+	constexpr int BASE = 256;
+	constexpr int MASK = 0xFF;
+	constexpr int INVERT_MASK = 0x80;
 
 	vector<int> tmp(v.size());
 	int n = 4;
@@ -103,28 +103,28 @@ void radix_sort::sort(vector<int>& v)
 
 	while (n--)
 	{
-		vector<int> count(base);
-		vector<int> prefix(base);
+		vector<int> count(BASE);
+		vector<int> prefix(BASE);
 
-		getCountVector(v, count, curShift, base, mask, invertMask);
+		getCountVector(v, count, curShift, BASE, MASK, INVERT_MASK);
 
-		for (int i = 1; i < base; i++)
+		for (int i = 1; i < BASE; i++)
 			prefix[i] = prefix[i - 1] + count[i - 1];
 
 		if (curShift != 24)
 		{
 			for (const auto& num : v)
-				tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & mask]++] = num;
+				tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & MASK]++] = num;
 		}
 		else
 		{
 			for (const auto& num : v)
-				tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & mask) ^ invertMask]++] = num;
+				tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
 		}
 
 		swap(v, tmp);
 
-		curShift += shiftBits;
+		curShift += SHIFT_BITS;
 	}
 }
 #pragma endregion
@@ -138,13 +138,13 @@ void radix_sort::getCountVectorThreadUnsignedInt(vector<unsigned int>& v, vector
 
 void radix_sort::getCountVector(vector<unsigned int>& v, vector<int>& count, int shiftBits, int base, int mask)
 {
-	const int idealSize = 8000000;
-	const double idealBucketSize = 1000000.0;
+	constexpr int SIZE_THRESHOLD = 8000000;
+	constexpr double BUCKET_THRESHOLD = 1000000.0;
 
 	int size = v.size();
-	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+	int threadCount = static_cast<int>(ceil(size / BUCKET_THRESHOLD));
 
-	if (threadCount <= 1 || size < idealSize)
+	if (threadCount <= 1 || size < SIZE_THRESHOLD)
 	{
 		for (const auto& num : v)
 			count[(num >> shiftBits) & mask]++;
@@ -200,9 +200,9 @@ void radix_sort::sort(vector<unsigned int>& v)
 		return;
 	}
 
-	const int shiftBits = 8;
-	const int base = 256;
-	const int mask = 0xFF;
+	constexpr int SHIFT_BITS = 8;
+	constexpr int BASE = 256;
+	constexpr int MASK = 0xFF;
 
 	int n = 0;
 	unsigned int maxVal = *max_element(v.begin(), v.end());
@@ -210,7 +210,7 @@ void radix_sort::sort(vector<unsigned int>& v)
 	while (maxVal > 0)
 	{
 		n++;
-		maxVal >>= shiftBits;
+		maxVal >>= SHIFT_BITS;
 	}
 
 	vector<unsigned int> tmp(v.size());
@@ -218,20 +218,284 @@ void radix_sort::sort(vector<unsigned int>& v)
 
 	while (n--)
 	{
-		vector<int> count(base);
-		vector<int> prefix(base);
+		vector<int> count(BASE);
+		vector<int> prefix(BASE);
 
-		getCountVector(v, count, curShift, base, mask);
+		getCountVector(v, count, curShift, BASE, MASK);
 
-		for (int i = 1; i < base; i++)
+		for (int i = 1; i < BASE; i++)
 			prefix[i] = prefix[i - 1] + count[i - 1];
 
 		for (const auto& num : v)
-			tmp[prefix[(num >> curShift) & mask]++] = num;
+			tmp[prefix[(num >> curShift) & MASK]++] = num;
 
 		swap(v, tmp);
 
-		curShift += shiftBits;
+		curShift += SHIFT_BITS;
+	}
+}
+#pragma endregion
+
+#pragma region ll
+void radix_sort::getCountVectorThreadLL(vector<ll>& v, vector<int>& count, int l, int r, int curShift, int mask, int invertMask)
+{
+	if (curShift != 56)
+	{
+		for (int i = l; i < r; i++)
+			count[(static_cast<ull>(v[i]) >> curShift) & mask]++;
+	}
+	else
+	{
+		for (int i = l; i < r; i++)
+			count[((static_cast<ull>(v[i]) >> curShift) & mask) ^ invertMask]++;
+	}
+}
+
+void radix_sort::getCountVector(vector<ll>& v, vector<int>& count, int l, int r, int curShift, int base, int mask, int invertMask)
+{
+	constexpr int SIZE_THRESHOLD = 8000000;
+	constexpr double BUCKET_THRESHOLD = 1000000.0;
+
+	int size = r - l;
+	int threadCount = static_cast<int>(ceil(size / BUCKET_THRESHOLD));
+
+	if (threadCount <= 1 || size < SIZE_THRESHOLD)
+	{
+		if (curShift != 56)
+		{
+			for (int i = l; i < r; i++)
+				count[(static_cast<ull>(v[i]) >> curShift) & mask]++;
+		}
+		else
+		{
+			for (int i = l; i < r; i++)
+				count[((static_cast<ull>(v[i]) >> curShift) & mask) ^ invertMask]++;
+		}
+	}
+	else
+	{
+		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
+		int bucketSize = size / threadCount;
+
+		vector<thread> threads;
+		vector<vector<int>> counts(threadCount, vector<int>(base));
+
+		for (int i = 0; i < threadCount; i++)
+		{
+			int start = l + i * bucketSize;
+			int end = (i == threadCount - 1) ? r : start + bucketSize;
+			threads.emplace_back(getCountVectorThreadLL, ref(v), ref(counts[i]), start, end, curShift, mask, invertMask);
+		}
+
+		for (auto& t : threads)
+			t.join();
+
+		for (int curThread = 0; curThread < threadCount; curThread++)
+		{
+			for (int i = 0; i < base; i++)
+				count[i] += counts[curThread][i];
+		}
+	}
+}
+
+void radix_sort::insertionSort(vector<ll>& v, int l, int r)
+{
+	for (int i = l + 1; i < r; i++)
+	{
+		ll val = v[i];
+		int j = i - 1;
+
+		while (j >= l && v[j] > val)
+		{
+			v[j + 1] = v[j];
+			j--;
+		}
+
+		v[j + 1] = val;
+	}
+}
+
+void radix_sort::sortLL(std::vector<ll>& v, std::vector<ll>& tmp, 
+	std::vector<RegionLL>& regions, std::unique_lock<std::mutex>& lkRegions, 
+	RegionLL initialRegion, bool multiThreaded)
+{
+	constexpr int SHIFT_BITS = 8;
+	constexpr int BASE = 256;
+	constexpr int MASK = 0xFF;
+	constexpr int INVERT_MASK = 0x80;
+
+	vector<RegionLL> regionsLocal;
+	regionsLocal.reserve(v.size() / 100);
+	regionsLocal.emplace_back(initialRegion);
+
+	while (regionsLocal.size())
+	{
+		RegionLL region = move(regionsLocal.back());
+		regionsLocal.pop_back();
+
+		int l = region.l;
+		int r = region.r;
+		int len = region.len;
+
+		if (r - l < 2 || len == 0)
+			continue;
+
+		if (r - l <= 100)
+		{
+			insertionSort(v, l, r);
+			continue;
+		}
+
+		const int CUR_SHIFT = (len - 1) * SHIFT_BITS;
+		vector<int> count(BASE);
+		vector<int> prefix(BASE);
+
+		getCountVector(v, count, l, r, CUR_SHIFT, BASE, MASK, INVERT_MASK);
+
+		prefix[0] = l;
+		for (int i = 1; i < BASE; i++)
+			prefix[i] = prefix[i - 1] + count[i - 1];
+		
+		if (CUR_SHIFT != 56)
+		{
+			for (int i = l; i < r; i++)
+				tmp[prefix[(static_cast<ull>(v[i]) >> CUR_SHIFT) & MASK]++] = v[i];
+		}
+		else
+		{
+			for (int i = l; i < r; i++)
+				tmp[prefix[((static_cast<ull>(v[i]) >> CUR_SHIFT) & MASK) ^ INVERT_MASK]++] = v[i];
+		}
+
+		move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
+
+		len--;
+
+		if (len == 0)
+			continue;
+
+		if (!multiThreaded)
+		{
+			for (int i = 0, start = l; i < BASE; i++)
+			{
+				if (count[i])
+					regionsLocal.emplace_back(start, start + count[i], len);
+				start += count[i];
+			}
+		}
+		else
+		{
+			const int BUCKET_THRESHOLD = max((r - l) / 1000, 1000);
+
+			for (int i = 0, start = l; i < BASE; i++)
+			{
+				if (count[i] < BUCKET_THRESHOLD)
+					regionsLocal.emplace_back(start, start + count[i], len);
+				else
+				{
+					lkRegions.lock();
+					regions.emplace_back(start, start + count[i], len);
+					lkRegions.unlock();
+				}
+				start += count[i];
+			}
+		}
+	}
+}
+
+void radix_sort::sortThreadLL(std::vector<ll>& v, std::vector<ll>& tmp,
+	std::vector<RegionLL>& regions, std::mutex& regionsLock, 
+	std::atomic<int>& runningCounter, int threadIndex)
+{
+	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
+
+	bool isIdle = false;
+	int iterationsIdle = 0;
+	const bool ALLOW_SLEEP = v.size() > 1e6;
+
+	while (true)
+	{
+		lkRegions.lock();
+		if (regions.size())
+		{
+			RegionLL region = move(regions.back());
+			regions.pop_back();
+			lkRegions.unlock();
+
+			if (isIdle)
+			{
+				isIdle = false;
+				runningCounter++;
+				iterationsIdle = 0;
+			}
+
+			sortLL(v, tmp, regions, lkRegions, region, 1);
+		}
+		else
+		{
+			lkRegions.unlock();
+
+			if (!isIdle)
+			{
+				isIdle = true;
+				runningCounter--;
+			}
+
+			if (runningCounter.load() == 0)
+				break;
+
+			iterationsIdle++;
+
+			if (ALLOW_SLEEP && iterationsIdle > 100)
+			{
+				iterationsIdle = 0;
+				this_thread::sleep_for(chrono::nanoseconds(1));
+			}
+		}
+	}
+}
+
+void radix_sort::sort(std::vector<ll>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	vector<ll> tmp(v.size());
+
+	constexpr int SHIFT_BITS = 8;
+	int len = 8;
+
+	int numOfThreads = thread::hardware_concurrency();
+	const int BUCKET_THRESHOLD = max(static_cast<int>(v.size() / 1000), 1000);
+
+	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
+	{
+		vector<RegionLL> tmpVector;
+		mutex tmpMutex;
+		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
+
+		sortLL(v, tmp, tmpVector, tmpLock, RegionLL(0, v.size(), len), 0);
+	}
+	else
+	{
+		vector<RegionLL> regions;
+		regions.reserve(v.size() / 1000);
+		regions.emplace_back(0, v.size(), len);
+
+		mutex regionsLock;
+		mutex idleLock;
+		atomic<int> runningCounter = numOfThreads;
+
+		vector<thread> threads;
+
+		for (int i = 0; i < numOfThreads; i++)
+			threads.emplace_back(sortThreadLL, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
+
+		for (auto& t : threads)
+			t.join();
 	}
 }
 #pragma endregion
@@ -245,13 +509,13 @@ void radix_sort::getCountVectorThreadULL(vector<ull>& v, vector<int>& count, int
 
 void radix_sort::getCountVector(vector<ull>& v, vector<int>& count, int shiftBits, int base, int mask, int l, int r)
 {
-	const int idealSize = 8000000;
-	const double idealBucketSize = 1000000.0;
+	constexpr int SIZE_THRESHOLD = 8000000;
+	constexpr double BUCKET_THRESHOLD = 1000000.0;
 
 	int size = r - l;
-	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+	int threadCount = static_cast<int>(ceil(size / BUCKET_THRESHOLD));
 
-	if (threadCount <= 1 || size < idealSize)
+	if (threadCount <= 1 || size < SIZE_THRESHOLD)
 	{
 		for (int i = l; i < r; i++)
 			count[(v[i] >> shiftBits) & mask]++;
@@ -300,20 +564,20 @@ void radix_sort::insertionSort(vector<ull>& v, int l, int r)
 }
 
 void radix_sort::sortULL(std::vector<ull>& v, std::vector<ull>& tmp, 
-	std::vector<RegionULL>& regions, std::unique_lock<std::mutex>& lkRegions, 
-	RegionULL initialRegion, bool multiThreaded)
+	std::vector<RegionLL>& regions, std::unique_lock<std::mutex>& lkRegions, 
+	RegionLL initialRegion, bool multiThreaded)
 {
-	const int shiftBits = 8;
-	const int base = 256;
-	const int mask = 0xFF;
+	constexpr int SHIFT_BITS = 8;
+	constexpr int BASE = 256;
+	constexpr int MASK = 0xFF;
 
-	vector<RegionULL> regionsLocal;
+	vector<RegionLL> regionsLocal;
 	regionsLocal.reserve(v.size() / 100);
 	regionsLocal.emplace_back(initialRegion);
 
 	while (regionsLocal.size())
 	{
-		RegionULL region = move(regionsLocal.back());
+		RegionLL region = move(regionsLocal.back());
 		regionsLocal.pop_back();
 
 		int l = region.l;
@@ -329,18 +593,18 @@ void radix_sort::sortULL(std::vector<ull>& v, std::vector<ull>& tmp,
 			continue;
 		}
 
-		const int curShift = (len - 1) * shiftBits;
-		vector<int> count(base);
-		vector<int> prefix(base);
+		const int CUR_SHIFT = (len - 1) * SHIFT_BITS;
+		vector<int> count(BASE);
+		vector<int> prefix(BASE);
 
-		getCountVector(v, count, curShift, base, mask, l, r);
+		getCountVector(v, count, CUR_SHIFT, BASE, MASK, l, r);
 
 		prefix[0] = l;
-		for (int i = 1; i < base; i++)
+		for (int i = 1; i < BASE; i++)
 			prefix[i] = prefix[i - 1] + count[i - 1];
 
 		for (int i = l; i < r; i++)
-			tmp[prefix[(v[i] >> curShift) & mask]++] = v[i];
+			tmp[prefix[(v[i] >> CUR_SHIFT) & MASK]++] = v[i];
 
 		move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
 
@@ -351,7 +615,7 @@ void radix_sort::sortULL(std::vector<ull>& v, std::vector<ull>& tmp,
 
 		if (!multiThreaded)
 		{
-			for (int i = 0, start = l; i < base; i++)
+			for (int i = 0, start = l; i < BASE; i++)
 			{
 				if (count[i])
 					regionsLocal.emplace_back(start, start + count[i], len);
@@ -362,7 +626,7 @@ void radix_sort::sortULL(std::vector<ull>& v, std::vector<ull>& tmp,
 		{
 			const int BUCKET_THRESHOLD = max((r - l) / 1000, 1000);
 
-			for (int i = 0, start = l; i < base; i++)
+			for (int i = 0, start = l; i < BASE; i++)
 			{
 				if (count[i] < BUCKET_THRESHOLD)
 					regionsLocal.emplace_back(start, start + count[i], len);
@@ -379,7 +643,7 @@ void radix_sort::sortULL(std::vector<ull>& v, std::vector<ull>& tmp,
 }
 
 void radix_sort::sortThreadULL(std::vector<ull>& v, std::vector<ull>& tmp,
-	std::vector<RegionULL>& regions, std::mutex& regionsLock, 
+	std::vector<RegionLL>& regions, std::mutex& regionsLock, 
 	std::atomic<int>& runningCounter, int threadIndex)
 {
 	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
@@ -393,7 +657,7 @@ void radix_sort::sortThreadULL(std::vector<ull>& v, std::vector<ull>& tmp,
 		lkRegions.lock();
 		if (regions.size())
 		{
-			RegionULL region = move(regions.back());
+			RegionLL region = move(regions.back());
 			regions.pop_back();
 			lkRegions.unlock();
 
@@ -440,14 +704,14 @@ void radix_sort::sort(std::vector<ull>& v)
 
 	vector<ull> tmp(v.size());
 
-	const int shiftBits = 8;
+	constexpr int SHIFT_BITS = 8;
 	int len = 0;
 	ull maxVal = *max_element(v.begin(), v.end());
 
 	while (maxVal > 0)
 	{
 		len++;
-		maxVal >>= shiftBits;
+		maxVal >>= SHIFT_BITS;
 	}
 
 	int numOfThreads = thread::hardware_concurrency();
@@ -455,15 +719,15 @@ void radix_sort::sort(std::vector<ull>& v)
 
 	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
 	{
-		vector<RegionULL> tmpVector;
+		vector<RegionLL> tmpVector;
 		mutex tmpMutex;
 		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
 
-		sortULL(v, tmp, tmpVector, tmpLock, RegionULL(0, v.size(), len), 0);
+		sortULL(v, tmp, tmpVector, tmpLock, RegionLL(0, v.size(), len), 0);
 	}
 	else
 	{
-		vector<RegionULL> regions;
+		vector<RegionLL> regions;
 		regions.reserve(v.size() / 1000);
 		regions.emplace_back(0, v.size(), len);
 
@@ -590,26 +854,26 @@ void radix_sort::getCountVectorThreadString(vector<string>& v, vector<int>& coun
 
 void radix_sort::getCountVector(vector<string>& v, vector<int>& count, int l, int r, int curIndex)
 {
-	const int idealSize = 8000000;
-	const double idealBucketSize = 1000000.0;
+	constexpr int SIZE_THRESHOLD = 8000000;
+	constexpr double BUCKET_THRESHOLD = 1000000.0;
 
 	int size = r - l;
-	int threadCount = static_cast<int>(ceil(size / idealBucketSize));
+	int threadCount = static_cast<int>(ceil(size / BUCKET_THRESHOLD));
 
-	if (threadCount <= 1 || size < idealSize)
+	if (threadCount <= 1 || size < SIZE_THRESHOLD)
 	{
 		for (int i = l; i < r; i++)
 			count[getChar(v[i], curIndex)]++;
 	}
 	else
 	{
-		int chars = 257;
+		constexpr int CHARS_ALLOC = 257;
 		
 		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
 		int bucketSize = size / threadCount;
 
 		vector<thread> threads;
-		vector<vector<int>> counts(threadCount, vector<int>(chars));
+		vector<vector<int>> counts(threadCount, vector<int>(CHARS_ALLOC));
 
 		for (int i = 0; i < threadCount; i++)
 		{
@@ -623,7 +887,7 @@ void radix_sort::getCountVector(vector<string>& v, vector<int>& count, int l, in
 
 		for (int curThread = 0; curThread < threadCount; curThread++)
 		{
-			for (int i = 0; i < chars; i++)
+			for (int i = 0; i < CHARS_ALLOC; i++)
 				count[i] += counts[curThread][i];
 		}
 	}
@@ -672,18 +936,18 @@ void radix_sort::sortString(vector<string>& v, vector<string>& tmp, vector<Regio
 			continue;
 		}
 
-		int chars = 257;
+		constexpr int CHARS_ALLOC = 257;
 
-		vector<int> count(chars);
-		vector<int> prefix(chars);
+		vector<int> count(CHARS_ALLOC);
+		vector<int> prefix(CHARS_ALLOC);
 
-		chars--;
+		constexpr int CHARS = 256;
 
 		getCountVector(v, count, l, r, curIndex);
 
 		prefix[256] = l;
 		prefix[0] = prefix[256] + count[256];
-		for (int i = 1; i < chars; i++)
+		for (int i = 1; i < CHARS; i++)
 			prefix[i] = prefix[i - 1] + count[i - 1];
 
 		for (int i = l; i < r; i++)
@@ -699,7 +963,7 @@ void radix_sort::sortString(vector<string>& v, vector<string>& tmp, vector<Regio
 
 		if (!multiThreaded)
 		{
-			for (int i = 0, start = l + count[256]; i < chars; i++)
+			for (int i = 0, start = l + count[256]; i < CHARS; i++)
 			{
 				if (count[i] > 1)
 					regionsLocal.emplace_back(start, start + count[i], len, curIndex);
@@ -710,7 +974,7 @@ void radix_sort::sortString(vector<string>& v, vector<string>& tmp, vector<Regio
 		{
 			const int BUCKET_THRESHOLD = max((r - l) / 1000, 1000);
 
-			for (int i = 0, start = l + count[256]; i < chars; i++)
+			for (int i = 0, start = l + count[256]; i < CHARS; i++)
 			{
 				if (count[i] < BUCKET_THRESHOLD)
 					regionsLocal.emplace_back(start, start + count[i], len, curIndex);

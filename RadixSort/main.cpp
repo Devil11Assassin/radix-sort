@@ -271,9 +271,10 @@ int main()
 {
 	//runTest();
 	//runShit();
-	runShitFloat();
-	runShitDouble();
-	runShitString();
-	runShitULL();
-	//show_off::showOff(1, 1, 1, 1);
+	//runShitFloat();
+	//runShitDouble();
+	//runShitString();
+	//runShitULL();
+	//show_off::showOff(0, 0, 1, 0);
+	show_off::validate(1, 1, 1, 1, 1, 1, 1);
 }

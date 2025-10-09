@@ -34,6 +34,20 @@ vector<unsigned int> generators::generateUnsignedInts(int n)
 	return v;
 }
 
+vector<long long> generators::generateLLs(int n)
+{
+	vector<long long> v;
+	v.reserve(n);
+
+	mt19937 gen(69);
+	uniform_int_distribution<long long> dist(LLONG_MIN, LLONG_MAX);
+
+	while (n--)
+		v.emplace_back(dist(gen));
+
+	return v;
+}
+
 vector<unsigned long long> generators::generateULLs(int n)
 {
 	vector<unsigned long long> v;
@@ -41,8 +55,6 @@ vector<unsigned long long> generators::generateULLs(int n)
 
 	mt19937 gen(69);
 	uniform_int_distribution<unsigned long long> dist(0, ULLONG_MAX);
-	//uniform_int_distribution<unsigned long long> dist(0, ULLONG_MAX);
-	//uniform_int_distribution<unsigned long long> dist(0, numeric_limits<unsigned long long>::max());
 
 	while (n--)
 		v.emplace_back(dist(gen));
@@ -56,24 +68,19 @@ vector<float> generators::generateFloats(int n)
 	v.reserve(n);
 
 	mt19937 gen(69);
-	//uniform_real_distribution<float> dist(FLT_MIN, FLT_MAX);
-	//uniform_real_distribution<float> dist(numeric_limits<float>::lowest(), numeric_limits<float>::max());
 	uniform_int_distribution<unsigned int> dist(0, UINT_MAX);
 
 	while (n--)
 	{
-		
 		unsigned int num = 0;
-		//num = dist(gen);
-		
 		while (true) 
 		{
 			num = dist(gen);
-			if ((num & 0x7F800000) != 0x7F800000) break;
+
+			if ((num & 0x7F800000) != 0x7F800000) 
+				break;
 		}
 		v.emplace_back(bit_cast<float>(num));
-
-		//v.emplace_back(dist(gen));
 	}
 
 	return v;
@@ -85,15 +92,11 @@ vector<double> generators::generateDoubles(int n)
 	v.reserve(n);
 
 	mt19937 gen(69);
-	//uniform_real_distribution<float> dist(FLT_MIN, FLT_MAX);
-	//uniform_real_distribution<float> dist(numeric_limits<float>::lowest(), numeric_limits<float>::max());
 	uniform_int_distribution<unsigned long long> dist(0, ULLONG_MAX);
 
 	while (n--)
 	{
 		unsigned long long num = 0;
-		//num = dist(gen);
-		
 		while (true) 
 		{
 			num = dist(gen);
