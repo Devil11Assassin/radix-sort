@@ -1,0 +1,120 @@
+#pragma region float
+void radix_sort::insertionSort(vector<float>& v, int l, int r)
+{
+	for (int i = l + 1; i < r; i++)
+	{
+		float val = v[i];
+		int j = i - 1;
+
+		while (j >= l && v[j] > val)
+		{
+			v[j + 1] = v[j];
+			j--;
+		}
+
+		v[j + 1] = val;
+	}
+}
+
+//void radix_sort::sort(vector<float>& v)
+//{
+//	if (v.size() <= 100)
+//	{
+//		insertionSort(v, 0, v.size());
+//		return;
+//	}
+//
+//	int size = v.size();
+//	vector<unsigned int> int_v(size);
+//	for (int i = 0; i < size; i++)
+//	{
+//		memcpy(&int_v[i], &v[i], sizeof(float));
+//		//int_v[i] ^= static_cast<unsigned int>(- int(int_v[i] >> 31) | 0x80000000);
+//
+//		//if (int_v[i] & 0x80000000)
+//		//	int_v[i] = ~int_v[i];
+//		//else
+//		//	int_v[i] |= 0x80000000;
+//
+//		//int_v[i] = (int_v[i] & 0x80000000) ? ~int_v[i] : (int_v[i] | 0x80000000);
+//
+//		//bool isNegative = int_v[i] & 0x80000000;
+//		//int_v[i] = (~int_v[i])*(isNegative) + (int_v[i] | 0x80000000)*(!isNegative);
+//		//int_v[i] = (~int_v[i])*((int_v[i] & 0x80000000) != 0) + (int_v[i] ^ 0x80000000)*((int_v[i] & 0x80000000) == 0);
+//		
+//		int_v[i] = (~int_v[i])*((int_v[i] & 0x80000000) != 0) + (int_v[i] | 0x80000000)*((int_v[i] & 0x80000000) == 0);
+//	}
+//	
+//	sort(int_v);
+//
+//	for (int i = 0; i < size; i++)
+//	{
+//		//int_v[i] ^= static_cast<unsigned int>(-static_cast<int>(int_v[i] >> 31) | 0x80000000);
+//
+//		//if (int_v[i] & 0x80000000)
+//		//	int_v[i] &= 0x7FFFFFFF;
+//		//else
+//		//	int_v[i] = ~int_v[i];
+//
+//		//int_v[i] = (int_v[i] & 0x80000000) ? (int_v[i] & 0x7FFFFFFF) : ~int_v[i];
+//
+//		//bool isPositive = int_v[i] & 0x80000000;
+//		//int_v[i] = (int_v[i] & 0x7FFFFFFF)*(isPositive) + (~int_v[i])*(!isPositive);
+//
+//		int_v[i] = (int_v[i] & 0x7FFFFFFF)*((int_v[i] & 0x80000000) != 0) + (~int_v[i])*((int_v[i] & 0x80000000) == 0);
+//
+//		memcpy(&v[i], &int_v[i], sizeof(float));
+//	}
+//}
+
+void radix_sort::sort(vector<float>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	int size = v.size();
+	vector<unsigned int> int_v(size);
+	for (int i = 0; i < size; i++)
+	{
+		memcpy(&int_v[i], &v[i], sizeof(float));
+		//int_v[i] ^= static_cast<unsigned int>(- int(int_v[i] >> 31) | 0x80000000);
+
+		//if (int_v[i] & 0x80000000)
+		//	int_v[i] = ~int_v[i];
+		//else
+		//	int_v[i] |= 0x80000000;
+
+		//int_v[i] = (int_v[i] & 0x80000000) ? ~int_v[i] : (int_v[i] | 0x80000000);
+
+		//bool isNegative = int_v[i] & 0x80000000;
+		//int_v[i] = (~int_v[i])*(isNegative) + (int_v[i] | 0x80000000)*(!isNegative);
+		//int_v[i] = (~int_v[i])*((int_v[i] & 0x80000000) != 0) + (int_v[i] ^ 0x80000000)*((int_v[i] & 0x80000000) == 0);
+		
+		int_v[i] = (~int_v[i])*((int_v[i] & 0x80000000) != 0) + (int_v[i] | 0x80000000)*((int_v[i] & 0x80000000) == 0);
+	}
+	
+	sort(int_v);
+
+	for (int i = 0; i < size; i++)
+	{
+		//int_v[i] ^= static_cast<unsigned int>(-static_cast<int>(int_v[i] >> 31) | 0x80000000);
+
+		//if (int_v[i] & 0x80000000)
+		//	int_v[i] &= 0x7FFFFFFF;
+		//else
+		//	int_v[i] = ~int_v[i];
+
+		//int_v[i] = (int_v[i] & 0x80000000) ? (int_v[i] & 0x7FFFFFFF) : ~int_v[i];
+
+		//bool isPositive = int_v[i] & 0x80000000;
+		//int_v[i] = (int_v[i] & 0x7FFFFFFF)*(isPositive) + (~int_v[i])*(!isPositive);
+
+		int_v[i] = (int_v[i] & 0x7FFFFFFF)*((int_v[i] & 0x80000000) != 0) + (~int_v[i])*((int_v[i] & 0x80000000) == 0);
+
+		memcpy(&v[i], &int_v[i], sizeof(float));
+	}
+}
+#pragma endregion
