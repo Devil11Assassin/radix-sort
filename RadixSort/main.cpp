@@ -146,7 +146,9 @@ void runShitString()
 	for (int i = 0; i < n; i++)
 	{
 		if (vSort[i] != vRadix[i])
+		{
 			cout << i << ' ' << vSort[i] << ' ' << vRadix[i] << '\n';
+		}
 	}
 }
 

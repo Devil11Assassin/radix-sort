@@ -1050,8 +1050,8 @@ void radix_sort::sortNonRecursiveM(vector<string>& v, vector<string>& tmp, vecto
 
 		if (!multiThreaded)
 		{
-			for (int i = 0, start = l + count[256]; i < chars; i++)
-			{
+		for (int i = 0, start = l + count[256]; i < chars; i++)
+		{
 				if (count[i])
 					regionsLocal.emplace_back(start, start + count[i], len, curIndex);
 				start += count[i];
@@ -1068,14 +1068,14 @@ void radix_sort::sortNonRecursiveM(vector<string>& v, vector<string>& tmp, vecto
 				else
 				{
 					lkRegions.lock();
-					regions.emplace_back(start, start + count[i], len, curIndex);
+			regions.emplace_back(start, start + count[i], len, curIndex);
 					lkRegions.unlock();
 					threadsCreated++;
 				}
-				start += count[i];
-			}
+			start += count[i];
 		}
 	}
+}
 }
 
 void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
@@ -1090,36 +1090,36 @@ void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
 
 	while (true)
 	{
-		lkRegions.lock();
-		if (regions.size())
-		{
-			Region region = move(regions.back());
-			regions.pop_back();
-			lkRegions.unlock();
-
-			if (isIdle)
+			lkRegions.lock();
+			if (regions.size())
 			{
-				isIdle = false;
-				runningCounter++;
+			Region region = move(regions.back());
+				regions.pop_back();
+				lkRegions.unlock();
+
+				if (isIdle)
+				{
+					isIdle = false;
+					runningCounter++;
 				iterationsIdle = 0;
-			}
+				}
 
 			sortNonRecursiveM(v, tmp, regions, lkRegions, region, 1);
 			stepsActive[threadIndex]++;
-		}
-		else
-		{
-			lkRegions.unlock();
-			stepsIdle[threadIndex]++;
-
-			if (!isIdle)
-			{
-				isIdle = true;
-				runningCounter--;
 			}
+			else
+			{
+				lkRegions.unlock();
+				stepsIdle[threadIndex]++;
 
-			if (runningCounter.load() == 0)
-				break;
+				if (!isIdle)
+				{
+					isIdle = true;
+					runningCounter--;
+				}
+
+				if (runningCounter.load() == 0)
+					break;
 
 			iterationsIdle++;
 
@@ -1128,7 +1128,7 @@ void radix_sort::sortNonRecursiveThread(vector<string>& v, vector<string>& tmp,
 				iterationsIdle = 0;
 				this_thread::sleep_for(chrono::nanoseconds(1));
 			}
-		}	
+		}
 	}
 }
 
