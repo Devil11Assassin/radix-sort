@@ -81,29 +81,21 @@ class radix_sort
 		std::vector<TRegion>& regions, std::unique_lock<std::mutex>& lkRegions,
 		TRegion initialRegion, bool multiThreaded);
 
-#pragma region ll
-private:
-	static void sortThreadLL(std::vector<ll>& v, std::vector<	ll>& tmp,
-		std::vector<RegionLL>& regions, std::mutex& regionsLock, 
+	template<typename T, typename TRegion>
+	static void sortThreadT(std::vector<T>& v, std::vector<T>& tmp,
+		std::vector<TRegion>& regions, std::mutex& regionsLock,
 		std::atomic<int>& runningCounter, int threadIndex);
+#pragma region ll
 public:
 	static void sortLL(std::vector<ll>& v);
 #pragma endregion
 
 #pragma region ull
-private:
-	static void sortThreadULL(std::vector<ull>& v, std::vector<ull>& tmp,
-		std::vector<RegionLL>& regions, std::mutex& regionsLock, 
-		std::atomic<int>& runningCounter, int threadIndex);
 public:
 	static void sortULL(std::vector<ull>& v);
 #pragma endregion
 
 #pragma region string
-private:
-	static void sortThreadString(std::vector<std::string>& v, std::vector<std::string>& tmp,
-		std::vector<RegionString>& regions, std::mutex& regionsLock, 
-		std::atomic<int>& runningCounter, int threadIndex);
 public:
 	static void sortString(std::vector<std::string>& v);
 #pragma endregion

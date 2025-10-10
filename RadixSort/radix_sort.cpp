@@ -383,10 +383,10 @@ void radix_sort::sortT(vector<T>& v, vector<T>& tmp,
 	}
 }
 
-#pragma region ll
-void radix_sort::sortThreadLL(std::vector<ll>& v, std::vector<ll>& tmp,
-	std::vector<RegionLL>& regions, std::mutex& regionsLock, 
-	std::atomic<int>& runningCounter, int threadIndex)
+template<typename T, typename TRegion>
+void radix_sort::sortThreadT(vector<T>& v, vector<T>& tmp,
+	vector<TRegion>& regions, std::mutex& regionsLock,
+	atomic<int>& runningCounter, int threadIndex)
 {
 	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
 
@@ -399,7 +399,7 @@ void radix_sort::sortThreadLL(std::vector<ll>& v, std::vector<ll>& tmp,
 		lkRegions.lock();
 		if (regions.size())
 		{
-			RegionLL region = move(regions.back());
+			TRegion region = move(regions.back());
 			regions.pop_back();
 			lkRegions.unlock();
 
@@ -436,6 +436,7 @@ void radix_sort::sortThreadLL(std::vector<ll>& v, std::vector<ll>& tmp,
 	}
 }
 
+#pragma region ll
 void radix_sort::sortLL(std::vector<ll>& v)
 {
 	if (v.size() <= 100)
@@ -473,7 +474,7 @@ void radix_sort::sortLL(std::vector<ll>& v)
 		vector<thread> threads;
 
 		for (int i = 0; i < numOfThreads; i++)
-			threads.emplace_back(sortThreadLL, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
+			threads.emplace_back(sortThreadT<ll, RegionLL>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
 
 		for (auto& t : threads)
 			t.join();
@@ -482,58 +483,6 @@ void radix_sort::sortLL(std::vector<ll>& v)
 #pragma endregion
 
 #pragma region ull
-void radix_sort::sortThreadULL(std::vector<ull>& v, std::vector<ull>& tmp,
-	std::vector<RegionLL>& regions, std::mutex& regionsLock, 
-	std::atomic<int>& runningCounter, int threadIndex)
-{
-	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
-
-	bool isIdle = false;
-	int iterationsIdle = 0;
-	const bool ALLOW_SLEEP = v.size() > 1e6;
-
-	while (true)
-	{
-		lkRegions.lock();
-		if (regions.size())
-		{
-			RegionLL region = move(regions.back());
-			regions.pop_back();
-			lkRegions.unlock();
-
-			if (isIdle)
-			{
-				isIdle = false;
-				runningCounter++;
-				iterationsIdle = 0;
-			}
-
-			sortT(v, tmp, regions, lkRegions, region, 1);
-		}
-		else
-		{
-			lkRegions.unlock();
-
-			if (!isIdle)
-			{
-				isIdle = true;
-				runningCounter--;
-			}
-
-			if (runningCounter.load() == 0)
-				break;
-
-			iterationsIdle++;
-
-			if (ALLOW_SLEEP && iterationsIdle > 100)
-			{
-				iterationsIdle = 0;
-				this_thread::sleep_for(chrono::nanoseconds(1));
-			}
-		}
-	}
-}
-
 void radix_sort::sortULL(std::vector<ull>& v)
 {
 	if (v.size() <= 100)
@@ -578,7 +527,7 @@ void radix_sort::sortULL(std::vector<ull>& v)
 		vector<thread> threads;
 
 		for (int i = 0; i < numOfThreads; i++)
-			threads.emplace_back(sortThreadULL, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
+			threads.emplace_back(sortThreadT<ull, RegionLL>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
 
 		for (auto& t : threads)
 			t.join();
@@ -587,58 +536,6 @@ void radix_sort::sortULL(std::vector<ull>& v)
 #pragma endregion
 
 #pragma region string
-void radix_sort::sortThreadString(vector<string>& v, vector<string>& tmp,
-	vector<RegionString>& regions, mutex& regionsLock, 
-	atomic<int>& runningCounter, int threadIndex)
-{
-	unique_lock<mutex> lkRegions(regionsLock, defer_lock);
-
-	bool isIdle = false;
-	int iterationsIdle = 0;
-	const bool ALLOW_SLEEP = v.size() > 1e6;
-
-	while (true)
-	{
-		lkRegions.lock();
-		if (regions.size())
-		{
-			RegionString region = move(regions.back());
-			regions.pop_back();
-			lkRegions.unlock();
-
-			if (isIdle)
-			{
-				isIdle = false;
-				runningCounter++;
-				iterationsIdle = 0;
-			}
-
-			sortT(v, tmp, regions, lkRegions, region, 1);
-		}
-		else
-		{
-			lkRegions.unlock();
-
-			if (!isIdle)
-			{
-				isIdle = true;
-				runningCounter--;
-			}
-
-			if (runningCounter.load() == 0)
-				break;
-
-			iterationsIdle++;
-
-			if (ALLOW_SLEEP && iterationsIdle > 100)
-			{
-				iterationsIdle = 0;
-				this_thread::sleep_for(chrono::nanoseconds(1));
-			}
-		}
-	}
-}
-
 void radix_sort::sortString(vector<string>& v)
 {
 	if (v.size() <= 10)
@@ -678,7 +575,7 @@ void radix_sort::sortString(vector<string>& v)
 		vector<thread> threads;
 
 		for (int i = 0; i < numOfThreads; i++)
-			threads.emplace_back(sortThreadString, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
+			threads.emplace_back(sortThreadT<string, RegionString>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
 
 		for (auto& t : threads)
 			t.join();
