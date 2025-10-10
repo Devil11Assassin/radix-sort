@@ -35,10 +35,6 @@ void radix_sort::insertionSort(vector<T>& v, int l, int r)
 	}
 }
 
-
-// uint + ull
-// int + ll (condition shift different 24 & 56)
-// string different
 #pragma region getcountTHREAD
 template<typename T>
 void radix_sort::getCountVectorThread(vector<T>& v, vector<int>& count, int curShiftOrIndex, int l, int r)
@@ -82,15 +78,14 @@ void radix_sort::getCountVectorThread(vector<T>& v, vector<int>& count, int curS
 }
 #pragma endregion
 
-// all together except string
 #pragma region getcount
 template<typename T>
 void radix_sort::getCountVector(vector<T>& v, vector<int>& count, int curShiftOrIndex, int l, int r)
 {
-	int size = r - l;
-	int threadCount = static_cast<int>(ceil(size / BUCKET_THRESHOLD));
+	const int SIZE = r - l;
+	int threadCount = static_cast<int>(ceil(SIZE / BUCKET_THRESHOLD));
 
-	if (threadCount <= 1 || size < SIZE_THRESHOLD)
+	if (threadCount <= 1 || SIZE < SIZE_THRESHOLD)
 	{
 		getCountVectorThread(v, count, curShiftOrIndex, l, r);
 	}
@@ -99,7 +94,7 @@ void radix_sort::getCountVector(vector<T>& v, vector<int>& count, int curShiftOr
 		constexpr int ALLOC_SIZE = (is_same_v<T, string>) ? CHARS_ALLOC : BASE;
 		
 		threadCount = min(threadCount, static_cast<int>(thread::hardware_concurrency()));
-		int bucketSize = size / threadCount;
+		int bucketSize = SIZE / threadCount;
 
 		vector<thread> threads;
 		vector<vector<int>> counts(threadCount, vector<int>(ALLOC_SIZE));
@@ -123,6 +118,7 @@ void radix_sort::getCountVector(vector<T>& v, vector<int>& count, int curShiftOr
 }
 #pragma endregion
 
+#pragma region int uint
 template<typename T>
 void radix_sort::sort1(std::vector<T>& v)
 {
@@ -183,6 +179,58 @@ void radix_sort::sort1(std::vector<T>& v)
 		curShift += SHIFT_BITS;
 	}
 }
+#pragma endregion
+
+#pragma region float double
+template<typename T>
+void radix_sort::sort2(std::vector<T>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
+	const int SIZE = v.size();
+
+	if constexpr (is_same_v<T, float>)
+	{
+		vector<unsigned int> vUint(SIZE);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			memcpy(&vUint[i], &v[i], sizeof(float));
+			vUint[i] = (vUint[i] >> 31) ? ~vUint[i] : vUint[i] ^ 0x80000000;
+		}
+
+		sort(vUint);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			vUint[i] = (vUint[i] >> 31) ? vUint[i] ^ 0x80000000 : ~vUint[i];
+			memcpy(&v[i], &vUint[i], sizeof(float));
+		}
+	}
+	else if constexpr (is_same_v<T, double>)
+	{
+		vector<ull> vULL(SIZE);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			memcpy(&vULL[i], &v[i], sizeof(double));
+			vULL[i] = (vULL[i] >> 63) ? ~vULL[i] : vULL[i] ^ 0x8000000000000000;
+		}
+
+		sort(vULL);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			vULL[i] = (vULL[i] >> 63) ? vULL[i] ^ 0x8000000000000000 : ~vULL[i];
+			memcpy(&v[i], &vULL[i], sizeof(double));
+		}
+	}
+}
+#pragma endregion
 
 #pragma region ll
 void radix_sort::sortLL(std::vector<ll>& v, std::vector<ll>& tmp, 
@@ -545,66 +593,6 @@ void radix_sort::sortULL(std::vector<ull>& v)
 }
 #pragma endregion
 
-#pragma region float
-void radix_sort::sortFloat(vector<float>& v)
-{
-	if (v.size() <= 100)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-
-	int size = v.size();
-	vector<unsigned int> vUint(size);
-	
-	for (int i = 0; i < size; i++)
-	{
-		memcpy(&vUint[i], &v[i], sizeof(float));
-		//vUint[i] = (~vUint[i]) * (vUint[i] >> 31) + (vUint[i] ^ 0x80000000) * ((vUint[i] >> 31) == 0);
-		vUint[i] = (vUint[i] >> 31)? ~vUint[i] : vUint[i] ^ 0x80000000;
-	}
-	
-	sort(vUint);
-
-	for (int i = 0; i < size; i++)
-	{
-		//vUint[i] = (~vUint[i]) * ((vUint[i] >> 31) == 0) + (vUint[i] ^ 0x80000000) * (vUint[i] >> 31);
-		vUint[i] = (vUint[i] >> 31) ? vUint[i] ^ 0x80000000 : ~vUint[i];
-		memcpy(&v[i], &vUint[i], sizeof(float));
-	}
-}
-#pragma endregion
-
-#pragma region double
-void radix_sort::sortDouble(vector<double>& v)
-{
-	if (v.size() <= 100)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-
-	int size = v.size();
-	vector<ull> vULL(size);
-	
-	for (int i = 0; i < size; i++)
-	{
-		memcpy(&vULL[i], &v[i], sizeof(double));
-		//vULL[i] = (~vULL[i]) * (vULL[i] >> 63) + (vULL[i] ^ 0x8000000000000000) * ((vULL[i] >> 63) == 0);
-		vULL[i] = (vULL[i] >> 63)? ~vULL[i] : vULL[i] ^ 0x8000000000000000;
-	}
-	
-	sort(vULL);
-
-	for (int i = 0; i < size; i++)
-	{
-		//vULL[i] = (~vULL[i]) * ((vULL[i] >> 63) == 0) + (vULL[i] ^ 0x8000000000000000) * (vULL[i] >> 63);
-		vULL[i] = (vULL[i] >> 63) ? vULL[i] ^ 0x8000000000000000 : ~vULL[i];
-		memcpy(&v[i], &vULL[i], sizeof(double));
-	}
-}
-#pragma endregion
-
 #pragma region string
 int radix_sort::getChar(const string& s, int index)
 {
@@ -799,10 +787,8 @@ void radix_sort::sort(vector<T>& v)
 		return sortLL(v);
 	else if constexpr (is_same_v<T, unsigned long long>)
 		return sortULL(v);
-	else if constexpr (is_same_v<T, float>)
-		return sortFloat(v);
-	else if constexpr (is_same_v<T, double>)
-		return sortDouble(v);
+	else if constexpr (is_same_v<T, float> || is_same_v<T, double>)
+		return sort2(v);
 	else if constexpr (is_same_v<T, string>)
 		return sortString(v);
 }

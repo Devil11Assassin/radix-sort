@@ -43,6 +43,9 @@ private:
 	template<typename T>
 	static void sort1(std::vector<T>& v);
 
+	template<typename T>
+	static void sort2(std::vector<T>& v);
+
 #pragma region ll
 private:
 	typedef long long ll;
@@ -76,16 +79,6 @@ private:
 		std::atomic<int>& runningCounter, int threadIndex);
 public:
 	static void sortULL(std::vector<ull>& v);
-#pragma endregion
-
-#pragma region float
-public:
-	static void sortFloat(std::vector<float>& v);
-#pragma endregion
-
-#pragma region double
-public:
-	static void sortDouble(std::vector<double>& v);
 #pragma endregion
 
 #pragma region string
