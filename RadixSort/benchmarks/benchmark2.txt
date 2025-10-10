@@ -1,0 +1,78 @@
+=========================
+
+INT
+SIZE = 100m
+
+sort = 9336 ms
+sort_par = 1556 ms
+stable_sort = 8874 ms
+stable_sort_par = 4094 ms
+radix_sort = 1065 ms
+
+=========================
+
+UNSIGNED INT
+SIZE = 100m
+
+sort = 9166 ms
+sort_par = 1572 ms
+stable_sort = 9049 ms
+stable_sort_par = 3984 ms
+radix_sort = 1086 ms
+
+=========================
+
+LONG LONG
+SIZE = 100m
+
+sort = 9334 ms
+sort_par = 1741 ms
+stable_sort = 9140 ms
+stable_sort_par = 4295 ms
+radix_sort = 2269 ms
+
+=========================
+
+UNSIGNED LONG LONG
+SIZE = 100m
+
+sort = 9138 ms
+sort_par = 1689 ms
+stable_sort = 9201 ms
+stable_sort_par = 4261 ms
+radix_sort = 2325 ms
+
+=========================
+
+FLOAT
+SIZE = 100m
+
+sort = 13837 ms
+sort_par = 2718 ms
+stable_sort = 12827 ms
+stable_sort_par = 5720 ms
+radix_sort = 1354 ms
+
+=========================
+
+DOUBLE
+SIZE = 100m
+
+sort = 14167 ms
+sort_par = 2931 ms
+stable_sort = 13218 ms
+stable_sort_par = 5876 ms
+radix_sort = 2770 ms
+
+=========================
+
+STRING
+SIZE = 50m
+
+sort = 30252 ms
+sort_par = 5832 ms
+stable_sort = 32312 ms
+stable_sort_par = 10223 ms
+radix_sort = 3169 ms
+
+=========================
