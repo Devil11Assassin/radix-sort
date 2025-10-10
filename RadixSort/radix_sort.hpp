@@ -66,40 +66,30 @@ class radix_sort
 	static void getCountVector(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r);
 
 	static int getChar(const std::string& s, int index);
-#pragma endregion
-
-#pragma region IMPLEMENTATIONS
-	template<typename T>
-	static void sort1(std::vector<T>& v);
-
-	template<typename T>
-	static void sort2(std::vector<T>& v);
-#pragma endregion
 
 	template<typename T, typename TRegion>
-	static void sortT(std::vector<T>& v, std::vector<T>& tmp,
+	static void sortInstance(std::vector<T>& v, std::vector<T>& tmp,
 		std::vector<TRegion>& regions, std::unique_lock<std::mutex>& lkRegions,
 		TRegion initialRegion, bool multiThreaded);
 
 	template<typename T, typename TRegion>
-	static void sortThreadT(std::vector<T>& v, std::vector<T>& tmp,
+	static void sortThread(std::vector<T>& v, std::vector<T>& tmp,
 		std::vector<TRegion>& regions, std::mutex& regionsLock,
 		std::atomic<int>& runningCounter, int threadIndex);
-#pragma region ll
-public:
-	static void sortLL(std::vector<ll>& v);
 #pragma endregion
 
-#pragma region ull
-public:
-	static void sortULL(std::vector<ull>& v);
+#pragma region IMPLEMENTATIONS
+	template<typename T>
+	static void sort_INT_UINT(std::vector<T>& v);
+
+	template<typename T>
+	static void sort_FLOAT_DOUBLE(std::vector<T>& v);
+
+	template<typename T>
+	static void sort_LL_ULL_STRING(std::vector<T>& v);
 #pragma endregion
 
-#pragma region string
 public:
-	static void sortString(std::vector<std::string>& v);
-#pragma endregion
-
 	template<typename T>
 	static void sort(std::vector<T>& v);
 };

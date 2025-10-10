@@ -27,6 +27,23 @@ public:
 	static std::vector<std::string> generateStrings(int n, int maxLen);
 	
 	template<typename T>
-	static std::vector<T> generate(int n);
+	static std::vector<T> generate(int n)
+	{
+		if constexpr (std::is_same_v<T, int>)
+			return generateInts(n);
+		else if constexpr (std::is_same_v<T, unsigned int>)
+			return generateUnsignedInts(n);
+		else if constexpr (std::is_same_v<T, long long>)
+			return generateLLs(n);
+		else if constexpr (std::is_same_v<T, unsigned long long>)
+			return generateULLs(n);
+		else if constexpr (std::is_same_v<T, float>)
+			return generateFloats(n);
+		else if constexpr (std::is_same_v<T, double>)
+			return generateDoubles(n);
+		else if constexpr (std::is_same_v<T, std::string>)
+			return generateStrings(n, 20);
+		else
+			static_assert(sizeof(T) == 0, "ERROR: Unable to generate vector!\nCAUSE: Unsupported type!\n");
+	}
 };
-

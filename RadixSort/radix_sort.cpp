@@ -123,122 +123,9 @@ int radix_sort::getChar(const string& s, int index)
 {
 	return (index < s.length()) ? static_cast<unsigned char>(s[index]) : 256;
 }
-#pragma endregion
-
-#pragma region IMPLEMENTATIONS
-template<typename T>
-void radix_sort::sort1(std::vector<T>& v)
-{
-	if (v.size() <= 100)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-	
-	int n = 4;
-
-	if constexpr (is_same_v<T, unsigned int>)
-	{
-		n = 0;
-		unsigned int maxVal = *max_element(v.begin(), v.end());
-
-		while (maxVal > 0)
-		{
-			n++;
-			maxVal >>= SHIFT_BITS;
-		}
-	}
-
-	vector<T> tmp(v.size());
-	int curShift = 0;
-
-	while (n--)
-	{
-		vector<int> count(BASE);
-		vector<int> prefix(BASE);
-
-		getCountVector(v, count, curShift, 0, v.size());
-
-		for (int i = 1; i < BASE; i++)
-			prefix[i] = prefix[i - 1] + count[i - 1];
-
-		if constexpr (is_same_v<T, unsigned int>)
-		{
-			for (const auto& num : v)
-				tmp[prefix[(num >> curShift) & MASK]++] = num;
-		}
-		else if constexpr (is_same_v<T, int>)
-		{
-			if (curShift != 24)
-			{
-				for (const auto& num : v)
-					tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & MASK]++] = num;
-			}
-			else
-			{
-				for (const auto& num : v)
-					tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
-			}
-		}
-
-		swap(v, tmp);
-
-		curShift += SHIFT_BITS;
-	}
-}
-
-template<typename T>
-void radix_sort::sort2(std::vector<T>& v)
-{
-	if (v.size() <= 100)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-
-	const int SIZE = v.size();
-
-	if constexpr (is_same_v<T, float>)
-	{
-		vector<unsigned int> vUint(SIZE);
-
-		for (int i = 0; i < SIZE; i++)
-		{
-			memcpy(&vUint[i], &v[i], sizeof(float));
-			vUint[i] = (vUint[i] >> 31) ? ~vUint[i] : vUint[i] ^ 0x80000000;
-		}
-
-		sort(vUint);
-
-		for (int i = 0; i < SIZE; i++)
-		{
-			vUint[i] = (vUint[i] >> 31) ? vUint[i] ^ 0x80000000 : ~vUint[i];
-			memcpy(&v[i], &vUint[i], sizeof(float));
-		}
-	}
-	else if constexpr (is_same_v<T, double>)
-	{
-		vector<ull> vULL(SIZE);
-
-		for (int i = 0; i < SIZE; i++)
-		{
-			memcpy(&vULL[i], &v[i], sizeof(double));
-			vULL[i] = (vULL[i] >> 63) ? ~vULL[i] : vULL[i] ^ 0x8000000000000000;
-		}
-
-		sort(vULL);
-
-		for (int i = 0; i < SIZE; i++)
-		{
-			vULL[i] = (vULL[i] >> 63) ? vULL[i] ^ 0x8000000000000000 : ~vULL[i];
-			memcpy(&v[i], &vULL[i], sizeof(double));
-		}
-	}
-}
-#pragma endregion
 
 template<typename T, typename TRegion>
-void radix_sort::sortT(vector<T>& v, vector<T>& tmp,
+void radix_sort::sortInstance(vector<T>& v, vector<T>& tmp,
 	vector<TRegion>& regions, unique_lock<mutex>& lkRegions,
 	TRegion initialRegion, bool multiThreaded)
 {
@@ -261,8 +148,8 @@ void radix_sort::sortT(vector<T>& v, vector<T>& tmp,
 
 		if constexpr (is_same_v<TRegion, RegionString>)
 			curShiftOrIndex = region.curIndex;
-		else 
-			curShiftOrIndex = (len - 1)* SHIFT_BITS;
+		else
+			curShiftOrIndex = (len - 1) * SHIFT_BITS;
 
 		if (r - l < 2 || len == 0)
 			continue;
@@ -384,7 +271,7 @@ void radix_sort::sortT(vector<T>& v, vector<T>& tmp,
 }
 
 template<typename T, typename TRegion>
-void radix_sort::sortThreadT(vector<T>& v, vector<T>& tmp,
+void radix_sort::sortThread(vector<T>& v, vector<T>& tmp,
 	vector<TRegion>& regions, std::mutex& regionsLock,
 	atomic<int>& runningCounter, int threadIndex)
 {
@@ -410,7 +297,7 @@ void radix_sort::sortThreadT(vector<T>& v, vector<T>& tmp,
 				iterationsIdle = 0;
 			}
 
-			sortT(v, tmp, regions, lkRegions, region, 1);
+			sortInstance(v, tmp, regions, lkRegions, region, 1);
 		}
 		else
 		{
@@ -435,55 +322,72 @@ void radix_sort::sortThreadT(vector<T>& v, vector<T>& tmp,
 		}
 	}
 }
-
-#pragma region ll
-void radix_sort::sortLL(std::vector<ll>& v)
-{
-	if (v.size() <= 100)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-
-	vector<ll> tmp(v.size());
-
-	constexpr int SHIFT_BITS = 8;
-	int len = 8;
-
-	int numOfThreads = thread::hardware_concurrency();
-	const int BUCKET_THRESHOLD = max(static_cast<int>(v.size() / 1000), 1000);
-
-	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
-	{
-		vector<RegionLL> tmpVector;
-		mutex tmpMutex;
-		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
-
-		sortT(v, tmp, tmpVector, tmpLock, RegionLL(0, v.size(), len), 0);
-	}
-	else
-	{
-		vector<RegionLL> regions;
-		regions.reserve(v.size() / 1000);
-		regions.emplace_back(0, v.size(), len);
-
-		mutex regionsLock;
-		mutex idleLock;
-		atomic<int> runningCounter = numOfThreads;
-
-		vector<thread> threads;
-
-		for (int i = 0; i < numOfThreads; i++)
-			threads.emplace_back(sortThreadT<ll, RegionLL>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
-
-		for (auto& t : threads)
-			t.join();
-	}
-}
 #pragma endregion
 
-#pragma region ull
-void radix_sort::sortULL(std::vector<ull>& v)
+#pragma region IMPLEMENTATIONS
+template<typename T>
+void radix_sort::sort_INT_UINT(std::vector<T>& v)
+{
+	if (v.size() <= 100)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+	
+	int n = 4;
+
+	if constexpr (is_same_v<T, unsigned int>)
+	{
+		n = 0;
+		unsigned int maxVal = *max_element(v.begin(), v.end());
+
+		while (maxVal > 0)
+		{
+			n++;
+			maxVal >>= SHIFT_BITS;
+		}
+	}
+
+	vector<T> tmp(v.size());
+	int curShift = 0;
+
+	while (n--)
+	{
+		vector<int> count(BASE);
+		vector<int> prefix(BASE);
+
+		getCountVector(v, count, curShift, 0, v.size());
+
+		for (int i = 1; i < BASE; i++)
+			prefix[i] = prefix[i - 1] + count[i - 1];
+
+		if constexpr (is_same_v<T, unsigned int>)
+		{
+			for (const auto& num : v)
+				tmp[prefix[(num >> curShift) & MASK]++] = num;
+		}
+		else if constexpr (is_same_v<T, int>)
+		{
+			if (curShift != 24)
+			{
+				for (const auto& num : v)
+					tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & MASK]++] = num;
+			}
+			else
+			{
+				for (const auto& num : v)
+					tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
+			}
+		}
+
+		swap(v, tmp);
+
+		curShift += SHIFT_BITS;
+	}
+}
+
+template<typename T>
+void radix_sort::sort_FLOAT_DOUBLE(std::vector<T>& v)
 {
 	if (v.size() <= 100)
 	{
@@ -491,94 +395,128 @@ void radix_sort::sortULL(std::vector<ull>& v)
 		return;
 	}
 
-	vector<ull> tmp(v.size());
+	const int SIZE = v.size();
 
-	constexpr int SHIFT_BITS = 8;
+	if constexpr (is_same_v<T, float>)
+	{
+		vector<unsigned int> vUint(SIZE);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			memcpy(&vUint[i], &v[i], sizeof(float));
+			vUint[i] = (vUint[i] >> 31) ? ~vUint[i] : vUint[i] ^ 0x80000000;
+		}
+
+		sort(vUint);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			vUint[i] = (vUint[i] >> 31) ? vUint[i] ^ 0x80000000 : ~vUint[i];
+			memcpy(&v[i], &vUint[i], sizeof(float));
+		}
+	}
+	else if constexpr (is_same_v<T, double>)
+	{
+		vector<ull> vULL(SIZE);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			memcpy(&vULL[i], &v[i], sizeof(double));
+			vULL[i] = (vULL[i] >> 63) ? ~vULL[i] : vULL[i] ^ 0x8000000000000000;
+		}
+
+		sort(vULL);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			vULL[i] = (vULL[i] >> 63) ? vULL[i] ^ 0x8000000000000000 : ~vULL[i];
+			memcpy(&v[i], &vULL[i], sizeof(double));
+		}
+	}
+}
+
+template<typename T>
+void radix_sort::sort_LL_ULL_STRING(std::vector<T>& v)
+{
+	constexpr int INSERTION_SORT_THRESHOLD = (is_same_v<T, string>) ? 10 : 100;
+	if (v.size() <= INSERTION_SORT_THRESHOLD)
+	{
+		insertionSort(v, 0, v.size());
+		return;
+	}
+
 	int len = 0;
-	ull maxVal = *max_element(v.begin(), v.end());
-
-	while (maxVal > 0)
+	if constexpr (is_same_v<T, ll>)
 	{
-		len++;
-		maxVal >>= SHIFT_BITS;
+		len = 8;
+	}
+	else if constexpr (is_same_v<T, ull>)
+	{
+		ull maxVal = *max_element(v.begin(), v.end());
+
+		while (maxVal > 0)
+		{
+			len++;
+			maxVal >>= SHIFT_BITS;
+		}
+	}
+	else
+	{
+		len = (*max_element(v.begin(), v.end(),
+			[](const string& a, const string& b) {
+				return a.length() < b.length();
+			})).length();
 	}
 
 	int numOfThreads = thread::hardware_concurrency();
 	const int BUCKET_THRESHOLD = max(static_cast<int>(v.size() / 1000), 1000);
+	vector<T> tmp(v.size());
 
 	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
 	{
-		vector<RegionLL> tmpVector;
 		mutex tmpMutex;
 		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
 
-		sortT(v, tmp, tmpVector, tmpLock, RegionLL(0, v.size(), len), 0);
+		if constexpr (is_same_v<T, string>)
+		{
+			vector<RegionString> tmpVector;
+			sortInstance(v, tmp, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
+		}
+		else
+		{
+			vector<RegionLL> tmpVector;
+			sortInstance(v, tmp, tmpVector, tmpLock, RegionLL(0, v.size(), len), 0);
+		}
 	}
 	else
 	{
-		vector<RegionLL> regions;
-		regions.reserve(v.size() / 1000);
-		regions.emplace_back(0, v.size(), len);
-
+		vector<thread> threads;
 		mutex regionsLock;
 		mutex idleLock;
 		atomic<int> runningCounter = numOfThreads;
 
-		vector<thread> threads;
+		if constexpr (is_same_v<T, string>)
+		{
+			vector<RegionString> regions;
+			regions.reserve(v.size() / 1000);
+			regions.emplace_back(0, v.size(), len, 0);
+			for (int i = 0; i < numOfThreads; i++)
+				threads.emplace_back(sortThread<T, RegionString>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
 
-		for (int i = 0; i < numOfThreads; i++)
-			threads.emplace_back(sortThreadT<ull, RegionLL>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
+			for (auto& t : threads)
+				t.join();
+		}
+		else
+		{
+			vector<RegionLL> regions;
+			regions.reserve(v.size() / 1000);
+			regions.emplace_back(0, v.size(), len);
+			for (int i = 0; i < numOfThreads; i++)
+				threads.emplace_back(sortThread<T, RegionLL>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
 
-		for (auto& t : threads)
-			t.join();
-	}
-}
-#pragma endregion
-
-#pragma region string
-void radix_sort::sortString(vector<string>& v)
-{
-	if (v.size() <= 10)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-
-	vector<string> tmp(v.size());
-
-	int len = (*max_element(v.begin(), v.end(),
-		[](const string& a, const string& b) {
-			return a.length() < b.length();
-		})).length();
-
-	int numOfThreads = thread::hardware_concurrency();
-	const int BUCKET_THRESHOLD = max(static_cast<int>(v.size() / 1000), 1000);
-
-	if (static_cast<int>(v.size() / 256) - (BUCKET_THRESHOLD / 10) < BUCKET_THRESHOLD)
-	{
-		vector<RegionString> tmpVector;
-		mutex tmpMutex;
-		unique_lock<mutex> tmpLock(tmpMutex, defer_lock);
-
-		sortT(v, tmp, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
-	}
-	else
-	{
-		vector<RegionString> regions;
-		regions.reserve(v.size() / 1000);
-		regions.emplace_back(0, v.size(), len, 0);
-
-		mutex regionsLock;
-		mutex idleLock;
-		atomic<int> runningCounter = numOfThreads;
-
-		vector<thread> threads;
-
-		for (int i = 0; i < numOfThreads; i++)
-			threads.emplace_back(sortThreadT<string, RegionString>, ref(v), ref(tmp), ref(regions), ref(regionsLock), ref(runningCounter), i);
-
-		for (auto& t : threads)
-			t.join();
+			for (auto& t : threads)
+				t.join();
+		}
 	}
 }
 #pragma endregion
@@ -587,15 +525,13 @@ template<typename T>
 void radix_sort::sort(vector<T>& v)
 {
 	if constexpr (is_same_v<T, int> || is_same_v<T, unsigned int>)
-		return sort1(v);
-	else if constexpr (is_same_v<T, long long>)
-		return sortLL(v);
-	else if constexpr (is_same_v<T, unsigned long long>)
-		return sortULL(v);
+		return sort_INT_UINT(v);
 	else if constexpr (is_same_v<T, float> || is_same_v<T, double>)
-		return sort2(v);
-	else if constexpr (is_same_v<T, string>)
-		return sortString(v);
+		return sort_FLOAT_DOUBLE(v);
+	else if constexpr (is_same_v<T, ll> || is_same_v<T, ull> || is_same_v<T, string>)
+		return sort_LL_ULL_STRING(v);
+	else
+		static_assert(sizeof(T) == 0, "ERROR: Unable to sort vector!\nCAUSE: Unsupported type!\n");
 }
 
 template void radix_sort::sort<int>(vector<int>& v);

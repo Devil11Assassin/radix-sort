@@ -23,15 +23,18 @@ const vector<int> show_off::RUN_METHOD =
 	1  // RADIX_SORT
 };
 
+constexpr int RUN_SIZE = 1e8;
+constexpr int RUN_SIZE_STR = 5e7;
+
 const vector<show_off::DataTypeRun> show_off::RUN_DATATYPE =
 {
-	DataTypeRun(INT, 1e8, "INT\nSIZE = 100m\n\n"),
-	DataTypeRun(UINT, 1e8, "UNSIGNED INT\nSIZE = 100m\n\n"),
-	DataTypeRun(LL, 1e8, "LONG LONG\nSIZE = 100m\n\n"),
-	DataTypeRun(ULL, 1e8, "UNSIGNED LONG LONG\nSIZE = 100m\n\n"),
-	DataTypeRun(FLOAT, 1e8, "FLOAT\nSIZE = 100m\n\n"),
-	DataTypeRun(DOUBLE, 1e8, "DOUBLE\nSIZE = 100m\n\n"),
-	DataTypeRun(STRING, 5e7, "STRING\nSIZE = 50m\n\n"),
+	DataTypeRun(INT, RUN_SIZE, "INT\nSIZE = 100m\n\n"),
+	DataTypeRun(UINT, RUN_SIZE, "UNSIGNED INT\nSIZE = 100m\n\n"),
+	DataTypeRun(LL, RUN_SIZE, "LONG LONG\nSIZE = 100m\n\n"),
+	DataTypeRun(ULL, RUN_SIZE, "UNSIGNED LONG LONG\nSIZE = 100m\n\n"),
+	DataTypeRun(FLOAT, RUN_SIZE, "FLOAT\nSIZE = 100m\n\n"),
+	DataTypeRun(DOUBLE, RUN_SIZE, "DOUBLE\nSIZE = 100m\n\n"),
+	DataTypeRun(STRING, RUN_SIZE_STR, "STRING\nSIZE = 50m\n\n"),
 
 };
 #pragma endregion
