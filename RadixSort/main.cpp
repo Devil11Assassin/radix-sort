@@ -16,12 +16,12 @@ int main()
 	
 	show_off::validate
 	(
-		1, // INT
-		1, // UINT
+		0, // INT
+		0, // UINT
 		1, // LL
 		1, // ULL
-		1, // FLOAT
-		1, // DOUBLE
+		0, // FLOAT
+		0, // DOUBLE
 		1  // STRING
 	);
 }
