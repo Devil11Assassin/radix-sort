@@ -39,15 +39,9 @@ private:
 	template<typename T>
 	static void getCountVector(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r);
 
-#pragma region int
-public:
-	static void sort(std::vector<int>& v);
-#pragma endregion
 
-#pragma region uint
-public:
-	static void sort(std::vector<unsigned int>& v);
-#pragma endregion
+	template<typename T>
+	static void sort1(std::vector<T>& v);
 
 #pragma region ll
 private:
@@ -67,7 +61,7 @@ private:
 		std::vector<RegionLL>& regions, std::mutex& regionsLock, 
 		std::atomic<int>& runningCounter, int threadIndex);
 public:
-	static void sort(std::vector<ll>& v);
+	static void sortLL(std::vector<ll>& v);
 #pragma endregion
 
 #pragma region ull
@@ -81,17 +75,17 @@ private:
 		std::vector<RegionLL>& regions, std::mutex& regionsLock, 
 		std::atomic<int>& runningCounter, int threadIndex);
 public:
-	static void sort(std::vector<ull>& v);
+	static void sortULL(std::vector<ull>& v);
 #pragma endregion
 
 #pragma region float
 public:
-	static void sort(std::vector<float>& v);
+	static void sortFloat(std::vector<float>& v);
 #pragma endregion
 
 #pragma region double
 public:
-	static void sort(std::vector<double>& v);
+	static void sortDouble(std::vector<double>& v);
 #pragma endregion
 
 #pragma region string
@@ -113,6 +107,9 @@ private:
 		std::vector<RegionString>& regions, std::mutex& regionsLock, 
 		std::atomic<int>& runningCounter, int threadIndex);
 public:
-	static void sort(std::vector<std::string>& v);
+	static void sortString(std::vector<std::string>& v);
 #pragma endregion
+
+	template<typename T>
+	static void sort(std::vector<T>& v);
 };

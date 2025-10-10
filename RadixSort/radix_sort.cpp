@@ -80,7 +80,6 @@ void radix_sort::getCountVectorThread(vector<T>& v, vector<int>& count, int curS
 			count[getChar(v[i], curShiftOrIndex)]++;
 	}
 }
-
 #pragma endregion
 
 // all together except string
@@ -124,17 +123,30 @@ void radix_sort::getCountVector(vector<T>& v, vector<int>& count, int curShiftOr
 }
 #pragma endregion
 
-#pragma region int
-void radix_sort::sort(vector<int>& v)
+template<typename T>
+void radix_sort::sort1(std::vector<T>& v)
 {
 	if (v.size() <= 100)
 	{
 		insertionSort(v, 0, v.size());
 		return;
 	}
-
-	vector<int> tmp(v.size());
+	
 	int n = 4;
+
+	if constexpr (is_same_v<T, unsigned int>)
+	{
+		n = 0;
+		unsigned int maxVal = *max_element(v.begin(), v.end());
+
+		while (maxVal > 0)
+		{
+			n++;
+			maxVal >>= SHIFT_BITS;
+		}
+	}
+
+	vector<T> tmp(v.size());
 	int curShift = 0;
 
 	while (n--)
@@ -147,15 +159,23 @@ void radix_sort::sort(vector<int>& v)
 		for (int i = 1; i < BASE; i++)
 			prefix[i] = prefix[i - 1] + count[i - 1];
 
-		if (curShift != 24)
+		if constexpr (is_same_v<T, unsigned int>)
 		{
 			for (const auto& num : v)
-				tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & MASK]++] = num;
+				tmp[prefix[(num >> curShift) & MASK]++] = num;
 		}
-		else
+		else if constexpr (is_same_v<T, int>)
 		{
-			for (const auto& num : v)
-				tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
+			if (curShift != 24)
+			{
+				for (const auto& num : v)
+					tmp[prefix[(static_cast<unsigned int>(num) >> curShift) & MASK]++] = num;
+			}
+			else
+			{
+				for (const auto& num : v)
+					tmp[prefix[((static_cast<unsigned int>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
+			}
 		}
 
 		swap(v, tmp);
@@ -163,48 +183,6 @@ void radix_sort::sort(vector<int>& v)
 		curShift += SHIFT_BITS;
 	}
 }
-#pragma endregion
-
-#pragma region uint
-void radix_sort::sort(vector<unsigned int>& v)
-{
-	if (v.size() <= 100)
-	{
-		insertionSort(v, 0, v.size());
-		return;
-	}
-
-	int n = 0;
-	unsigned int maxVal = *max_element(v.begin(), v.end());
-
-	while (maxVal > 0)
-	{
-		n++;
-		maxVal >>= SHIFT_BITS;
-	}
-
-	vector<unsigned int> tmp(v.size());
-	int curShift = 0;
-
-	while (n--)
-	{
-		vector<int> count(BASE);
-		vector<int> prefix(BASE);
-
-		getCountVector(v, count, curShift, 0, v.size());
-
-		for (int i = 1; i < BASE; i++)
-			prefix[i] = prefix[i - 1] + count[i - 1];
-
-		for (const auto& num : v)
-			tmp[prefix[(num >> curShift) & MASK]++] = num;
-
-		swap(v, tmp);
-
-		curShift += SHIFT_BITS;
-	}
-}
-#pragma endregion
 
 #pragma region ll
 void radix_sort::sortLL(std::vector<ll>& v, std::vector<ll>& tmp, 
@@ -342,7 +320,7 @@ void radix_sort::sortThreadLL(std::vector<ll>& v, std::vector<ll>& tmp,
 	}
 }
 
-void radix_sort::sort(std::vector<ll>& v)
+void radix_sort::sortLL(std::vector<ll>& v)
 {
 	if (v.size() <= 100)
 	{
@@ -515,7 +493,7 @@ void radix_sort::sortThreadULL(std::vector<ull>& v, std::vector<ull>& tmp,
 	}
 }
 
-void radix_sort::sort(std::vector<ull>& v)
+void radix_sort::sortULL(std::vector<ull>& v)
 {
 	if (v.size() <= 100)
 	{
@@ -568,7 +546,7 @@ void radix_sort::sort(std::vector<ull>& v)
 #pragma endregion
 
 #pragma region float
-void radix_sort::sort(vector<float>& v)
+void radix_sort::sortFloat(vector<float>& v)
 {
 	if (v.size() <= 100)
 	{
@@ -598,7 +576,7 @@ void radix_sort::sort(vector<float>& v)
 #pragma endregion
 
 #pragma region double
-void radix_sort::sort(vector<double>& v)
+void radix_sort::sortDouble(vector<double>& v)
 {
 	if (v.size() <= 100)
 	{
@@ -765,7 +743,7 @@ void radix_sort::sortThreadString(vector<string>& v, vector<string>& tmp,
 	}
 }
 
-void radix_sort::sort(vector<string>& v)
+void radix_sort::sortString(vector<string>& v)
 {
 	if (v.size() <= 10)
 	{
@@ -811,3 +789,28 @@ void radix_sort::sort(vector<string>& v)
 	}
 }
 #pragma endregion
+
+template<typename T>
+void radix_sort::sort(vector<T>& v)
+{
+	if constexpr (is_same_v<T, int> || is_same_v<T, unsigned int>)
+		return sort1(v);
+	else if constexpr (is_same_v<T, long long>)
+		return sortLL(v);
+	else if constexpr (is_same_v<T, unsigned long long>)
+		return sortULL(v);
+	else if constexpr (is_same_v<T, float>)
+		return sortFloat(v);
+	else if constexpr (is_same_v<T, double>)
+		return sortDouble(v);
+	else if constexpr (is_same_v<T, string>)
+		return sortString(v);
+}
+
+template void radix_sort::sort<int>(vector<int>& v);
+template void radix_sort::sort<unsigned int>(vector<unsigned int>& v);
+template void radix_sort::sort<radix_sort::ll>(vector<radix_sort::ll>& v);
+template void radix_sort::sort<radix_sort::ull>(vector<radix_sort::ull>& v);
+template void radix_sort::sort<float>(vector<float>& v);
+template void radix_sort::sort<double>(vector<double>& v);
+template void radix_sort::sort<string>(vector<string>& v);
