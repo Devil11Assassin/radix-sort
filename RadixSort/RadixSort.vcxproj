@@ -127,7 +127,6 @@
   <ItemGroup>
     <ClCompile Include="generators.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="radix_sort.cpp" />
     <ClCompile Include="show_off.cpp" />
   </ItemGroup>
   <ItemGroup>
