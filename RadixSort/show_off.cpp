@@ -26,20 +26,23 @@ const vector<int> show_off::RUN_METHOD =
 	1  // RADIX_SORT
 };
 
-//constexpr int RUN_SIZE = 1e8;
-//constexpr int RUN_SIZE_STR = 5e7;
-constexpr int RUN_SIZE = 1e6;
-constexpr int RUN_SIZE_STR = 1e6;
+constexpr int RUN_SIZE = 1e8;
+constexpr int RUN_SIZE_STR = 5e7;
+locale lnum = locale("en_US.UTF-8");
 
 const vector<show_off::DataTypeRun> show_off::RUN_DATATYPE =
 {
-	DataTypeRun(   INT,		RUN_SIZE, format(locale("en_US.UTF-8"),    "INT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(  UINT,		RUN_SIZE, format(locale("en_US.UTF-8"),   "UINT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(    LL,		RUN_SIZE, format(locale("en_US.UTF-8"),     "LL\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(   ULL,		RUN_SIZE, format(locale("en_US.UTF-8"),    "ULL\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( FLOAT,		RUN_SIZE, format(locale("en_US.UTF-8"),	 "FLOAT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(DOUBLE,		RUN_SIZE, format(locale("en_US.UTF-8"), "DOUBLE\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(STRING, RUN_SIZE_STR, format(locale("en_US.UTF-8"), "STRING\nSIZE = {:L}\n\n", RUN_SIZE_STR)),
+	DataTypeRun(  CHAR,		RUN_SIZE, format(lnum,   "CHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( UCHAR,		RUN_SIZE, format(lnum,  "UCHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( SHORT,		RUN_SIZE, format(lnum,	"SHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(USHORT,		RUN_SIZE, format(lnum, "USHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(   INT,		RUN_SIZE, format(lnum,    "INT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(  UINT,		RUN_SIZE, format(lnum,   "UINT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(    LL,		RUN_SIZE, format(lnum,     "LL\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(   ULL,		RUN_SIZE, format(lnum,    "ULL\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( FLOAT,		RUN_SIZE, format(lnum,	"FLOAT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(DOUBLE,		RUN_SIZE, format(lnum, "DOUBLE\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(STRING, RUN_SIZE_STR, format(lnum, "STRING\nSIZE = {:L}\n\n", RUN_SIZE_STR)),
 };
 #pragma endregion
 
@@ -49,7 +52,7 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 {
 	vector<T> vSort(v);
 
-	auto start = chrono::high_resolution_clock::now();
+	auto start = chrono::steady_clock::now();
 	if constexpr (floating_point<T>)
 	{
 		switch (method)
@@ -92,25 +95,25 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 				break;
 		}
 	}
-	auto end = chrono::high_resolution_clock::now();
+	auto end = chrono::steady_clock::now();
 	auto time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 
 	switch (method)
 	{
 		case SORT:
-			output += format("sort = {} ms\n", time);
+			output += format(lnum, "sort = {:L} ms\n", time);
 			break;
 		case SORT_PAR:
-			output += format("sort_par = {} ms\n", time);
+			output += format(lnum, "sort_par = {:L} ms\n", time);
 			break;
 		case STABLE_SORT:
-			output += format("stable_sort = {} ms\n", time);
+			output += format(lnum, "stable_sort = {:L} ms\n", time);
 			break;
 		case STABLE_SORT_PAR:
-			output += format("stable_sort_par = {} ms\n", time);
+			output += format(lnum, "stable_sort_par = {:L} ms\n", time);
 			break;
 		case RADIX_SORT:
-			output += format("radix_sort = {} ms\n\n", time);
+			output += format(lnum, "radix_sort = {:L} ms\n\n", time);
 			break;
 	}
 }
@@ -130,7 +133,13 @@ void show_off::showOff(int n, string& output)
 void show_off::showOff(RunParams params)
 {
 	string output = "=========================\n\n";
-	const vector<int> RUN_TYPE = { params.INT, params.UINT, params.LL, params.ULL, params.FLOAT, params.DOUBLE, params.STRING };
+	const vector<int> RUN_TYPE = {
+		params.CHAR, params.UCHAR,
+		params.SHORT, params.USHORT,
+		params.INT, params.UINT,
+		params.LL, params.ULL,
+		params.FLOAT, params.DOUBLE,
+		params.STRING };
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -139,6 +148,18 @@ void show_off::showOff(RunParams params)
 			output += instance.output;
 			switch (instance.type)
 			{
+				case DataType::CHAR:
+					showOff<char>(instance.n, output);
+					break;
+				case DataType::UCHAR:
+					showOff<unsigned char>(instance.n, output);
+					break;
+				case DataType::SHORT:
+					showOff<short>(instance.n, output);
+					break;
+				case DataType::USHORT:
+					showOff<unsigned short>(instance.n, output);
+					break;
 				case DataType::INT:
 					showOff<int>(instance.n, output);
 					break;
@@ -176,20 +197,20 @@ void show_off::validate(vector<T>& v, string& output)
 	vector<T> vExpected(v);
 	vector<T> vRadix(v);
 
-	auto start = chrono::high_resolution_clock::now();
+	auto start = chrono::steady_clock::now();
 	if constexpr (floating_point<T>)
 		std::sort(std::execution::par, vExpected.begin(), vExpected.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
 	else
 		std::sort(std::execution::par, vExpected.begin(), vExpected.end());
-	auto end = chrono::high_resolution_clock::now();
+	auto end = chrono::steady_clock::now();
 	auto time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	output += format("sort_par = {} ms\n", time);
+	output += format(lnum, "sort_par = {:L} ms\n", time);
 
-	start = chrono::high_resolution_clock::now();
+	start = chrono::steady_clock::now();
 	radix_sort::sort(vRadix);
-	end = chrono::high_resolution_clock::now();
+	end = chrono::steady_clock::now();
 	time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	output += format("radix_sort = {} ms\n\n", time);
+	output += format(lnum, "radix_sort = {:L} ms\n\n", time);
 
 	bool isEqual = (floating_point<T>) ? 
 		ranges::equal(vRadix, vExpected, [](const auto& a, const auto& b) { return std::strong_order(a, b) == 0; }) :
@@ -240,7 +261,13 @@ void show_off::validate(int n, string& output)
 void show_off::validate(RunParams params)
 {
 	string output = "=========================\n\n";
-	const vector<int> RUN_TYPE = { params.INT, params.UINT, params.LL, params.ULL, params.FLOAT, params.DOUBLE, params.STRING };
+	const vector<int> RUN_TYPE = { 
+		params.CHAR, params.UCHAR,
+		params.SHORT, params.USHORT,
+		params.INT, params.UINT,
+		params.LL, params.ULL,
+		params.FLOAT, params.DOUBLE,
+		params.STRING };
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -249,6 +276,18 @@ void show_off::validate(RunParams params)
 			output += instance.output;
 			switch (instance.type)
 			{
+				case DataType::CHAR:
+					validate<char>(instance.n, output);
+					break;
+				case DataType::UCHAR:
+					validate<unsigned char>(instance.n, output);
+					break;
+				case DataType::SHORT:
+					validate<short>(instance.n, output);
+					break;
+				case DataType::USHORT:
+					validate<unsigned short>(instance.n, output);
+					break;
 				case DataType::INT:
 					validate<int>(instance.n, output);
 					break;

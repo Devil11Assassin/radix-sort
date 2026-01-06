@@ -18,6 +18,10 @@ class show_off
 
 	enum DataType
 	{
+		CHAR,
+		UCHAR,
+		SHORT,
+		USHORT,
 		INT,
 		UINT,
 		LL,
@@ -29,11 +33,15 @@ class show_off
 
 	struct RunParams
 	{
-		const int INT = 0;
-		const int UINT = 0;
-		const int LL = 0;
-		const int ULL = 0;
-		const int FLOAT = 0;
+		const int CHAR	 = 0;
+		const int UCHAR	 = 0;
+		const int SHORT	 = 0;
+		const int USHORT = 0;
+		const int INT	 = 0;
+		const int UINT	 = 0;
+		const int LL	 = 0;
+		const int ULL	 = 0;
+		const int FLOAT	 = 0;
 		const int DOUBLE = 0;
 		const int STRING = 0;
 	};

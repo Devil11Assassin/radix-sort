@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generators.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="show_off.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
