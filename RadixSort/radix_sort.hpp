@@ -1,9 +1,10 @@
 #pragma once
 #pragma region HEADERS
-#include <vector>
-#include <string>
-#include <mutex>
+#include <concepts>
 #include <limits>
+#include <mutex>
+#include <string>
+#include <vector>
 #pragma endregion
 
 #pragma region ASSERTS
@@ -18,6 +19,20 @@ static_assert(sizeof(float) == 4 && std::numeric_limits<float>::is_iec559,
 
 static_assert(sizeof(double) == 8 && std::numeric_limits<double>::is_iec559,
 	"ERROR: radix_sort.hpp requires IEEE-754 binary64 double (8 bytes).\n");
+#pragma endregion
+
+#pragma region PRIVATE NAMESPACE
+namespace 
+{
+	template <typename T>
+	concept integral_sort_lsb = std::integral<T> && sizeof(T) <= 4;
+
+	template <typename T>
+	concept integral_sort_msb = std::integral<T> && sizeof(T) > 4;
+
+	template <typename T>
+	concept string_sort = std::same_as<T, std::string>;
+}
 #pragma endregion
 
 class radix_sort
@@ -37,12 +52,12 @@ class radix_sort
 	typedef long long ll;
 	typedef unsigned long long ull;
 
-	struct RegionLL 
+	struct RegionIntegral 
 	{
 		int l;
 		int r;
 		int len;
-		RegionLL(int l, int r, int len) : l(l), r(r), len(len) {}
+		RegionIntegral(int l, int r, int len) : l(l), r(r), len(len) {}
 	};
 
 	struct RegionString
@@ -53,6 +68,19 @@ class radix_sort
 		int curIndex;
 		RegionString(int l, int r, int len, int curIndex) : l(l), r(r), len(len), curIndex(curIndex) {}
 	};
+#pragma endregion
+
+#pragma region TYPE CONVERTERS
+	template <size_t S> struct t2u_imp;
+	template <> struct t2u_imp<1> { using type = std::uint8_t;  };
+	template <> struct t2u_imp<2> { using type = std::uint16_t; };
+	template <> struct t2u_imp<4> { using type = std::uint32_t; };
+	template <> struct t2u_imp<8> { using type = std::uint64_t; };
+
+	template <typename T>
+	using t2u = t2u_imp<sizeof(T)>::type;
+
+
 #pragma endregion
 
 #pragma region HELPERS
@@ -79,7 +107,7 @@ class radix_sort
 #pragma endregion
 
 #pragma region IMPLEMENTATIONS
-	template<typename T>
+	template<integral_sort_lsb T>
 	static void sort_INT_UINT(std::vector<T>& v);
 
 	template<typename T>

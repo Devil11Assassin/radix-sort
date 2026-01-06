@@ -1,14 +1,17 @@
 #pragma region HEADERS
 #include "show_off.hpp"
-#include "radix_sort.hpp"
-#include "generators.hpp"
 
-#include <iostream>
 #include <algorithm>
 #include <chrono>
+#include <concepts>
 #include <execution>
 #include <format>
+#include <iostream>
+#include <locale>
 #include <type_traits>
+
+#include "generators.hpp"
+#include "radix_sort.hpp"
 
 using namespace std;
 #pragma endregion
@@ -23,19 +26,20 @@ const vector<int> show_off::RUN_METHOD =
 	1  // RADIX_SORT
 };
 
-constexpr int RUN_SIZE = 1e8;
-constexpr int RUN_SIZE_STR = 5e7;
+//constexpr int RUN_SIZE = 1e8;
+//constexpr int RUN_SIZE_STR = 5e7;
+constexpr int RUN_SIZE = 1e6;
+constexpr int RUN_SIZE_STR = 1e6;
 
 const vector<show_off::DataTypeRun> show_off::RUN_DATATYPE =
 {
-	DataTypeRun(INT, RUN_SIZE, "INT\nSIZE = 100m\n\n"),
-	DataTypeRun(UINT, RUN_SIZE, "UNSIGNED INT\nSIZE = 100m\n\n"),
-	DataTypeRun(LL, RUN_SIZE, "LONG LONG\nSIZE = 100m\n\n"),
-	DataTypeRun(ULL, RUN_SIZE, "UNSIGNED LONG LONG\nSIZE = 100m\n\n"),
-	DataTypeRun(FLOAT, RUN_SIZE, "FLOAT\nSIZE = 100m\n\n"),
-	DataTypeRun(DOUBLE, RUN_SIZE, "DOUBLE\nSIZE = 100m\n\n"),
-	DataTypeRun(STRING, RUN_SIZE_STR, "STRING\nSIZE = 50m\n\n"),
-
+	DataTypeRun(   INT,		RUN_SIZE, format(locale("en_US.UTF-8"),    "INT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(  UINT,		RUN_SIZE, format(locale("en_US.UTF-8"),   "UINT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(    LL,		RUN_SIZE, format(locale("en_US.UTF-8"),     "LL\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(   ULL,		RUN_SIZE, format(locale("en_US.UTF-8"),    "ULL\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( FLOAT,		RUN_SIZE, format(locale("en_US.UTF-8"),	 "FLOAT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(DOUBLE,		RUN_SIZE, format(locale("en_US.UTF-8"), "DOUBLE\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(STRING, RUN_SIZE_STR, format(locale("en_US.UTF-8"), "STRING\nSIZE = {:L}\n\n", RUN_SIZE_STR)),
 };
 #pragma endregion
 
@@ -46,7 +50,7 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 	vector<T> vSort(v);
 
 	auto start = chrono::high_resolution_clock::now();
-	if constexpr (is_same_v<T, float> || is_same_v<T, double>)
+	if constexpr (floating_point<T>)
 	{
 		switch (method)
 		{
@@ -94,19 +98,19 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 	switch (method)
 	{
 		case SORT:
-			output += "sort = " + to_string(time) + " ms\n";
+			output += format("sort = {} ms\n", time);
 			break;
 		case SORT_PAR:
-			output += "sort_par = " + to_string(time) + " ms\n";
+			output += format("sort_par = {} ms\n", time);
 			break;
 		case STABLE_SORT:
-			output += "stable_sort = " + to_string(time) + " ms\n";
+			output += format("stable_sort = {} ms\n", time);
 			break;
 		case STABLE_SORT_PAR:
-			output += "stable_sort_par = " + to_string(time) + " ms\n";
+			output += format("stable_sort_par = {} ms\n", time);
 			break;
 		case RADIX_SORT:
-			output += "radix_sort = " + to_string(time) + " ms\n\n";
+			output += format("radix_sort = {} ms\n\n", time);
 			break;
 	}
 }
@@ -123,10 +127,10 @@ void show_off::showOff(int n, string& output)
 	}
 }
 
-void show_off::showOff(int INT, int UINT, int LL, int ULL, int FLOAT, int DOUBLE, int STRING)
+void show_off::showOff(RunParams params)
 {
 	string output = "=========================\n\n";
-	const vector<int> RUN_TYPE = { INT, UINT, LL, ULL, FLOAT, DOUBLE, STRING };
+	const vector<int> RUN_TYPE = { params.INT, params.UINT, params.LL, params.ULL, params.FLOAT, params.DOUBLE, params.STRING };
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -172,24 +176,22 @@ void show_off::validate(vector<T>& v, string& output)
 	vector<T> vExpected(v);
 	vector<T> vRadix(v);
 
-	constexpr bool isFloatOrDouble = is_same_v<T, float> || is_same_v<T, double>;
-
 	auto start = chrono::high_resolution_clock::now();
-	if constexpr (isFloatOrDouble)
+	if constexpr (floating_point<T>)
 		std::sort(std::execution::par, vExpected.begin(), vExpected.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
 	else
 		std::sort(std::execution::par, vExpected.begin(), vExpected.end());
 	auto end = chrono::high_resolution_clock::now();
 	auto time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	output += "sort_par = " + to_string(time) + " ms\n";
+	output += format("sort_par = {} ms\n", time);
 
 	start = chrono::high_resolution_clock::now();
 	radix_sort::sort(vRadix);
 	end = chrono::high_resolution_clock::now();
 	time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	output += "radix_sort = " + to_string(time) + " ms\n\n";
+	output += format("radix_sort = {} ms\n\n", time);
 
-	bool isEqual = (isFloatOrDouble) ? 
+	bool isEqual = (floating_point<T>) ? 
 		ranges::equal(vRadix, vExpected, [](const auto& a, const auto& b) { return std::strong_order(a, b) == 0; }) :
 		ranges::equal(vRadix, vExpected);
 
@@ -200,27 +202,17 @@ void show_off::validate(vector<T>& v, string& output)
 		int size = v.size();
 		output += "ERROR: Outputs are different!\n";
 
-		if constexpr (isFloatOrDouble)
+		if constexpr (floating_point<T>)
 		{
 			output += "index: (radix value, expected value) hex(radix value, expected value)\n";
 			
-			if constexpr (is_same_v<T, float>)
+			using U = fp2i<T>;
+			
+			for (int i = 0; i < size; i++)
 			{
-				for (int i = 0; i < size; i++)
-				{
-					if (vRadix[i] != vExpected[i])
-						output += format("{}:\t({}, {})\thex({}, {})\n", i, vRadix[i], vExpected[i],
-							bit_cast<unsigned int>(vRadix[i]), bit_cast<unsigned int>(vExpected[i]));
-				}
-			}
-			else
-			{
-				for (int i = 0; i < size; i++)
-				{
-					if (vRadix[i] != vExpected[i])
-						output += format("{}:\t({}, {})\thex({}, {})\n", i, vRadix[i], vExpected[i],
-							bit_cast<unsigned long long>(vRadix[i]), bit_cast<unsigned long long>(vExpected[i]));
-				}
+				if (vRadix[i] != vExpected[i])
+					output += format("{}:\t({}, {})\thex({}, {})\n", i, vRadix[i], vExpected[i],
+						bit_cast<U>(vRadix[i]), bit_cast<U>(vExpected[i]));
 			}
 		}
 		else
@@ -245,10 +237,10 @@ void show_off::validate(int n, string& output)
 	validate(v, output);
 }
 
-void show_off::validate(int INT, int UINT, int LL, int ULL, int FLOAT, int DOUBLE, int STRING)
+void show_off::validate(RunParams params)
 {
 	string output = "=========================\n\n";
-	const vector<int> RUN_TYPE = { INT, UINT, LL, ULL, FLOAT, DOUBLE, STRING };
+	const vector<int> RUN_TYPE = { params.INT, params.UINT, params.LL, params.ULL, params.FLOAT, params.DOUBLE, params.STRING };
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
