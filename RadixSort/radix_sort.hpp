@@ -1,5 +1,4 @@
 #pragma once
-#pragma region HEADERS
 #include <algorithm>
 #include <atomic>
 #include <compare>
@@ -10,7 +9,6 @@
 #include <thread>
 #include <type_traits>
 #include <vector>
-#pragma endregion
 
 namespace radix_sort
 {
@@ -62,7 +60,10 @@ namespace radix_sort
 		concept string_sort = std::same_as<T, std::string>;
 
 		template <typename T>
-		concept unknown = !std::integral<T> && !std::floating_point<T> && !string_sort<T>;
+		concept known = std::integral<T> || std::floating_point<T> || std::same_as<T, std::string>;
+
+		template <typename T>
+		concept unknown = !known<T>;
 
 		template <size_t S> struct t2u_impl;
 		template <> struct t2u_impl<1> { using type = std::uint8_t;  };
@@ -135,12 +136,12 @@ namespace radix_sort
 		}
 
 		template<typename T>
-		inline void getCountVector(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r)
+		inline void getCountVector(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r, bool enableMultiThreading)
 		{
 			const int SIZE = r - l;
 			int threadCount = static_cast<int>(ceil(SIZE / BUCKET_THRESHOLD));
 
-			if (threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+			if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
 			{
 				getCountVectorThread(v, count, curShiftOrIndex, l, r);
 			}
@@ -211,7 +212,7 @@ namespace radix_sort
 				std::vector<int> count(ALLOC_SIZE);
 				std::vector<int> prefix(ALLOC_SIZE);
 
-				getCountVector(v, count, curShiftOrIndex, l, r);
+				getCountVector(v, count, curShiftOrIndex, l, r, multiThreaded);
 
 				if constexpr (std::same_as<T, std::string>)
 				{
@@ -378,23 +379,23 @@ namespace radix_sort
 		// =====================================
 		
 		template<integral_sort_lsb T>
-		inline void sort_impl(std::vector<T>&);
+		inline void sort_impl(std::vector<T>&, bool);
 
 		template<std::floating_point T>
-		inline void sort_impl(std::vector<T>&);
+		inline void sort_impl(std::vector<T>&, bool);
 
 		template<typename T> requires (integral_sort_msb<T> || string_sort<T>)
-		inline void sort_impl(std::vector<T>&);
+		inline void sort_impl(std::vector<T>&, bool);
 
 		template<unknown T>
-		inline void sort_impl(std::vector<T>&);
+		inline void sort_impl(std::vector<T>&, bool);
 		
 		// ====================================
 		// -----Implementation Definitions-----
 		// ====================================
 		
 		template<integral_sort_lsb T>
-		inline void sort_impl(std::vector<T>& v)
+		inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 		{
 			if (v.size() <= 100)
 			{
@@ -425,7 +426,7 @@ namespace radix_sort
 				std::vector<int> count(BASE);
 				std::vector<int> prefix(BASE);
 
-				getCountVector(v, count, curShift, 0, v.size());
+				getCountVector(v, count, curShift, 0, v.size(), enableMultiThreading);
 
 				for (int i = 1; i < BASE; i++)
 					prefix[i] = prefix[i - 1] + count[i - 1];
@@ -456,7 +457,7 @@ namespace radix_sort
 		}
 
 		template<std::floating_point T>
-		inline void sort_impl(std::vector<T>& v)
+		inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 		{
 			static_assert(
 				std::numeric_limits<T>::is_iec559,
@@ -483,7 +484,7 @@ namespace radix_sort
 				vu[i] = (vu[i] >> SIGN_SHIFT) ? ~vu[i] : vu[i] ^ SIGN_MASK;
 			}
 
-			sort_impl<U>(vu);
+			sort_impl<U>(vu, enableMultiThreading);
 
 			for (int i = 0; i < SIZE; i++)
 			{
@@ -493,7 +494,7 @@ namespace radix_sort
 		}
 
 		template<typename T> requires (integral_sort_msb<T> || string_sort<T>)
-		inline void sort_impl(std::vector<T>& v)
+		inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 		{
 			constexpr int INSERTION_SORT_THRESHOLD = (std::same_as<T, std::string>) ? 10 : 100;
 			if (v.size() <= INSERTION_SORT_THRESHOLD)
@@ -529,7 +530,7 @@ namespace radix_sort
 			const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(v.size() / 1000), 1000);
 			std::vector<T> tmp(v.size());
 
-			if (static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+			if (!enableMultiThreading || static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
 			{
 				std::mutex tmpMutex;
 				std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
@@ -578,7 +579,7 @@ namespace radix_sort
 		}
 
 		template<unknown T>
-		inline void sort_impl(std::vector<T>& v)
+		inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 		{
 			static_assert(sizeof(T) == 0, "ERROR: Unable to sort vector!\nCAUSE: Unsupported type!\n");
 		}
@@ -589,8 +590,8 @@ namespace radix_sort
 	// =============
 
 	template<typename T>
-	inline void sort(std::vector<T>& v)
+	inline void sort(std::vector<T>& v, bool enableMultiThreading = false)
 	{
-		internal::sort_impl(v);
+		internal::sort_impl(v, enableMultiThreading);
 	}
 };

@@ -28,6 +28,8 @@ const vector<int> show_off::RUN_METHOD =
 
 constexpr int RUN_SIZE = 1e8;
 constexpr int RUN_SIZE_STR = 5e7;
+constexpr bool ENABLE_MULTITHREADING = true;
+
 locale lnum = locale("en_US.UTF-8");
 
 const vector<show_off::DataTypeRun> show_off::RUN_DATATYPE =
@@ -70,7 +72,7 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 				std::stable_sort(std::execution::par, vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
 				break;
 			case RADIX_SORT:
-				radix_sort::sort(vSort);
+				radix_sort::sort(vSort, ENABLE_MULTITHREADING);
 				break;
 		}
 	}
@@ -91,7 +93,7 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 				std::stable_sort(std::execution::par, vSort.begin(), vSort.end());
 				break;
 			case RADIX_SORT:
-				radix_sort::sort(vSort);
+				radix_sort::sort(vSort, ENABLE_MULTITHREADING);
 				break;
 		}
 	}
@@ -207,7 +209,7 @@ void show_off::validate(vector<T>& v, string& output)
 	output += format(lnum, "sort_par = {:L} ms\n", time);
 
 	start = chrono::steady_clock::now();
-	radix_sort::sort(vRadix);
+	radix_sort::sort(vRadix, ENABLE_MULTITHREADING);
 	end = chrono::steady_clock::now();
 	time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 	output += format(lnum, "radix_sort = {:L} ms\n\n", time);

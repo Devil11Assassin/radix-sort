@@ -24,14 +24,14 @@ namespace generators
 		template <typename T>
 		using fp2i = fp2i_impl<sizeof(T)>;
 
-		template <size_t S> struct gen_t_impl;
-		template <> struct gen_t_impl<1> { using type = std::uint32_t; };
-		template <> struct gen_t_impl<2> { using type = std::uint32_t; };
-		template <> struct gen_t_impl<4> { using type = std::uint32_t; };
-		template <> struct gen_t_impl<8> { using type = std::uint64_t; };
+		template <size_t S, typename T> struct gen_t_impl;
+		template <typename T> struct gen_t_impl<1, T> { using type = std::int32_t; };
+		template <typename T> struct gen_t_impl<2, T> { using type = std::int32_t; };
+		template <typename T> struct gen_t_impl<4, T> { using type = T; };
+		template <typename T> struct gen_t_impl<8, T> { using type = T; };
 
 		template <typename T>
-		using gen_t = gen_t_impl<sizeof(T)>::type;
+		using gen_t = gen_t_impl<sizeof(T), T>::type;
 
 		template <std::integral T>
 		inline std::vector<T> generate_impl(int n)
