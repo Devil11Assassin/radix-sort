@@ -527,7 +527,6 @@ namespace radix_sort
 					}
 					else
 					{
-
 						if (!isIdle)
 						{
 							isIdle = true;
@@ -1004,14 +1003,14 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, typename F, typename TRegion>
+			template <typename T, typename F>
 			inline void sortInstance(std::vector<T>& v, F func, std::vector<T>& tmp,
-				std::vector<TRegion>& regions, std::unique_lock<std::mutex>& lkRegions,
-				TRegion initialRegion, bool enableMultiThreading)
+				std::vector<RegionNew>& regions, std::unique_lock<std::mutex>& lkRegions,
+				RegionNew initialRegion, bool enableMultiThreading)
 			{
 				using Key = invoke_result<T, F>;
 
-				std::vector<TRegion> regionsLocal;
+				std::vector<RegionNew> regionsLocal;
 				regionsLocal.reserve(v.size() / 100);
 				regionsLocal.emplace_back(initialRegion);
 
@@ -1020,18 +1019,13 @@ namespace radix_sort
 
 				while (regionsLocal.size())
 				{
-					TRegion region = std::move(regionsLocal.back());
+					RegionNew region = std::move(regionsLocal.back());
 					regionsLocal.pop_back();
 
 					int l = region.l;
 					int r = region.r;
 					int len = region.len;
-					int curShiftOrIndex;
-
-					if constexpr (std::same_as<TRegion, RegionString>)
-						curShiftOrIndex = region.curIndex;
-					else
-						curShiftOrIndex = (len - 1) * SHIFT_BITS;
+					int curShiftOrIndex = region.curShiftOrIndex;
 
 					if (r - l < 2 || len == 0)
 						continue;
@@ -1055,37 +1049,34 @@ namespace radix_sort
 					if (len == 0)
 						continue;
 
-					if constexpr (std::same_as<Key, std::string>)
+					int start = 0;
+					if constexpr (is_string<Key>)
+					{
+						start = l + count[256];
 						curShiftOrIndex++;
+					}
+					else
+					{
+						start = l;
+						curShiftOrIndex -= SHIFT_BITS;
+					}
 
 					if (!enableMultiThreading)
 					{
-						if constexpr (std::same_as<Key, std::string>)
+						for (int i = 0; i < BASE; i++)
 						{
-							for (int i = 0, start = l + count[256]; i < CHARS; i++)
-							{
-								if (count[i] > 1)
-									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-								start += count[i];
-							}
-						}
-						else
-						{
-							for (int i = 0, start = l; i < BASE; i++)
-							{
-								if (count[i] > 1)
-									regionsLocal.emplace_back(start, start + count[i], len);
-								start += count[i];
-							}
+							if (count[i] > 1)
+								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
+							start += count[i];
 						}
 					}
 					else
 					{
 						const int LOCAL_BUCKET_THRESHOLD = std::max((r - l) / 1000, 1000);
 
-						if constexpr (std::same_as<Key, std::string>)
+						for (int i = 0; i < CHARS; i++)
 						{
-							for (int i = 0, start = l + count[256]; i < CHARS; i++)
+							if (count[i] > 1)
 							{
 								if (count[i] < LOCAL_BUCKET_THRESHOLD)
 									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
@@ -1095,35 +1086,20 @@ namespace radix_sort
 									regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
 									lkRegions.unlock();
 								}
-								start += count[i];
 							}
-						}
-						else
-						{
-							for (int i = 0, start = l; i < BASE; i++)
-							{
-								if (count[i] < LOCAL_BUCKET_THRESHOLD)
-									regionsLocal.emplace_back(start, start + count[i], len);
-								else
-								{
-									lkRegions.lock();
-									regions.emplace_back(start, start + count[i], len);
-									lkRegions.unlock();
-								}
-								start += count[i];
-							}
+							start += count[i];
 						}
 					}
 				}
 			}
 
-			template <typename T, known Key, typename TRegion>
+			template <typename T, known Key>
 			inline void sortInstance(std::vector<T>& v, std::vector<Key>& k, 
 				std::vector<T>& tmp, std::vector<Key>& tmpKey,
-				std::vector<TRegion>& regions, std::unique_lock<std::mutex>& lkRegions,
-				TRegion initialRegion, bool enableMultiThreading)
+				std::vector<RegionNew>& regions, std::unique_lock<std::mutex>& lkRegions,
+				RegionNew initialRegion, bool enableMultiThreading)
 			{
-				std::vector<TRegion> regionsLocal;
+				std::vector<RegionNew> regionsLocal;
 				regionsLocal.reserve(v.size() / 100);
 				regionsLocal.emplace_back(initialRegion);
 
@@ -1132,18 +1108,13 @@ namespace radix_sort
 
 				while (regionsLocal.size())
 				{
-					TRegion region = std::move(regionsLocal.back());
+					RegionNew region = std::move(regionsLocal.back());
 					regionsLocal.pop_back();
 
 					int l = region.l;
 					int r = region.r;
 					int len = region.len;
-					int curShiftOrIndex;
-
-					if constexpr (std::same_as<TRegion, RegionString>)
-						curShiftOrIndex = region.curIndex;
-					else
-						curShiftOrIndex = (len - 1) * SHIFT_BITS;
+					int curShiftOrIndex = region.curShiftOrIndex;
 
 					if (r - l < 2 || len == 0)
 						continue;
@@ -1168,37 +1139,34 @@ namespace radix_sort
 					if (len == 0)
 						continue;
 
-					if constexpr (std::same_as<Key, std::string>)
+					int start = 0;
+					if constexpr (is_string<T>)
+					{
+						start = l + count[256];
 						curShiftOrIndex++;
+					}
+					else
+					{
+						start = l;
+						curShiftOrIndex -= SHIFT_BITS;
+					}
 
 					if (!enableMultiThreading)
 					{
-						if constexpr (std::same_as<Key, std::string>)
+						for (int i = 0; i < BASE; i++)
 						{
-							for (int i = 0, start = l + count[256]; i < CHARS; i++)
-							{
-								if (count[i] > 1)
-									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-								start += count[i];
-							}
-						}
-						else
-						{
-							for (int i = 0, start = l; i < BASE; i++)
-							{
-								if (count[i] > 1)
-									regionsLocal.emplace_back(start, start + count[i], len);
-								start += count[i];
-							}
+							if (count[i] > 1)
+								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
+							start += count[i];
 						}
 					}
 					else
 					{
 						const int LOCAL_BUCKET_THRESHOLD = std::max((r - l) / 1000, 1000);
 
-						if constexpr (std::same_as<Key, std::string>)
+						for (int i = 0; i < CHARS; i++)
 						{
-							for (int i = 0, start = l + count[256]; i < CHARS; i++)
+							if (count[i] > 1)
 							{
 								if (count[i] < LOCAL_BUCKET_THRESHOLD)
 									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
@@ -1208,32 +1176,17 @@ namespace radix_sort
 									regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
 									lkRegions.unlock();
 								}
-								start += count[i];
 							}
-						}
-						else
-						{
-							for (int i = 0, start = l; i < BASE; i++)
-							{
-								if (count[i] < LOCAL_BUCKET_THRESHOLD)
-									regionsLocal.emplace_back(start, start + count[i], len);
-								else
-								{
-									lkRegions.lock();
-									regions.emplace_back(start, start + count[i], len);
-									lkRegions.unlock();
-								}
-								start += count[i];
-							}
+							start += count[i];
 						}
 					}
 				}
 			}
 
-			template <typename T, typename F, typename TRegion>
+			template <typename T, typename F>
 			inline void sortThread(std::vector<T>& v, F func, std::vector<T>& tmp,
-				std::vector<TRegion>& regions, std::mutex& regionsLock,
-				std::atomic<int>& runningCounter, int threadIndex)
+				std::vector<RegionNew>& regions, std::mutex& regionsLock,
+				int& runningCounter, int threadIndex)
 			{
 				std::unique_lock<std::mutex> lkRegions(regionsLock, std::defer_lock);
 
@@ -1246,9 +1199,8 @@ namespace radix_sort
 					lkRegions.lock();
 					if (regions.size())
 					{
-						TRegion region = std::move(regions.back());
+						RegionNew region = std::move(regions.back());
 						regions.pop_back();
-						lkRegions.unlock();
 
 						if (isIdle)
 						{
@@ -1257,21 +1209,24 @@ namespace radix_sort
 							iterationsIdle = 0;
 						}
 
+						lkRegions.unlock();
 						sortInstance(v, func, tmp, regions, lkRegions, region, 1);
 					}
 					else
 					{
-						lkRegions.unlock();
-
 						if (!isIdle)
 						{
 							isIdle = true;
 							runningCounter--;
 						}
 
-						if (runningCounter.load() == 0)
+						if (runningCounter == 0)
+						{
+							lkRegions.unlock();
 							break;
+						}
 
+						lkRegions.unlock();
 						iterationsIdle++;
 
 						if (ALLOW_SLEEP && iterationsIdle > 100)
@@ -1283,11 +1238,11 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, known Key, typename TRegion>
+			template <typename T, known Key>
 			inline void sortThread(std::vector<T>& v, std::vector<Key>& k, 
 				std::vector<T>& tmp, std::vector<Key>& tmpKey,
-				std::vector<TRegion>& regions, std::mutex& regionsLock,
-				std::atomic<int>& runningCounter, int threadIndex)
+				std::vector<RegionNew>& regions, std::mutex& regionsLock,
+				int& runningCounter, int threadIndex)
 			{
 				std::unique_lock<std::mutex> lkRegions(regionsLock, std::defer_lock);
 
@@ -1300,9 +1255,8 @@ namespace radix_sort
 					lkRegions.lock();
 					if (regions.size())
 					{
-						TRegion region = std::move(regions.back());
+						RegionNew region = std::move(regions.back());
 						regions.pop_back();
-						lkRegions.unlock();
 
 						if (isIdle)
 						{
@@ -1311,21 +1265,24 @@ namespace radix_sort
 							iterationsIdle = 0;
 						}
 
+						lkRegions.unlock();
 						sortInstance(v, k, tmp, tmpKey, regions, lkRegions, region, 1);
 					}
 					else
 					{
-						lkRegions.unlock();
-
 						if (!isIdle)
 						{
 							isIdle = true;
 							runningCounter--;
 						}
 
-						if (runningCounter.load() == 0)
+						if (runningCounter == 0)
+						{
+							lkRegions.unlock();
 							break;
+						}
 
+						lkRegions.unlock();
 						iterationsIdle++;
 
 						if (ALLOW_SLEEP && iterationsIdle > 100)
@@ -1467,137 +1424,195 @@ namespace radix_sort
 			{
 				using Key = invoke_result<T, F>;
 
+				const int SIZE = v.size();
+				std::vector<T> tmp(SIZE);
 				int len = getMaxLength(v, func);
+				constexpr int curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
+				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(SIZE / 1000), 1000);
 
-				int numOfThreads = std::thread::hardware_concurrency();
-				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(v.size() / 1000), 1000);
-				std::vector<T> tmp(v.size());
-
-				if (!enableMultiThreading || static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				if (!enableMultiThreading || static_cast<int>(SIZE / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
 				{
 					std::mutex tmpMutex;
 					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
 
-					if constexpr (std::same_as<Key, std::string>)
-					{
-						std::vector<RegionString> tmpVector;
-						sortInstance(v, func, tmp, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
-					}
-					else
-					{
-						std::vector<RegionIntegral> tmpVector;
-						sortInstance(v, func, tmp, tmpVector, tmpLock, RegionIntegral(0, v.size(), len), 0);
-					}
+					std::vector<RegionNew> tmpVector;
+					sortInstance(v, func, tmp, tmpVector, tmpLock, RegionNew(0, SIZE, len, curShiftOrIndex), false);
 				}
 				else
 				{
+					int numOfThreads = std::thread::hardware_concurrency();
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
 					std::mutex idleLock;
-					std::atomic<int> runningCounter = numOfThreads;
+					int runningCounter = numOfThreads;
 
-					if constexpr (std::same_as<Key, std::string>)
+					std::vector<RegionNew> regions;
+					regions.reserve(SIZE / 1000);
+					regions.emplace_back(0, SIZE, len, curShiftOrIndex);
+					for (int i = 0; i < numOfThreads; i++)
 					{
-						std::vector<RegionString> regions;
-						regions.reserve(v.size() / 1000);
-						regions.emplace_back(0, v.size(), len, 0);
-						for (int i = 0; i < numOfThreads; i++)
-						{
-							//threads.emplace_back(sortThread<T, RegionString>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
-							threads.emplace_back([&v, &func, &tmp, &regions, &regionsLock, &runningCounter, i]() {
-								sortThread(v, func, tmp, regions, regionsLock, runningCounter, i);
-							});
-						}
-
-						for (auto& t : threads)
-							t.join();
+						threads.emplace_back([&v, &func, &tmp, &regions, &regionsLock, &runningCounter, i]() {
+							sortThread(v, func, tmp, regions, regionsLock, runningCounter, i);
+						});
 					}
-					else
-					{
-						std::vector<RegionIntegral> regions;
-						regions.reserve(v.size() / 1000);
-						regions.emplace_back(0, v.size(), len);
-						for (int i = 0; i < numOfThreads; i++)
-						{
-							//threads.emplace_back(sortThread<T, RegionIntegral>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
-							threads.emplace_back([&v, &func, &tmp, &regions, &regionsLock, &runningCounter, i]() {
-								sortThread(v, func, tmp, regions, regionsLock, runningCounter, i);
-							});
-						}
 
-						for (auto& t : threads)
-							t.join();
-					}
+					for (auto& t : threads)
+						t.join();
 				}
+				//if (!enableMultiThreading || static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				//{
+				//	std::mutex tmpMutex;
+				//	std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
+
+				//	if constexpr (std::same_as<Key, std::string>)
+				//	{
+				//		std::vector<RegionString> tmpVector;
+				//		sortInstance(v, func, tmp, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
+				//	}
+				//	else
+				//	{
+				//		std::vector<RegionIntegral> tmpVector;
+				//		sortInstance(v, func, tmp, tmpVector, tmpLock, RegionIntegral(0, v.size(), len), 0);
+				//	}
+				//}
+				//else
+				//{
+				//	std::vector<std::thread> threads;
+				//	std::mutex regionsLock;
+				//	std::mutex idleLock;
+				//	std::atomic<int> runningCounter = numOfThreads;
+
+				//	if constexpr (std::same_as<Key, std::string>)
+				//	{
+				//		std::vector<RegionString> regions;
+				//		regions.reserve(v.size() / 1000);
+				//		regions.emplace_back(0, v.size(), len, 0);
+				//		for (int i = 0; i < numOfThreads; i++)
+				//		{
+				//			//threads.emplace_back(sortThread<T, RegionString>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
+				//			threads.emplace_back([&v, &func, &tmp, &regions, &regionsLock, &runningCounter, i]() {
+				//				sortThread(v, func, tmp, regions, regionsLock, runningCounter, i);
+				//			});
+				//		}
+
+				//		for (auto& t : threads)
+				//			t.join();
+				//	}
+				//	else
+				//	{
+				//		std::vector<RegionIntegral> regions;
+				//		regions.reserve(v.size() / 1000);
+				//		regions.emplace_back(0, v.size(), len);
+				//		for (int i = 0; i < numOfThreads; i++)
+				//		{
+				//			//threads.emplace_back(sortThread<T, RegionIntegral>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
+				//			threads.emplace_back([&v, &func, &tmp, &regions, &regionsLock, &runningCounter, i]() {
+				//				sortThread(v, func, tmp, regions, regionsLock, runningCounter, i);
+				//			});
+				//		}
+
+				//		for (auto& t : threads)
+				//			t.join();
+				//	}
+				//}
 			}
 
 			template <typename T, typename Key>
 			requires (is_large_integral<Key> || is_string<Key>)
 			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, bool enableMultiThreading)
 			{
+				const int SIZE = v.size();
+				std::vector<T> tmp(SIZE);
+				std::vector<Key> tmpKey(SIZE);
 				int len = getMaxLength(k);
+				constexpr int curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
+				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(SIZE / 1000), 1000);
 
-				int numOfThreads = std::thread::hardware_concurrency();
-				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(v.size() / 1000), 1000);
-				std::vector<T> tmp(v.size());
-				std::vector<Key> tmpKey(v.size());
-
-				if (!enableMultiThreading || static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				if (!enableMultiThreading || static_cast<int>(SIZE / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
 				{
 					std::mutex tmpMutex;
 					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
 
-					if constexpr (std::same_as<Key, std::string>)
-					{
-						std::vector<RegionString> tmpVector;
-						sortInstance(v, k, tmp, tmpKey, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
-					}
-					else
-					{
-						std::vector<RegionIntegral> tmpVector;
-						sortInstance(v, k, tmp, tmpKey, tmpVector, tmpLock, RegionIntegral(0, v.size(), len), 0);
-					}
+					std::vector<RegionNew> tmpVector;
+					sortInstance(v, k, tmp, tmpKey, tmpVector, tmpLock, RegionNew(0, SIZE, len, curShiftOrIndex), false);
 				}
 				else
 				{
+					int numOfThreads = std::thread::hardware_concurrency();
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
 					std::mutex idleLock;
-					std::atomic<int> runningCounter = numOfThreads;
+					int runningCounter = numOfThreads;
 
-					if constexpr (std::same_as<Key, std::string>)
+					std::vector<RegionNew> regions;
+					regions.reserve(SIZE / 1000);
+					regions.emplace_back(0, SIZE, len, curShiftOrIndex);
+					for (int i = 0; i < numOfThreads; i++)
 					{
-						std::vector<RegionString> regions;
-						regions.reserve(v.size() / 1000);
-						regions.emplace_back(0, v.size(), len, 0);
-						for (int i = 0; i < numOfThreads; i++)
-						{
-							//threads.emplace_back(sortThread<T, RegionString>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
-							threads.emplace_back([&v, &k , &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
-								sortThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter, i);
-							});
-						}
-
-						for (auto& t : threads)
-							t.join();
+						threads.emplace_back([&v, &k, &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
+							sortThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter, i);
+						});
 					}
-					else
-					{
-						std::vector<RegionIntegral> regions;
-						regions.reserve(v.size() / 1000);
-						regions.emplace_back(0, v.size(), len);
-						for (int i = 0; i < numOfThreads; i++)
-						{
-							//threads.emplace_back(sortThread<T, RegionIntegral>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
-							threads.emplace_back([&v, &k, &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
-								sortThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter, i);
-							});
-						}
 
-						for (auto& t : threads)
-							t.join();
-					}
+					for (auto& t : threads)
+						t.join();
 				}
+				//if (!enableMultiThreading || static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				//{
+				//	std::mutex tmpMutex;
+				//	std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
+
+				//	if constexpr (std::same_as<Key, std::string>)
+				//	{
+				//		std::vector<RegionString> tmpVector;
+				//		sortInstance(v, k, tmp, tmpKey, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
+				//	}
+				//	else
+				//	{
+				//		std::vector<RegionIntegral> tmpVector;
+				//		sortInstance(v, k, tmp, tmpKey, tmpVector, tmpLock, RegionIntegral(0, v.size(), len), 0);
+				//	}
+				//}
+				//else
+				//{
+				//	std::vector<std::thread> threads;
+				//	std::mutex regionsLock;
+				//	std::mutex idleLock;
+				//	std::atomic<int> runningCounter = numOfThreads;
+
+				//	if constexpr (std::same_as<Key, std::string>)
+				//	{
+				//		std::vector<RegionString> regions;
+				//		regions.reserve(v.size() / 1000);
+				//		regions.emplace_back(0, v.size(), len, 0);
+				//		for (int i = 0; i < numOfThreads; i++)
+				//		{
+				//			//threads.emplace_back(sortThread<T, RegionString>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
+				//			threads.emplace_back([&v, &k , &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
+				//				sortThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter, i);
+				//			});
+				//		}
+
+				//		for (auto& t : threads)
+				//			t.join();
+				//	}
+				//	else
+				//	{
+				//		std::vector<RegionIntegral> regions;
+				//		regions.reserve(v.size() / 1000);
+				//		regions.emplace_back(0, v.size(), len);
+				//		for (int i = 0; i < numOfThreads; i++)
+				//		{
+				//			//threads.emplace_back(sortThread<T, RegionIntegral>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
+				//			threads.emplace_back([&v, &k, &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
+				//				sortThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter, i);
+				//			});
+				//		}
+
+				//		for (auto& t : threads)
+				//			t.join();
+				//	}
+				//}
 			}
 
 			// =====================
