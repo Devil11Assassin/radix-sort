@@ -9,10 +9,10 @@
 
 struct Employee
 {
-	unsigned long long id = 0L;
+	long long id = 0L;
 	std::string name = "";
-	double salary = 0.0;
-	uint32_t age = 0;
+	float salary = 0.0;
+	int32_t age = 0;
 
 	Employee() = default;
 

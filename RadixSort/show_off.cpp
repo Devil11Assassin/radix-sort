@@ -30,9 +30,9 @@ constexpr int RUN_SIZE = 1e8;
 constexpr int RUN_SIZE_STR = 5e7;
 constexpr int RUN_SIZE_CLX = 1e7;
 constexpr bool ENABLE_MULTITHREADING = true;
-constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return std::strong_order(a.salary, b.salary) < 0; };
-//constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return a.id < b.id; };
-constexpr auto LAMBDA_CLX = [](const Employee& e) -> const auto& { return e.salary; };
+//constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return std::strong_order(a.salary, b.salary) < 0; };
+constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return a.age < b.age; };
+constexpr auto LAMBDA_CLX = [](const Employee& e) -> const auto& { return e.age; };
 
 locale lnum = locale("en_US.UTF-8");
 
