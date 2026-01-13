@@ -3,6 +3,7 @@
 #include <atomic>
 #include <compare>
 #include <concepts>
+#include <execution>
 #include <limits>
 #include <mutex>
 #include <numeric>
@@ -93,36 +94,6 @@ namespace radix_sort
 			inline int getChar(const std::string& s, int index)
 			{
 				return (index < s.length()) ? static_cast<unsigned char>(s[index]) : 256;
-			}
-
-			template <typename T>
-			inline int getMaxLength(std::vector<T>& v)
-			{
-				int len = 0;
-
-				if constexpr (std::signed_integral<T> || is_floating_point<T>)
-				{
-					len = sizeof(T);
-				}
-				else if constexpr (std::unsigned_integral<T>)
-				{
-					T maxVal = *std::max_element(v.begin(), v.end());
-
-					while (maxVal > 0)
-					{
-						len++;
-						maxVal >>= SHIFT_BITS;
-					}
-				}
-				else if constexpr (is_string<T>)
-				{
-					len = (*std::max_element(v.begin(), v.end(),
-						[](const std::string& a, const std::string& b) {
-							return a.length() < b.length();
-						})).length();
-				}
-
-				return len;
 			}
 
 			template <typename T>
@@ -224,7 +195,7 @@ namespace radix_sort
 			// =================
 			
 			template <typename T>
-			inline bool isSorted(std::vector<T>& v)
+			inline bool isSortedBi(std::vector<T>& v)
 			{
 				constexpr auto cmpLess = (is_floating_point<T>) ?
 					[](const T& a, const T& b) { return std::strong_order(a, b) < 0; } :
@@ -258,6 +229,36 @@ namespace radix_sort
 				}
 
 				return false;
+			}
+
+			template <typename T>
+			inline int getMaxLength(std::vector<T>& v)
+			{
+				int len = 0;
+
+				if constexpr (std::signed_integral<T> || is_floating_point<T>)
+				{
+					len = sizeof(T);
+				}
+				else if constexpr (std::unsigned_integral<T>)
+				{
+					T maxVal = *std::max_element(v.begin(), v.end());
+
+					while (maxVal > 0)
+					{
+						len++;
+						maxVal >>= SHIFT_BITS;
+					}
+				}
+				else if constexpr (is_string<T>)
+				{
+					len = (*std::max_element(v.begin(), v.end(),
+						[](const std::string& a, const std::string& b) {
+							return a.length() < b.length();
+						})).length();
+				}
+
+				return len;
 			}
 
 			template <typename T>
@@ -533,30 +534,16 @@ namespace radix_sort
 					}
 				}
 			}
-
-			// =====================================
-			// -----Implementation Declarations-----
-			// =====================================
+		
+			// =========================
+			// -----Implementations-----
+			// =========================
 		
 			template <is_small_integral T>
-			inline void sort_impl(std::vector<T>&, bool);
-
-			template <is_floating_point T>
-			inline void sort_impl(std::vector<T>&, bool);
-
-			template <typename T> requires (is_large_integral<T> || is_string<T>)
-			inline void sort_impl(std::vector<T>&, bool);
-		
-			// ====================================
-			// -----Implementation Definitions-----
-			// ====================================
-		
-			template <is_small_integral T>
-			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
+			inline void sort_impl(std::vector<T>& v, int len, bool enableMultiThreading)
 			{
 				const int SIZE = v.size();
 				std::vector<T> tmp(SIZE);
-				int len = getMaxLength(v);
 				int curShift = 0;
 
 				while (len--)
@@ -574,24 +561,11 @@ namespace radix_sort
 				}
 			}
 
-			template <is_floating_point T>
-			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
-			{
-				using U = t2u<T>;
-				const int SIZE = v.size();
-				std::vector<U> vu(SIZE);
-
-				getConvertedVector(v, vu, false, enableMultiThreading);
-				sort_impl<U>(vu, enableMultiThreading);
-				getConvertedVector(v, vu, true, enableMultiThreading);
-			}
-
 			template <typename T> requires (is_large_integral<T> || is_string<T>)
-			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
+			inline void sort_impl(std::vector<T>& v, int len, bool enableMultiThreading)
 			{
 				const int SIZE = v.size();
 				std::vector<T> tmp(SIZE);
-				int len = getMaxLength(v);
 				constexpr int curShiftOrIndex = (is_string<T>) ? 0 : (sizeof(T) - 1) * 8;
 				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(SIZE / 1000), 1000);
 
@@ -626,6 +600,18 @@ namespace radix_sort
 				}
 			}
 
+			template <is_floating_point T>
+			inline void sort_impl(std::vector<T>& v, int len, bool enableMultiThreading)
+			{
+				using U = t2u<T>;
+				const int SIZE = v.size();
+				std::vector<U> vu(SIZE);
+
+				getConvertedVector(v, vu, false, enableMultiThreading);
+				sort_impl<U>(vu, len, enableMultiThreading);
+				getConvertedVector(v, vu, true, enableMultiThreading);
+			}
+
 			// =====================
 			// -----Entry Point-----
 			// =====================
@@ -641,7 +627,7 @@ namespace radix_sort
 					);
 				}
 
-				if (isSorted(v))
+				if (isSortedBi(v))
 					return;
 
 				constexpr int INSERTION_SORT_THRESHOLD = (is_string<T>) ? 10 : 100;
@@ -651,7 +637,8 @@ namespace radix_sort
 					return;
 				}
 
-				sort_impl(v, enableMultiThreading);
+				int len = getMaxLength(v);
+				sort_impl(v, len, enableMultiThreading);
 			}
 
 			template <unknown T>
@@ -669,13 +656,34 @@ namespace radix_sort
 		namespace key
 		{
 			using namespace shared;
-			using shared::getMaxLength;
 			using shared::getCountVectorThread;
 			using shared::getCountVector;
 
 			// =================
 			// -----Helpers-----
 			// =================
+
+			template <typename T, typename F>
+			inline bool isSorted(std::vector<T>& v, F func)
+			{
+				using Key = invoke_result<T, F>;
+				constexpr auto cmpGreater = (is_floating_point<Key>) ?
+					[](const Key& a, const Key& b) { return std::strong_order(a, b) > 0; } :
+					[](const Key& a, const Key& b) { return a > b; };
+
+				bool sorted = true;
+
+				for (int i = 0, size = v.size() - 1; i < size; i++)
+				{
+					if (cmpGreater(func(v[i]), func(v[i + 1])))
+					{
+						sorted = false;
+						break;
+					}
+				}
+
+				return sorted;
+			}
 
 			template <typename T, typename F>
 			inline int getMaxLength(std::vector<T>& v, F func)
@@ -1319,43 +1327,19 @@ namespace radix_sort
 					}
 				}
 			}
-
-			// =====================================
-			// -----Implementation Declarations-----
-			// =====================================
-
-			template <typename T, typename F> 
-			requires is_small_integral<invoke_result<T, F>>
-			inline void sort_impl(std::vector<T>&, F, bool);
-
-			template <typename T, is_small_integral Key> 
-			inline void sort_impl(std::vector<T>&, std::vector<Key>&, bool);
-			
-			template <typename T, typename F>
-			requires is_floating_point<invoke_result<T, F>>
-			inline void sort_impl(std::vector<T>&, F, bool);
-
-			template <typename T, typename F>
-			requires (is_large_integral<invoke_result<T, F>> || is_string<invoke_result<T, F>>)
-			inline void sort_impl(std::vector<T>&, F, bool);
-
-			template <typename T, typename Key>
-			requires (is_large_integral<Key> || is_string<Key>)
-			inline void sort_impl(std::vector<T>&, std::vector<Key>&, bool);
 				
-			// ====================================
-			// -----Implementation Definitions-----
-			// ====================================
+			// =========================
+			// -----Implementations-----
+			// =========================
 
 			template <typename T, typename F>
 			requires is_small_integral<invoke_result<T, F>>
-			inline void sort_impl(std::vector<T>& v, F func, bool enableMultiThreading)
+			inline void sort_impl(std::vector<T>& v, F func, int len, bool enableMultiThreading)
 			{
 				using Key = invoke_result<T, F>;
-
-				int len = getMaxLength(v, func);
-
-				std::vector<T> tmp(v.size());
+				
+				const int SIZE = v.size();
+				std::vector<T> tmp(SIZE);
 				int curShift = 0;
 
 				while (len--)
@@ -1363,7 +1347,7 @@ namespace radix_sort
 					std::vector<int> count(BASE);
 					std::vector<int> prefix(BASE);
 
-					getCountVector(v, func, count, curShift, 0, v.size(), enableMultiThreading);
+					getCountVector(v, func, count, curShift, 0, SIZE, enableMultiThreading);
 					getPrefixVector<Key>(prefix, count, 0);
 					getUpdatedVector(v, func, tmp, prefix, curShift);
 
@@ -1374,12 +1358,9 @@ namespace radix_sort
 			}
 
 			template <typename T, is_small_integral Key>
-			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, bool enableMultiThreading)
+			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, int len, bool enableMultiThreading)
 			{
 				const int SIZE = v.size();
-
-				int len = getMaxLength(k);
-
 				std::vector<T> tmp(SIZE);
 				std::vector<Key> tmpKey(SIZE);
 				int curShift = 0;
@@ -1401,34 +1382,13 @@ namespace radix_sort
 			}
 
 			template <typename T, typename F>
-			requires is_floating_point<invoke_result<T, F>>
-			inline void sort_impl(std::vector<T>& v, F func, bool enableMultiThreading)
-			{
-				using Key = invoke_result<T, F>;
-
-				using U = t2u<Key>;
-				const int SIZE = v.size();
-				std::vector<U> vu(SIZE);
-
-				getConvertedVector(v, func, vu, enableMultiThreading);
-
-				std::vector<int> indices(SIZE);
-				std::iota(indices.begin(), indices.end(), 0);
-
-				sort_impl(indices, vu, enableMultiThreading);
-
-				sortByIndices(v, indices, enableMultiThreading);
-			}
-
-			template <typename T, typename F>
 			requires (is_large_integral<invoke_result<T, F>> || is_string<invoke_result<T, F>>)
-			inline void sort_impl(std::vector<T>& v, F func, bool enableMultiThreading)
+			inline void sort_impl(std::vector<T>& v, F func, int len, bool enableMultiThreading)
 			{
 				using Key = invoke_result<T, F>;
 
 				const int SIZE = v.size();
 				std::vector<T> tmp(SIZE);
-				int len = getMaxLength(v, func);
 				constexpr int curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
 				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(SIZE / 1000), 1000);
 
@@ -1465,12 +1425,11 @@ namespace radix_sort
 
 			template <typename T, typename Key>
 			requires (is_large_integral<Key> || is_string<Key>)
-			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, bool enableMultiThreading)
+			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, int len, bool enableMultiThreading)
 			{
 				const int SIZE = v.size();
 				std::vector<T> tmp(SIZE);
 				std::vector<Key> tmpKey(SIZE);
-				int len = getMaxLength(k);
 				constexpr int curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
 				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(SIZE / 1000), 1000);
 
@@ -1505,6 +1464,20 @@ namespace radix_sort
 				}
 			}
 
+			template <typename T, typename F>
+			requires is_floating_point<invoke_result<T, F>>
+			inline void sort_impl(std::vector<T>& v, F func, int len, std::vector<int>& indices, bool enableMultiThreading)
+			{
+				using Key = invoke_result<T, F>;
+
+				using U = t2u<Key>;
+				const int SIZE = v.size();
+				std::vector<U> vu(SIZE);
+
+				getConvertedVector(v, func, vu, enableMultiThreading);
+				sort_impl(indices, vu, len, enableMultiThreading);
+			}
+
 			// =====================
 			// -----Entry Point-----
 			// =====================
@@ -1523,14 +1496,58 @@ namespace radix_sort
 						);
 				}
 
+				if (isSorted(v, func))
+					return;
+
+				int SIZE = v.size();
 				constexpr int INSERTION_SORT_THRESHOLD = (is_string<Key>) ? 10 : 100;
-				if (v.size() <= INSERTION_SORT_THRESHOLD)
+				if (SIZE <= INSERTION_SORT_THRESHOLD)
 				{
-					insertionSort(v, func, 0, v.size());
+					insertionSort(v, func, 0, SIZE);
 					return;
 				}
 
-				sort_impl(v, func, enableMultiThreading);
+				int len = getMaxLength(v, func);
+				const int COMPLEX_SIZE = sizeof(T);
+				const int INDEX_SIZE = sizeof(int);
+
+				if constexpr (is_floating_point<Key>)
+				{
+					std::vector<int> indices(SIZE);
+					std::iota(indices.begin(), indices.end(), 0);
+					sort_impl(v, func, len, indices, enableMultiThreading);
+					sortByIndices(v, indices, enableMultiThreading);
+				}
+				else
+				{
+					if (COMPLEX_SIZE <= INDEX_SIZE || len <= 1)
+					{
+						sort_impl(v, func, len, enableMultiThreading);
+					}
+					else
+					{
+						std::vector<int> indices(SIZE);
+						std::iota(indices.begin(), indices.end(), 0);
+						
+						if constexpr (is_string<Key>)
+						{
+							auto tmpFunc = [&v, &func](const int& i) -> const Key& { return func(v[i]); };
+							sort_impl(indices, tmpFunc, len, enableMultiThreading);
+						}
+						else
+						{
+							std::vector<Key> k;
+							k.reserve(v.size());
+
+							for (const auto& obj : v)
+								k.emplace_back(func(obj));
+
+							sort_impl(indices, k, len, enableMultiThreading);
+						}
+
+						sortByIndices(v, indices, enableMultiThreading);
+					}
+				}
 			}
 
 			template <typename T, typename F>
