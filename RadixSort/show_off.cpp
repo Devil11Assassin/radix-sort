@@ -28,23 +28,28 @@ const vector<int> show_off::RUN_METHOD =
 
 constexpr int RUN_SIZE = 1e8;
 constexpr int RUN_SIZE_STR = 5e7;
-constexpr bool ENABLE_MULTITHREADING = true;
+constexpr int RUN_SIZE_CLX = 1e7;
+constexpr bool ENABLE_MULTITHREADING = false;
+constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return std::strong_order(a.salary, b.salary) < 0; };
+//constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return a.id < b.id; };
+constexpr auto LAMBDA_CLX = [](const Employee& e) -> const auto& { return e.salary; };
 
 locale lnum = locale("en_US.UTF-8");
 
 const vector<show_off::DataTypeRun> show_off::RUN_DATATYPE =
 {
-	DataTypeRun(  CHAR,		RUN_SIZE, format(lnum,   "CHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( UCHAR,		RUN_SIZE, format(lnum,  "UCHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( SHORT,		RUN_SIZE, format(lnum,	"SHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(USHORT,		RUN_SIZE, format(lnum, "USHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(   INT,		RUN_SIZE, format(lnum,    "INT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(  UINT,		RUN_SIZE, format(lnum,   "UINT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(    LL,		RUN_SIZE, format(lnum,     "LL\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(   ULL,		RUN_SIZE, format(lnum,    "ULL\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( FLOAT,		RUN_SIZE, format(lnum,	"FLOAT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(DOUBLE,		RUN_SIZE, format(lnum, "DOUBLE\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(STRING, RUN_SIZE_STR, format(lnum, "STRING\nSIZE = {:L}\n\n", RUN_SIZE_STR)),
+	DataTypeRun(  UCHAR,     RUN_SIZE, format(lnum,   "UCHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(   CHAR,     RUN_SIZE, format(lnum,    "CHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(  SHORT,     RUN_SIZE, format(lnum,	  "SHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( USHORT,     RUN_SIZE, format(lnum,  "USHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(    INT,     RUN_SIZE, format(lnum,     "INT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(   UINT,     RUN_SIZE, format(lnum,    "UINT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(     LL,     RUN_SIZE, format(lnum,      "LL\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(    ULL,     RUN_SIZE, format(lnum,     "ULL\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun(  FLOAT,     RUN_SIZE, format(lnum,	  "FLOAT\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( DOUBLE,     RUN_SIZE, format(lnum,  "DOUBLE\nSIZE = {:L}\n\n",     RUN_SIZE)),
+	DataTypeRun( STRING, RUN_SIZE_STR, format(lnum,  "STRING\nSIZE = {:L}\n\n", RUN_SIZE_STR)),
+	DataTypeRun(COMPLEX, RUN_SIZE_CLX, format(lnum, "COMPLEX\nSIZE = {:L}\n\n", RUN_SIZE_CLX)),
 };
 #pragma endregion
 
@@ -73,6 +78,27 @@ void show_off::showOff(vector<T>& v, Method method, string& output)
 				break;
 			case RADIX_SORT:
 				radix_sort::sort(vSort, ENABLE_MULTITHREADING);
+				break;
+		}
+	}
+	else if constexpr (same_as<T, Employee>)
+	{
+		switch (method)
+		{
+			case SORT:
+				std::sort(vSort.begin(), vSort.end(), LAMBDA);
+				break;
+			case SORT_PAR:
+				std::sort(std::execution::par, vSort.begin(), vSort.end(), LAMBDA);
+				break;
+			case STABLE_SORT:
+				std::stable_sort(vSort.begin(), vSort.end(), LAMBDA);
+				break;
+			case STABLE_SORT_PAR:
+				std::stable_sort(std::execution::par, vSort.begin(), vSort.end(), LAMBDA);
+				break;
+			case RADIX_SORT:
+				radix_sort::sort(vSort, LAMBDA_CLX, ENABLE_MULTITHREADING);
 				break;
 		}
 	}
@@ -141,7 +167,7 @@ void show_off::showOff(RunParams params)
 		params.INT, params.UINT,
 		params.LL, params.ULL,
 		params.FLOAT, params.DOUBLE,
-		params.STRING };
+		params.STRING, params.COMPLEX };
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -183,6 +209,8 @@ void show_off::showOff(RunParams params)
 				case DataType::STRING:
 					showOff<string>(instance.n, output);
 					break;
+				case DataType::COMPLEX:
+					showOff<Employee>(instance.n, output);
 			}
 			output += "=========================\n\n";
 			cout << output;
@@ -202,21 +230,32 @@ void show_off::validate(vector<T>& v, string& output)
 	auto start = chrono::steady_clock::now();
 	if constexpr (floating_point<T>)
 		std::sort(std::execution::par, vExpected.begin(), vExpected.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
+	else if constexpr (same_as<T, Employee>)
+		std::stable_sort(std::execution::par, vExpected.begin(), vExpected.end(), LAMBDA);
 	else
 		std::sort(std::execution::par, vExpected.begin(), vExpected.end());
 	auto end = chrono::steady_clock::now();
 	auto time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	output += format(lnum, "sort_par = {:L} ms\n", time);
+	if constexpr (same_as<T, Employee>)
+		output += format(lnum, "stable_sort_par = {:L} ms\n", time);
+	else
+		output += format(lnum, "sort_par = {:L} ms\n", time);
 
 	start = chrono::steady_clock::now();
-	radix_sort::sort(vRadix, ENABLE_MULTITHREADING);
+	if constexpr (same_as<T, Employee>)
+		radix_sort::sort(vRadix, LAMBDA_CLX, ENABLE_MULTITHREADING);
+	else
+		radix_sort::sort(vRadix, ENABLE_MULTITHREADING);
 	end = chrono::steady_clock::now();
 	time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 	output += format(lnum, "radix_sort = {:L} ms\n\n", time);
 
-	bool isEqual = (floating_point<T>) ? 
-		ranges::equal(vRadix, vExpected, [](const auto& a, const auto& b) { return std::strong_order(a, b) == 0; }) :
-		ranges::equal(vRadix, vExpected);
+
+	bool isEqual = false;
+	if constexpr (floating_point<T>)
+		isEqual = ranges::equal(vRadix, vExpected, [](const auto& a, const auto& b) { return std::strong_order(a, b) == 0; });
+	else
+		isEqual = ranges::equal(vRadix, vExpected);
 
 	if (isEqual)
 		output += "Sort is valid!\n";
@@ -238,7 +277,7 @@ void show_off::validate(vector<T>& v, string& output)
 						bit_cast<U>(vRadix[i]), bit_cast<U>(vExpected[i]));
 			}
 		}
-		else
+		else if constexpr (!same_as<T, Employee>)
 		{
 			output += "index: (radix value, expected value)\n";
 
@@ -269,7 +308,7 @@ void show_off::validate(RunParams params)
 		params.INT, params.UINT,
 		params.LL, params.ULL,
 		params.FLOAT, params.DOUBLE,
-		params.STRING };
+		params.STRING, params.COMPLEX};
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -311,6 +350,8 @@ void show_off::validate(RunParams params)
 				case DataType::STRING:
 					validate<string>(instance.n, output);
 					break;
+				case DataType::COMPLEX:
+					validate<Employee>(instance.n, output);
 			}
 			output += "=========================\n\n";
 			cout << output;

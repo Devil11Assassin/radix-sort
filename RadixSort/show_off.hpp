@@ -29,21 +29,23 @@ class show_off
 		FLOAT,
 		DOUBLE,
 		STRING,
+		COMPLEX,
 	};
 
 	struct RunParams
 	{
-		const int CHAR	 = 0;
-		const int UCHAR	 = 0;
-		const int SHORT	 = 0;
-		const int USHORT = 0;
-		const int INT	 = 0;
-		const int UINT	 = 0;
-		const int LL	 = 0;
-		const int ULL	 = 0;
-		const int FLOAT	 = 0;
-		const int DOUBLE = 0;
-		const int STRING = 0;
+		const int CHAR	  = 0;
+		const int UCHAR	  = 0;
+		const int SHORT	  = 0;
+		const int USHORT  = 0;
+		const int INT	  = 0;
+		const int UINT	  = 0;
+		const int LL	  = 0;
+		const int ULL	  = 0;
+		const int FLOAT	  = 0;
+		const int DOUBLE  = 0;
+		const int STRING  = 0;
+		const int COMPLEX = 0;
 	};
 
 	struct DataTypeRun {

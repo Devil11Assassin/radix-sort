@@ -7,12 +7,37 @@
 #include <string>
 #include <vector>
 
+struct Employee
+{
+	unsigned long long id = 0L;
+	std::string name = "";
+	double salary = 0.0;
+	uint32_t age = 0;
+
+	Employee() = default;
+
+	Employee(unsigned long long id, std::string name, float salary, unsigned int age)
+		: id(id), name(name), salary(salary), age(age) {
+	}
+
+	bool operator==(const Employee& other) const
+	{
+		return id == other.id 
+			&& name == other.name 
+			&& std::strong_order(salary, other.salary) == 0 
+			&& age == other.age;
+	}
+};
+
 namespace generators
 {
 	namespace internal 
 	{
 		template <typename T>
-		concept unknown = !std::integral<T> && !std::floating_point<T> && !std::same_as<T, std::string>;
+		concept unknown = !std::integral<T> 
+			&& !std::floating_point<T> 
+			&& !std::same_as<T, std::string>
+			&& !std::same_as<T, Employee>;
 
 		inline constexpr int SEED = 69;
 
@@ -102,6 +127,23 @@ namespace generators
 
 				v.emplace_back(std::move(s));
 			}
+
+			return v;
+		}
+
+		template <typename T> requires std::same_as<T, Employee>
+		inline std::vector<T> generate_impl(int n)
+		{
+			std::vector<T> v;
+			v.reserve(n);
+
+			std::vector<long long> ids = generate_impl<long long>(n);
+			std::vector<std::string> names = generate_impl<std::string>(n);
+			std::vector<float> salaries = generate_impl<float>(n);
+			std::vector<int> ages = generate_impl<int>(n);
+
+			for (int i = 0; i < n; i++)
+				v.emplace_back(ids[i], names[i], salaries[i], ages[i]);
 
 			return v;
 		}
