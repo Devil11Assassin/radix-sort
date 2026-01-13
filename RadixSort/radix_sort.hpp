@@ -47,21 +47,33 @@ namespace radix_sort
 			RegionString(int l, int r, int len, int curIndex) : l(l), r(r), len(len), curIndex(curIndex) {}
 		};
 
+		struct RegionNew
+		{
+			int l;
+			int r;
+			int len;
+			int curShiftOrIndex;
+			RegionNew(int l, int r, int len, int curShiftOrIndex) : l(l), r(r), len(len), curShiftOrIndex(curShiftOrIndex) {}
+		};
+
 		// ====================================
 		// -----Concepts & Type Converters-----
 		// ====================================
 		
 		template <typename T>
-		concept integral_sort_lsb = std::integral<T> && sizeof(T) <= 4;
+		concept is_small_integral = std::integral<T> && sizeof(T) <= 4;
 
 		template <typename T>
-		concept integral_sort_msb = std::integral<T> && sizeof(T) > 4;
+		concept is_large_integral = std::integral<T> && sizeof(T) > 4;
 
 		template <typename T>
-		concept string_sort = std::same_as<T, std::string>;
+		concept is_floating_point = std::floating_point<T>;
 
 		template <typename T>
-		concept known = std::integral<T> || std::floating_point<T> || std::same_as<T, std::string>;
+		concept is_string = std::same_as<T, std::string>;
+
+		template <typename T>
+		concept known = std::integral<T> || is_floating_point<T> || is_string<T>;
 
 		template <typename T>
 		concept unknown = !known<T>;
@@ -89,7 +101,7 @@ namespace radix_sort
 		// T sorted by T
 		// =============
 
-		namespace value 
+		namespace value
 		{
 			// =================
 			// -----Helpers-----
@@ -98,6 +110,65 @@ namespace radix_sort
 			inline int getChar(const std::string& s, int index)
 			{
 				return (index < s.length()) ? static_cast<unsigned char>(s[index]) : 256;
+			}
+			
+			template <typename T>
+			inline bool isSorted(std::vector<T>& v)
+			{
+				constexpr auto cmpLess = (is_floating_point<T>) ?
+					[](const T& a, const T& b) { return std::strong_order(a, b) < 0; } :
+					[](const T& a, const T& b) { return a < b; };
+
+				constexpr auto cmpGreater = (is_floating_point<T>) ?
+					[](const T& a, const T& b) { return std::strong_order(a, b) > 0; } :
+					[](const T& a, const T& b) { return a > b; };
+
+				bool sortedAsc = true;
+				bool sortedDesc = true;
+
+				for (int i = 0, size = v.size() - 1; i < size; i++)
+				{
+					if (sortedAsc && cmpGreater(v[i], v[i + 1]))
+						sortedAsc = false;
+
+					if (sortedDesc && cmpLess(v[i], v[i + 1]))
+						sortedDesc = false;
+
+					if (!sortedAsc && !sortedDesc)
+						break;
+				}
+
+				if (sortedAsc)
+					return true;
+				else if (sortedDesc)
+				{
+					std::reverse(v.begin(), v.end());
+					return true;
+				}
+
+				return false;
+			}
+
+			template <typename T>
+			inline void insertionSort(std::vector<T>& v, int l, int r)
+			{
+				constexpr auto cmp = (is_floating_point<T>) ?
+					[](const T& a, const T& b) { return std::strong_order(a, b) < 0; } :
+					[](const T& a, const T& b) { return a < b; };
+
+				for (int i = l + 1; i < r; i++)
+				{
+					T val = std::move(v[i]);
+					int j = i - 1;
+
+					while (j >= l && cmp(val, v[j]))
+					{
+						v[j + 1] = std::move(v[j]);
+						j--;
+					}
+
+					v[j + 1] = std::move(val);
+				}
 			}
 
 			template <typename T>
@@ -119,7 +190,7 @@ namespace radix_sort
 						maxVal >>= SHIFT_BITS;
 					}
 				}
-				else if constexpr (std::same_as<T, std::string>)
+				else if constexpr (is_string<T>)
 				{
 					len = (*std::max_element(v.begin(), v.end(),
 						[](const std::string& a, const std::string& b) {
@@ -131,68 +202,9 @@ namespace radix_sort
 			}
 
 			template <typename T>
-			inline bool isSorted(std::vector<T>& v)
-			{
-				constexpr auto cmpLess = (std::floating_point<T>) ?
-					[](const T& a, const T& b) { return std::strong_order(a, b) < 0; } :
-					[](const T& a, const T& b) { return a < b; };
-
-				constexpr auto cmpGreater = (std::floating_point<T>) ?
-					[](const T& a, const T& b) { return std::strong_order(a, b) > 0; } :
-					[](const T& a, const T& b) { return a > b; };
-
-				bool sortedAsc = true;
-				bool sortedDesc = true;
-
-				for (int i = 0, size = v.size() - 1; i < size; i++)
-				{
-					if (sortedAsc && cmpGreater(v[i], v[i + 1]))
-						sortedAsc = false;
-					
-					if (sortedDesc && cmpLess(v[i], v[i + 1]))
-						sortedDesc = false;
-					
-					if (!sortedAsc && !sortedDesc)
-						break;
-				}
-
-				if (sortedAsc)
-					return true;
-				else if (sortedDesc)
-				{
-					std::reverse(v.begin(), v.end());
-					return true;
-				}
-
-				return false;
-			}
-
-			template<typename T>
-			inline void insertionSort(std::vector<T>& v, int l, int r)
-			{
-				constexpr auto cmp = (std::floating_point<T>) ?
-					[](const T& a, const T& b) { return std::strong_order(a, b) < 0; } :
-					[](const T& a, const T& b) { return a < b; };
-
-				for (int i = l + 1; i < r; i++)
-				{
-					T val = std::move(v[i]);
-					int j = i - 1;
-
-					while (j >= l && cmp(val, v[j]))
-					{
-						v[j + 1] = std::move(v[j]);
-						j--;
-					}
-
-					v[j + 1] = std::move(val);
-				}
-			}
-
-			template<typename T>
 			inline void getCountVectorThread(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r)
 			{
-				if constexpr (std::same_as<T, std::string>)
+				if constexpr (is_string<T>)
 				{
 					for (int i = l; i < r; i++)
 						count[getChar(v[i], curShiftOrIndex)]++;
@@ -219,7 +231,7 @@ namespace radix_sort
 				}
 			}
 
-			template<typename T>
+			template <typename T>
 			inline void getCountVector(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r, bool enableMultiThreading)
 			{
 				const int SIZE = r - l;
@@ -231,7 +243,7 @@ namespace radix_sort
 				}
 				else
 				{
-					constexpr int ALLOC_SIZE = (std::same_as<T, std::string>) ? CHARS_ALLOC : BASE;
+					constexpr int ALLOC_SIZE = (is_string<T>) ? CHARS_ALLOC : BASE;
 
 					threadCount = std::min(threadCount, static_cast<int>(std::thread::hardware_concurrency()));
 					int bucketSize = SIZE / threadCount;
@@ -257,32 +269,99 @@ namespace radix_sort
 				}
 			}
 
-			template<typename T, typename TRegion>
-			inline void sortInstance(std::vector<T>& v, std::vector<T>& tmp,
-				std::vector<TRegion>& regions, std::unique_lock<std::mutex>& lkRegions,
-				TRegion initialRegion, bool multiThreaded)
+			template <typename T>
+			inline void getPrefixVector(std::vector<int>& prefix, std::vector<int>& count, int l)
 			{
-				std::vector<TRegion> regionsLocal;
+				if constexpr (is_string<T>)
+				{
+					prefix[256] = l;
+					prefix[0] = prefix[256] + count[256];
+				}
+				else
+				{
+					prefix[0] = l;
+				}
+
+				for (int i = 1; i < BASE; i++)
+					prefix[i] = prefix[i - 1] + count[i - 1];
+			}
+
+			template <typename T>
+			inline void getUpdatedVector(std::vector<T>& v, std::vector<T>& tmp, std::vector<int>& prefix, int curShift)
+			{
+				if constexpr (std::unsigned_integral<T>)
+				{
+					for (const auto& num : v)
+						tmp[prefix[(num >> curShift) & MASK]++] = num;
+				}
+				else if constexpr (std::signed_integral<T>)
+				{
+					constexpr int MAX_SHIFT = (sizeof(T) - 1) * 8;
+
+					if (curShift != MAX_SHIFT)
+					{
+						for (const auto& num : v)
+							tmp[prefix[(static_cast<t2u<T>>(num) >> curShift) & MASK]++] = num;
+					}
+					else
+					{
+						for (const auto& num : v)
+							tmp[prefix[((static_cast<t2u<T>>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
+					}
+				}
+			}
+
+			template <typename T>
+			inline void getUpdatedVector(std::vector<T>& v, std::vector<T>& tmp, std::vector<int>& prefix, int curShiftOrIndex, int l, int r)
+			{
+				if constexpr (is_string<T>)
+				{
+					for (int i = l; i < r; i++)
+						tmp[prefix[getChar(v[i], curShiftOrIndex)]++] = std::move(v[i]);
+				}
+				else if constexpr (std::unsigned_integral<T>)
+				{
+					for (int i = l; i < r; i++)
+						tmp[prefix[(v[i] >> curShiftOrIndex) & MASK]++] = v[i];
+				}
+				else if constexpr (std::signed_integral<T>)
+				{
+					constexpr int MAX_SHIFT = (sizeof(T) - 1) * 8;
+
+					if (curShiftOrIndex != MAX_SHIFT)
+					{
+						for (int i = l; i < r; i++)
+							tmp[prefix[(static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK]++] = v[i];
+					}
+					else
+					{
+						for (int i = l; i < r; i++)
+							tmp[prefix[((static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++] = v[i];
+					}
+				}
+			}
+
+			template <typename T>
+			inline void sortInstance(std::vector<T>& v, std::vector<T>& tmp,
+				std::vector<RegionNew>& regions, std::unique_lock<std::mutex>& lkRegions,
+				RegionNew initialRegion, bool enableMultiThreading)
+			{
+				std::vector<RegionNew> regionsLocal;
 				regionsLocal.reserve(v.size() / 100);
 				regionsLocal.emplace_back(initialRegion);
 
-				constexpr int INSERTION_SORT_THRESHOLD = (std::same_as<T, std::string>) ? 10 : 100;
-				constexpr int ALLOC_SIZE = (std::same_as<T, std::string>) ? CHARS_ALLOC : BASE;
+				constexpr int INSERTION_SORT_THRESHOLD = (is_string<T>) ? 10 : 100;
+				constexpr int ALLOC_SIZE = (is_string<T>) ? CHARS_ALLOC : BASE;
 
 				while (regionsLocal.size())
 				{
-					TRegion region = std::move(regionsLocal.back());
+					RegionNew region = std::move(regionsLocal.back());
 					regionsLocal.pop_back();
 
 					int l = region.l;
 					int r = region.r;
 					int len = region.len;
-					int curShiftOrIndex;
-
-					if constexpr (std::same_as<TRegion, RegionString>)
-						curShiftOrIndex = region.curIndex;
-					else
-						curShiftOrIndex = (len - 1) * SHIFT_BITS;
+					int curShiftOrIndex = region.curShiftOrIndex;
 
 					if (r - l < 2 || len == 0)
 						continue;
@@ -296,46 +375,9 @@ namespace radix_sort
 					std::vector<int> count(ALLOC_SIZE);
 					std::vector<int> prefix(ALLOC_SIZE);
 
-					getCountVector(v, count, curShiftOrIndex, l, r, multiThreaded);
-
-					if constexpr (std::same_as<T, std::string>)
-					{
-						prefix[256] = l;
-						prefix[0] = prefix[256] + count[256];
-					}
-					else
-					{
-						prefix[0] = l;
-					}
-
-					for (int i = 1; i < BASE; i++)
-						prefix[i] = prefix[i - 1] + count[i - 1];
-
-					if constexpr (std::same_as<T, std::string>)
-					{
-						for (int i = l; i < r; i++)
-							tmp[prefix[getChar(v[i], curShiftOrIndex)]++] = std::move(v[i]);
-					}
-					else if constexpr (std::unsigned_integral<T>)
-					{
-						for (int i = l; i < r; i++)
-							tmp[prefix[(v[i] >> curShiftOrIndex) & MASK]++] = v[i];
-					}
-					else if constexpr (std::signed_integral<T>)
-					{
-						constexpr int MAX_SHIFT = (sizeof(T) - 1) * 8;
-
-						if (curShiftOrIndex != MAX_SHIFT)
-						{
-							for (int i = l; i < r; i++)
-								tmp[prefix[(static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK]++] = v[i];
-						}
-						else
-						{
-							for (int i = l; i < r; i++)
-								tmp[prefix[((static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++] = v[i];
-						}
-					}
+					getCountVector(v, count, curShiftOrIndex, l, r, enableMultiThreading);
+					getPrefixVector<T>(prefix, count, l);
+					getUpdatedVector(v, tmp, prefix, curShiftOrIndex, l, r);
 
 					std::move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
 
@@ -343,37 +385,34 @@ namespace radix_sort
 					if (len == 0)
 						continue;
 
-					if constexpr (std::same_as<T, std::string>)
-						curShiftOrIndex++;
-
-					if (!multiThreaded)
+					int start = 0;
+					if constexpr (is_string<T>)
 					{
-						if constexpr (std::same_as<T, std::string>)
+						start = l + count[256];
+						curShiftOrIndex++;
+					}
+					else
+					{
+						start = l;
+						curShiftOrIndex -= SHIFT_BITS;
+					}
+
+					if (!enableMultiThreading)
+					{
+						for (int i = 0; i < BASE; i++)
 						{
-							for (int i = 0, start = l + count[256]; i < CHARS; i++)
-							{
-								if (count[i] > 1)
-									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-								start += count[i];
-							}
-						}
-						else
-						{
-							for (int i = 0, start = l; i < BASE; i++)
-							{
-								if (count[i] > 1)
-									regionsLocal.emplace_back(start, start + count[i], len);
-								start += count[i];
-							}
+							if (count[i] > 1)
+								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
+							start += count[i];
 						}
 					}
 					else
 					{
 						const int LOCAL_BUCKET_THRESHOLD = std::max((r - l) / 1000, 1000);
 
-						if constexpr (std::same_as<T, std::string>)
+						for (int i = 0; i < CHARS; i++)
 						{
-							for (int i = 0, start = l + count[256]; i < CHARS; i++)
+							if (count[i] > 1)
 							{
 								if (count[i] < LOCAL_BUCKET_THRESHOLD)
 									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
@@ -383,32 +422,17 @@ namespace radix_sort
 									regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
 									lkRegions.unlock();
 								}
-								start += count[i];
 							}
-						}
-						else
-						{
-							for (int i = 0, start = l; i < BASE; i++)
-							{
-								if (count[i] < LOCAL_BUCKET_THRESHOLD)
-									regionsLocal.emplace_back(start, start + count[i], len);
-								else
-								{
-									lkRegions.lock();
-									regions.emplace_back(start, start + count[i], len);
-									lkRegions.unlock();
-								}
-								start += count[i];
-							}
+							start += count[i];
 						}
 					}
 				}
 			}
 
-			template<typename T, typename TRegion>
+			template <typename T>
 			inline void sortThread(std::vector<T>& v, std::vector<T>& tmp,
-				std::vector<TRegion>& regions, std::mutex& regionsLock,
-				std::atomic<int>& runningCounter, int threadIndex)
+				std::vector<RegionNew>& regions, std::mutex& regionsLock,
+				int& runningCounter, int threadIndex)
 			{
 				std::unique_lock<std::mutex> lkRegions(regionsLock, std::defer_lock);
 
@@ -421,9 +445,8 @@ namespace radix_sort
 					lkRegions.lock();
 					if (regions.size())
 					{
-						TRegion region = std::move(regions.back());
+						RegionNew region = std::move(regions.back());
 						regions.pop_back();
-						lkRegions.unlock();
 
 						if (isIdle)
 						{
@@ -432,11 +455,11 @@ namespace radix_sort
 							iterationsIdle = 0;
 						}
 
+						lkRegions.unlock();
 						sortInstance(v, tmp, regions, lkRegions, region, 1);
 					}
 					else
 					{
-						lkRegions.unlock();
 
 						if (!isIdle)
 						{
@@ -444,9 +467,13 @@ namespace radix_sort
 							runningCounter--;
 						}
 
-						if (runningCounter.load() == 0)
+						if (runningCounter == 0)
+						{
+							lkRegions.unlock();
 							break;
+						}
 
+						lkRegions.unlock();
 						iterationsIdle++;
 
 						if (ALLOW_SLEEP && iterationsIdle > 100)
@@ -462,68 +489,35 @@ namespace radix_sort
 			// -----Implementation Declarations-----
 			// =====================================
 		
-			template<integral_sort_lsb T>
+			template <is_small_integral T>
 			inline void sort_impl(std::vector<T>&, bool);
 
-			template<std::floating_point T>
+			template <is_floating_point T>
 			inline void sort_impl(std::vector<T>&, bool);
 
-			template<typename T> requires (integral_sort_msb<T> || string_sort<T>)
-			inline void sort_impl(std::vector<T>&, bool);
-
-			template<unknown T>
+			template <typename T> requires (is_large_integral<T> || is_string<T>)
 			inline void sort_impl(std::vector<T>&, bool);
 		
 			// ====================================
 			// -----Implementation Definitions-----
 			// ====================================
 		
-			template<integral_sort_lsb T>
+			template <is_small_integral T>
 			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 			{
-				if (isSorted(v))
-					return;
-
-				if (v.size() <= 100)
-				{
-					insertionSort(v, 0, v.size());
-					return;
-				}
-
+				const int SIZE = v.size();
+				std::vector<T> tmp(SIZE);
 				int len = getMaxLength(v);
-
-				std::vector<T> tmp(v.size());
 				int curShift = 0;
-				constexpr int MAX_SHIFT = (sizeof(T) - 1) * 8;
 
 				while (len--)
 				{
 					std::vector<int> count(BASE);
 					std::vector<int> prefix(BASE);
 
-					getCountVector(v, count, curShift, 0, v.size(), enableMultiThreading);
-
-					for (int i = 1; i < BASE; i++)
-						prefix[i] = prefix[i - 1] + count[i - 1];
-
-					if constexpr (std::unsigned_integral<T>)
-					{
-						for (const auto& num : v)
-							tmp[prefix[(num >> curShift) & MASK]++] = num;
-					}
-					else if constexpr (std::signed_integral<T>)
-					{
-						if (curShift != MAX_SHIFT)
-						{
-							for (const auto& num : v)
-								tmp[prefix[(static_cast<t2u<T>>(num) >> curShift) & MASK]++] = num;
-						}
-						else
-						{
-							for (const auto& num : v)
-								tmp[prefix[((static_cast<t2u<T>>(num) >> curShift) & MASK) ^ INVERT_MASK]++] = num;
-						}
-					}
+					getCountVector(v, count, curShift, 0, SIZE, enableMultiThreading);
+					getPrefixVector<T>(prefix, count, 0);
+					getUpdatedVector(v, tmp, prefix, curShift);
 
 					std::swap(v, tmp);
 
@@ -531,29 +525,14 @@ namespace radix_sort
 				}
 			}
 
-			template<std::floating_point T>
+			template <is_floating_point T>
 			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 			{
-				static_assert(
-					std::numeric_limits<T>::is_iec559,
-					"ERROR: generators.hpp requires IEEE-754/IEC-559 compliance.\n"
-				);
-
-				if (isSorted(v))
-					return;
-
-				if (v.size() <= 100)
-				{
-					insertionSort(v, 0, v.size());
-					return;
-				}
-
-				const int SIZE = v.size();
-
 				using U = t2u<T>;
 				constexpr int SIGN_SHIFT = (sizeof(T) * 8) - 1;
 				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
 
+				const int SIZE = v.size();
 				std::vector<U> vu(SIZE);
 
 				for (int i = 0; i < SIZE; i++)
@@ -571,77 +550,78 @@ namespace radix_sort
 				}
 			}
 
-			template<typename T> requires (integral_sort_msb<T> || string_sort<T>)
+			template <typename T> requires (is_large_integral<T> || is_string<T>)
 			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 			{
+				const int SIZE = v.size();
+				std::vector<T> tmp(SIZE);
+				int len = getMaxLength(v);
+				constexpr int curShiftOrIndex = (is_string<T>) ? 0 : (sizeof(T) - 1) * 8;
+				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(SIZE / 1000), 1000);
+
+				if (!enableMultiThreading || static_cast<int>(SIZE / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				{
+					std::mutex tmpMutex;
+					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
+
+					std::vector<RegionNew> tmpVector;
+					sortInstance(v, tmp, tmpVector, tmpLock, RegionNew(0, SIZE, len, curShiftOrIndex), false);
+				}
+				else
+				{
+					int numOfThreads = std::thread::hardware_concurrency();
+					std::vector<std::thread> threads;
+					std::mutex regionsLock;
+					std::mutex idleLock;
+					int runningCounter = numOfThreads;
+
+					std::vector<RegionNew> regions;
+					regions.reserve(SIZE / 1000);
+					regions.emplace_back(0, SIZE, len, curShiftOrIndex);
+					for (int i = 0; i < numOfThreads; i++)
+					{
+						threads.emplace_back([&v, &tmp, &regions, &regionsLock, &runningCounter, i]() {
+							sortThread(v, tmp, regions, regionsLock, runningCounter, i);
+						});
+					}
+
+					for (auto& t : threads)
+						t.join();
+				}
+			}
+
+			// =====================
+			// -----Entry Point-----
+			// =====================
+
+			template <known T>
+			inline void sort_dispatcher(std::vector<T>& v, bool enableMultiThreading)
+			{
+				if constexpr (is_floating_point<T>)
+				{
+					static_assert(
+						std::numeric_limits<T>::is_iec559,
+						"ERROR: generators.hpp requires IEEE-754/IEC-559 compliance.\n"
+					);
+				}
+
 				if (isSorted(v))
 					return;
 
-				constexpr int INSERTION_SORT_THRESHOLD = (std::same_as<T, std::string>) ? 10 : 100;
+				constexpr int INSERTION_SORT_THRESHOLD = (is_string<T>) ? 10 : 100;
 				if (v.size() <= INSERTION_SORT_THRESHOLD)
 				{
 					insertionSort(v, 0, v.size());
 					return;
 				}
 
-				int len = getMaxLength(v);
-
-				int numOfThreads = std::thread::hardware_concurrency();
-				const int LOCAL_BUCKET_THRESHOLD = std::max(static_cast<int>(v.size() / 1000), 1000);
-				std::vector<T> tmp(v.size());
-
-				if (!enableMultiThreading || static_cast<int>(v.size() / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
-				{
-					std::mutex tmpMutex;
-					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
-
-					if constexpr (std::same_as<T, std::string>)
-					{
-						std::vector<RegionString> tmpVector;
-						sortInstance(v, tmp, tmpVector, tmpLock, RegionString(0, v.size(), len, 0), 0);
-					}
-					else
-					{
-						std::vector<RegionIntegral> tmpVector;
-						sortInstance(v, tmp, tmpVector, tmpLock, RegionIntegral(0, v.size(), len), 0);
-					}
-				}
-				else
-				{
-					std::vector<std::thread> threads;
-					std::mutex regionsLock;
-					std::mutex idleLock;
-					std::atomic<int> runningCounter = numOfThreads;
-
-					if constexpr (std::same_as<T, std::string>)
-					{
-						std::vector<RegionString> regions;
-						regions.reserve(v.size() / 1000);
-						regions.emplace_back(0, v.size(), len, 0);
-						for (int i = 0; i < numOfThreads; i++)
-							threads.emplace_back(sortThread<T, RegionString>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
-
-						for (auto& t : threads)
-							t.join();
-					}
-					else
-					{
-						std::vector<RegionIntegral> regions;
-						regions.reserve(v.size() / 1000);
-						regions.emplace_back(0, v.size(), len);
-						for (int i = 0; i < numOfThreads; i++)
-							threads.emplace_back(sortThread<T, RegionIntegral>, std::ref(v), std::ref(tmp), std::ref(regions), std::ref(regionsLock), std::ref(runningCounter), i);
-
-						for (auto& t : threads)
-							t.join();
-					}
-				}
+				sort_impl(v, enableMultiThreading);
 			}
 
-			template<unknown T>
-			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
+			template <unknown T>
+			inline void sort_dispatcher(std::vector<T>& v, bool enableMultiThreading)
 			{
-				static_assert(sizeof(T) == 0, 
+				static_assert(sizeof(T) == 0,
 					"ERROR: Unable to sort vector! CAUSE: Unsupported type!\n");
 			}
 		}
@@ -680,7 +660,7 @@ namespace radix_sort
 						maxVal >>= SHIFT_BITS;
 					}
 				}
-				else if constexpr (std::same_as<T, std::string>)
+				else if constexpr (is_string<T>)
 				{
 					len = (*std::max_element(v.begin(), v.end(),
 						[](const std::string& a, const std::string& b) {
@@ -733,7 +713,7 @@ namespace radix_sort
 			{
 				using Key = invoke_result<T, F>;
 
-				constexpr auto cmp = (std::floating_point<Key>) ?
+				constexpr auto cmp = (is_floating_point<Key>) ?
 					[](const Key& a, const Key& b) { return std::strong_order(a, b) < 0; } :
 					[](const Key& a, const Key& b) { return a < b; };
 
@@ -756,7 +736,7 @@ namespace radix_sort
 			template<typename T, known Key>
 			inline void insertionSort(std::vector<T>& v, std::vector<Key>& k, int l, int r)
 			{
-				constexpr auto cmp = (std::floating_point<Key>) ?
+				constexpr auto cmp = (is_floating_point<Key>) ?
 					[](const Key& a, const Key& b) { return std::strong_order(a, b) < 0; } :
 					[](const Key& a, const Key& b) { return a < b; };
 
@@ -1407,22 +1387,22 @@ namespace radix_sort
 			// =====================================
 
 			template <typename T, typename F> 
-			requires sort_helper<T, F> && integral_sort_lsb<invoke_result<T, F>>
+			requires sort_helper<T, F> && is_small_integral<invoke_result<T, F>>
 			inline void sort_impl(std::vector<T>&, F, bool);
 
-			template <typename T, integral_sort_lsb Key> 
+			template <typename T, is_small_integral Key> 
 			inline void sort_impl(std::vector<T>&, std::vector<Key>&, bool);
 			
 			template <typename T, typename F>
-			requires sort_helper<T, F> && std::floating_point<invoke_result<T, F>>
+			requires sort_helper<T, F> && is_floating_point<invoke_result<T, F>>
 			inline void sort_impl(std::vector<T>&, F, bool);
 
 			template <typename T, typename F>
-			requires sort_helper <T, F> && (integral_sort_msb<invoke_result<T, F>> || string_sort<invoke_result<T, F>>)
+			requires sort_helper <T, F> && (is_large_integral<invoke_result<T, F>> || is_string<invoke_result<T, F>>)
 			inline void sort_impl(std::vector<T>&, F, bool);
 
 			template <typename T, typename Key>
-			requires (integral_sort_msb<Key> || string_sort<Key>)
+			requires (is_large_integral<Key> || is_string<Key>)
 			inline void sort_impl(std::vector<T>&, std::vector<Key>&, bool);
 
 			template<typename T, typename F>
@@ -1434,7 +1414,7 @@ namespace radix_sort
 			// ====================================
 
 			template <typename T, typename F>
-			requires sort_helper<T, F> && integral_sort_lsb<invoke_result<T, F>>
+			requires sort_helper<T, F> && is_small_integral<invoke_result<T, F>>
 			inline void sort_impl(std::vector<T>& v, F func, bool enableMultiThreading)
 			{
 				using Key = invoke_result<T, F>;
@@ -1486,7 +1466,7 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, integral_sort_lsb Key>
+			template <typename T, is_small_integral Key>
 			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, bool enableMultiThreading)
 			{
 				const int SIZE = v.size();
@@ -1558,7 +1538,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename F>
-			requires sort_helper<T, F> && std::floating_point<invoke_result<T, F>>
+			requires sort_helper<T, F> && is_floating_point<invoke_result<T, F>>
 			inline void sort_impl(std::vector<T>& v, F func, bool enableMultiThreading)
 			{
 				using Key = invoke_result<T, F>;
@@ -1613,7 +1593,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename F>
-			requires sort_helper <T, F> && (integral_sort_msb<invoke_result<T, F>> || string_sort<invoke_result<T, F>>)
+			requires sort_helper <T, F> && (is_large_integral<invoke_result<T, F>> || is_string<invoke_result<T, F>>)
 			inline void sort_impl(std::vector<T>& v, F func, bool enableMultiThreading)
 			{
 				using Key = invoke_result<T, F>;
@@ -1690,7 +1670,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Key>
-			requires (integral_sort_msb<Key> || string_sort<Key>)
+			requires (is_large_integral<Key> || is_string<Key>)
 			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, bool enableMultiThreading)
 			{
 				constexpr int INSERTION_SORT_THRESHOLD = (std::same_as<Key, std::string>) ? 10 : 100;
@@ -1782,7 +1762,7 @@ namespace radix_sort
 	template<typename T>
 	inline void sort(std::vector<T>& v, bool enableMultiThreading = false)
 	{
-		internal::value::sort_impl(v, enableMultiThreading);
+		internal::value::sort_dispatcher(v, enableMultiThreading);
 	}
 
 	template <typename T, typename F>
