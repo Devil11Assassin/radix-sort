@@ -201,6 +201,60 @@ namespace radix_sort
 				return len;
 			}
 
+			template <typename T, typename U>
+			inline void getConvertedVectorThread(std::vector<T>& v, std::vector<U>& vu, bool reverse, int l, int r)
+			{
+				constexpr int SIGN_SHIFT = (sizeof(T) * 8) - 1;
+				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
+
+				if (!reverse)
+				{
+					for (int i = l; i < r; i++)
+					{
+						std::memcpy(&vu[i], &v[i], sizeof(T));
+						vu[i] = (vu[i] >> SIGN_SHIFT) ? ~vu[i] : vu[i] ^ SIGN_MASK;
+					}
+				}
+				else
+				{
+					for (int i = l; i < r; i++)
+					{
+						vu[i] = (vu[i] >> SIGN_SHIFT) ? vu[i] ^ SIGN_MASK : ~vu[i];
+						std::memcpy(&v[i], &vu[i], sizeof(T));
+					}
+				}
+			}
+
+			template <typename T, typename U>
+			inline void getConvertedVector(std::vector<T>& v, std::vector<U>& vu, bool reverse, bool enableMultiThreading)
+			{
+				const int SIZE = v.size();
+				int threadCount = static_cast<int>(ceil(SIZE / BUCKET_THRESHOLD));
+
+				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+				{
+					getConvertedVectorThread(v, vu, reverse, 0, SIZE);
+				}
+				else
+				{
+					std::vector<std::thread> threads;
+					threadCount = std::min(threadCount, static_cast<int>(std::thread::hardware_concurrency()));
+					int bucketSize = SIZE / threadCount;
+
+					for (int i = 0; i < threadCount; i++)
+					{
+						int start = i * bucketSize;
+						int end = (i == threadCount - 1) ? SIZE : start + bucketSize;
+						threads.emplace_back([&v, &vu, reverse, start, end]() {
+							getConvertedVectorThread(v, vu, reverse, start, end);
+							});
+					}
+
+					for (auto& t : threads)
+						t.join();
+				}
+			}
+
 			template <typename T>
 			inline void getCountVectorThread(std::vector<T>& v, std::vector<int>& count, int curShiftOrIndex, int l, int r)
 			{
@@ -529,25 +583,12 @@ namespace radix_sort
 			inline void sort_impl(std::vector<T>& v, bool enableMultiThreading)
 			{
 				using U = t2u<T>;
-				constexpr int SIGN_SHIFT = (sizeof(T) * 8) - 1;
-				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
-
 				const int SIZE = v.size();
 				std::vector<U> vu(SIZE);
 
-				for (int i = 0; i < SIZE; i++)
-				{
-					std::memcpy(&vu[i], &v[i], sizeof(T));
-					vu[i] = (vu[i] >> SIGN_SHIFT) ? ~vu[i] : vu[i] ^ SIGN_MASK;
-				}
-
+				getConvertedVector(v, vu, false, enableMultiThreading);
 				sort_impl<U>(vu, enableMultiThreading);
-
-				for (int i = 0; i < SIZE; i++)
-				{
-					vu[i] = (vu[i] >> SIGN_SHIFT) ? vu[i] ^ SIGN_MASK : ~vu[i];
-					std::memcpy(&v[i], &vu[i], sizeof(T));
-				}
+				getConvertedVector(v, vu, true, enableMultiThreading);
 			}
 
 			template <typename T> requires (is_large_integral<T> || is_string<T>)
