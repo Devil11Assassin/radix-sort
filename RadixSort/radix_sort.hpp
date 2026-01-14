@@ -1570,9 +1570,12 @@ namespace radix_sort
 		internal::value::sort_dispatcher(v, enableMultiThreading);
 	}
 
-	template <typename T, typename F>
-	inline void sort(std::vector<T>& v, F func, bool enableMultiThreading = false)
+	template <typename T, typename Proj = std::identity>
+	inline void sort(std::vector<T>& v, Proj proj = {}, bool enableMultiThreading = false)
 	{
-		internal::key::sort_dispatcher(v, func, enableMultiThreading);
+		if constexpr (std::same_as<std::remove_cvref_t<Proj>, std::identity>)
+			internal::value::sort_dispatcher(v, enableMultiThreading);
+		else
+			internal::key::sort_dispatcher(v, proj, enableMultiThreading);
 	}
 };

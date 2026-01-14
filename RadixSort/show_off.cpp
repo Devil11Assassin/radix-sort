@@ -5,9 +5,7 @@
 #include <chrono>
 #include <concepts>
 #include <execution>
-#include <format>
 #include <iostream>
-#include <locale>
 #include <type_traits>
 
 #include "generators.hpp"
@@ -23,151 +21,174 @@ const vector<int> show_off::RUN_METHOD =
 	1, // SORT_PAR
 	1, // STABLE_SORT
 	1, // STABLE_SORT_PAR
-	1  // RADIX_SORT
+	1, // RADIX_SORT
+	1, // RADIX_SORT_PAR
 };
 
 constexpr int RUN_SIZE = 1e8;
 constexpr int RUN_SIZE_STR = 5e7;
 constexpr int RUN_SIZE_CLX = 1e7;
 constexpr bool ENABLE_MULTITHREADING = true;
-//constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return std::strong_order(a.salary, b.salary) < 0; };
-constexpr auto LAMBDA = [](const Employee& a, const Employee& b) -> const auto& { return a.id < b.id; };
-constexpr auto LAMBDA_CLX = [](const Employee& e) -> const auto& { return e.id; };
 
-locale lnum = locale("en_US.UTF-8");
+const locale show_off::lnum = locale("en_US.UTF-8");
+
+const vector<string> show_off::method2str =
+{
+	"sort", "sort_par", "stable_sort", "stable_sort_par", "radix_sort", "radix_sort_par",
+};
+
+const vector<string> show_off::type2str =
+{
+	"CHAR", "UCHAR", "SHORT", "USHORT",	"INT", "UINT", "LL", "ULL", "FLOAT", "DOUBLE", "STRING", 
+	"COMPLEX_I32", "COMPLEX_LL", "COMPLEX_FP", "COMPLEX_STR",
+};
+
+struct Timer
+{
+	chrono::steady_clock::time_point start_point;
+	chrono::steady_clock::time_point end_point;
+
+	Timer()
+	{
+		start_point = chrono::steady_clock::now();
+		end_point = start_point;
+	};
+
+	void start()
+	{
+		start_point = chrono::steady_clock::now();
+	}
+
+	long long stop()
+	{
+		end_point = chrono::steady_clock::now();
+		auto time = chrono::duration_cast<chrono::milliseconds>(end_point - start_point).count();
+		start_point = end_point;
+		return time;
+	}
+};
 
 const vector<show_off::DataTypeRun> show_off::RUN_DATATYPE =
 {
-	DataTypeRun(  UCHAR,     RUN_SIZE, format(lnum,   "UCHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(   CHAR,     RUN_SIZE, format(lnum,    "CHAR\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(  SHORT,     RUN_SIZE, format(lnum,	  "SHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( USHORT,     RUN_SIZE, format(lnum,  "USHORT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(    INT,     RUN_SIZE, format(lnum,     "INT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(   UINT,     RUN_SIZE, format(lnum,    "UINT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(     LL,     RUN_SIZE, format(lnum,      "LL\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(    ULL,     RUN_SIZE, format(lnum,     "ULL\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun(  FLOAT,     RUN_SIZE, format(lnum,	  "FLOAT\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( DOUBLE,     RUN_SIZE, format(lnum,  "DOUBLE\nSIZE = {:L}\n\n",     RUN_SIZE)),
-	DataTypeRun( STRING, RUN_SIZE_STR, format(lnum,  "STRING\nSIZE = {:L}\n\n", RUN_SIZE_STR)),
-	DataTypeRun(COMPLEX, RUN_SIZE_CLX, format(lnum, "COMPLEX\nSIZE = {:L}\n\n", RUN_SIZE_CLX)),
+	DataTypeRun(       CHAR,     RUN_SIZE),
+	DataTypeRun(      UCHAR,     RUN_SIZE),
+	DataTypeRun(      SHORT,     RUN_SIZE),
+	DataTypeRun(     USHORT,     RUN_SIZE),
+	DataTypeRun(        INT,     RUN_SIZE),
+	DataTypeRun(       UINT,     RUN_SIZE),
+	DataTypeRun(         LL,     RUN_SIZE),
+	DataTypeRun(        ULL,     RUN_SIZE),
+	DataTypeRun(      FLOAT,     RUN_SIZE),
+	DataTypeRun(     DOUBLE,     RUN_SIZE),
+	DataTypeRun(     STRING, RUN_SIZE_STR),
+	DataTypeRun(COMPLEX_I32, RUN_SIZE_CLX),
+	DataTypeRun( COMPLEX_LL, RUN_SIZE_CLX),
+	DataTypeRun( COMPLEX_FP, RUN_SIZE_CLX),
+	DataTypeRun(COMPLEX_STR, RUN_SIZE_CLX),
 };
+
+template <typename T, typename U>
+constexpr auto getLambdaSTD()
+{
+	if constexpr (floating_point<T>)
+		return [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; };
+	else if constexpr (same_as<T, Employee>)
+	{
+		if constexpr (same_as<U, int32_t>)
+			return [](const Employee& a, const Employee& b) -> const auto& { return a.age < b.age; };
+		else if constexpr (same_as<U, long long>)
+			return [](const Employee& a, const Employee& b) -> const auto& { return a.id < b.id; };
+		else if constexpr (floating_point<U>)
+			return [](const Employee& a, const Employee& b) -> const auto& { return std::strong_order(a.salary, b.salary) < 0; };
+		else if constexpr (same_as<U, string>)
+			return [](const Employee& a, const Employee& b) -> const auto& { return a.name < b.name; };
+	}
+	else
+		return std::less<>();
+}
+
+template <typename T, typename U>
+constexpr auto getLambdaRDX()
+{
+	if constexpr (same_as<T, Employee>)
+	{
+		if constexpr (same_as<U, int32_t>)
+			return [](const Employee& e) -> const auto& { return e.age; };
+		else if constexpr (same_as<U, long long>)
+			return [](const Employee& e) -> const auto& { return e.id; };
+		else if constexpr (floating_point<U>)
+			return [](const Employee& e) -> const auto& { return e.salary; };
+		else if constexpr (same_as<U, string>)
+			return [](const Employee& e) -> const auto& { return e.name; };
+	}
+	else
+		return std::identity{};
+
+}
 #pragma endregion
 
 #pragma region SHOW OFF METHODS
-template<typename T>
+template <typename T, typename U>
 void show_off::showOff(vector<T>& v, Method method, string& output)
 {
 	vector<T> vSort(v);
+	constexpr auto LAMBDA_STD = getLambdaSTD<T, U>();
+	constexpr auto LAMBDA_RDX = getLambdaRDX<T, U>();
 
-	auto start = chrono::steady_clock::now();
-	if constexpr (floating_point<T>)
-	{
-		switch (method)
-		{
-			case SORT:
-				std::sort(vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
-				break;
-			case SORT_PAR:
-				std::sort(std::execution::par, vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
-				break;
-			case STABLE_SORT:
-				std::stable_sort(vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
-				break;
-			case STABLE_SORT_PAR:
-				std::stable_sort(std::execution::par, vSort.begin(), vSort.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
-				break;
-			case RADIX_SORT:
-				radix_sort::sort(vSort, ENABLE_MULTITHREADING);
-				break;
-		}
-	}
-	else if constexpr (same_as<T, Employee>)
-	{
-		switch (method)
-		{
-			case SORT:
-				std::sort(vSort.begin(), vSort.end(), LAMBDA);
-				break;
-			case SORT_PAR:
-				std::sort(std::execution::par, vSort.begin(), vSort.end(), LAMBDA);
-				break;
-			case STABLE_SORT:
-				std::stable_sort(vSort.begin(), vSort.end(), LAMBDA);
-				break;
-			case STABLE_SORT_PAR:
-				std::stable_sort(std::execution::par, vSort.begin(), vSort.end(), LAMBDA);
-				break;
-			case RADIX_SORT:
-				radix_sort::sort(vSort, LAMBDA_CLX, ENABLE_MULTITHREADING);
-				break;
-		}
-	}
-	else
-	{
-		switch (method)
-		{
-			case SORT:
-				std::sort(vSort.begin(), vSort.end());
-				break;
-			case SORT_PAR:
-				std::sort(std::execution::par, vSort.begin(), vSort.end());
-				break;
-			case STABLE_SORT:
-				std::stable_sort(vSort.begin(), vSort.end());
-				break;
-			case STABLE_SORT_PAR:
-				std::stable_sort(std::execution::par, vSort.begin(), vSort.end());
-				break;
-			case RADIX_SORT:
-				radix_sort::sort(vSort, ENABLE_MULTITHREADING);
-				break;
-		}
-	}
-	auto end = chrono::steady_clock::now();
-	auto time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-
+	Timer timer;
+	timer.start();
 	switch (method)
 	{
 		case SORT:
-			output += format(lnum, "sort = {:L} ms\n", time);
+			std::sort(vSort.begin(), vSort.end(), LAMBDA_STD);
 			break;
 		case SORT_PAR:
-			output += format(lnum, "sort_par = {:L} ms\n", time);
+			std::sort(std::execution::par, vSort.begin(), vSort.end(), LAMBDA_STD);
 			break;
 		case STABLE_SORT:
-			output += format(lnum, "stable_sort = {:L} ms\n", time);
+			std::stable_sort(vSort.begin(), vSort.end(), LAMBDA_STD);
 			break;
 		case STABLE_SORT_PAR:
-			output += format(lnum, "stable_sort_par = {:L} ms\n", time);
+			std::stable_sort(std::execution::par, vSort.begin(), vSort.end(), LAMBDA_STD);
 			break;
 		case RADIX_SORT:
-			output += format(lnum, "radix_sort = {:L} ms\n\n", time);
+			radix_sort::sort(vSort, LAMBDA_RDX, false);
+			break;
+		case RADIX_SORT_PAR:
+			radix_sort::sort(vSort, LAMBDA_RDX, true);
 			break;
 	}
+	auto time = timer.stop();
+
+	output += format(lnum, "{} = {:L} ms\n", method2str[method], time);
 }
 
-template<typename T>
+template<typename T, typename U>
 void show_off::showOff(int n, string& output)
 {
 	vector<T> v(generators::generate<T>(n));
 	
-	for (int i = Method::SORT; i <= Method::RADIX_SORT; i++)
+	for (int i = Method::SORT; i <= Method::RADIX_SORT_PAR; i++)
 	{
 		if (RUN_METHOD[i])
-			showOff(v, static_cast<Method>(i), output);
+			showOff<T, U>(v, static_cast<Method>(i), output);
 	}
 }
 
 void show_off::showOff(RunParams params)
 {
 	string output = "=========================\n\n";
-	const vector<int> RUN_TYPE = {
+	const vector<int> RUN_TYPE = 
+	{
 		params.CHAR, params.UCHAR,
 		params.SHORT, params.USHORT,
 		params.INT, params.UINT,
 		params.LL, params.ULL,
 		params.FLOAT, params.DOUBLE,
-		params.STRING, params.COMPLEX };
+		params.STRING, 
+		params.COMPLEX_I32, params.COMPLEX_LL,
+		params.COMPLEX_FP, params.COMPLEX_STR,
+	};
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -209,10 +230,20 @@ void show_off::showOff(RunParams params)
 				case DataType::STRING:
 					showOff<string>(instance.n, output);
 					break;
-				case DataType::COMPLEX:
-					showOff<Employee>(instance.n, output);
+				case DataType::COMPLEX_I32:
+					showOff<Employee, decltype(Employee::age)>(instance.n, output);
+					break;
+				case DataType::COMPLEX_LL:
+					showOff<Employee, decltype(Employee::id)>(instance.n, output);
+					break;
+				case DataType::COMPLEX_FP:
+					showOff<Employee, decltype(Employee::salary)>(instance.n, output);
+					break;
+				case DataType::COMPLEX_STR:
+					showOff<Employee, decltype(Employee::name)>(instance.n, output);
+					break;
 			}
-			output += "=========================\n\n";
+			output += "\n=========================\n\n";
 			cout << output;
 			output.clear();
 		}
@@ -221,35 +252,30 @@ void show_off::showOff(RunParams params)
 #pragma endregion
 
 #pragma region VALIDATION METHODS
-template<typename T>
+template<typename T, typename U>
 void show_off::validate(vector<T>& v, string& output)
 {
 	vector<T> vExpected(v);
 	vector<T> vRadix(v);
+	constexpr auto LAMBDA_STD = getLambdaSTD<T, U>();
+	constexpr auto LAMBDA_RDX = getLambdaRDX<T, U>();
 
-	auto start = chrono::steady_clock::now();
-	if constexpr (floating_point<T>)
-		std::sort(std::execution::par, vExpected.begin(), vExpected.end(), [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; });
-	else if constexpr (same_as<T, Employee>)
-		std::stable_sort(std::execution::par, vExpected.begin(), vExpected.end(), LAMBDA);
-	else
-		std::sort(std::execution::par, vExpected.begin(), vExpected.end());
-	auto end = chrono::steady_clock::now();
-	auto time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	if constexpr (same_as<T, Employee>)
-		output += format(lnum, "stable_sort_par = {:L} ms\n", time);
-	else
-		output += format(lnum, "sort_par = {:L} ms\n", time);
+	Timer timer;
 
-	start = chrono::steady_clock::now();
+	timer.start();
 	if constexpr (same_as<T, Employee>)
-		radix_sort::sort(vRadix, LAMBDA_CLX, ENABLE_MULTITHREADING);
+		std::stable_sort(std::execution::par, vExpected.begin(), vExpected.end(), LAMBDA_STD);
 	else
-		radix_sort::sort(vRadix, ENABLE_MULTITHREADING);
-	end = chrono::steady_clock::now();
-	time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+		std::sort(std::execution::par, vExpected.begin(), vExpected.end(), LAMBDA_STD);
+	auto time = timer.stop();
+	
+	constexpr string METHOD_NAME = (same_as<T, Employee>) ? "stable_sort_par" : "sort_par";
+	output += format(lnum, "{} = {:L} ms\n", METHOD_NAME, time);
+
+	timer.start();
+	radix_sort::sort(vRadix, LAMBDA_RDX, ENABLE_MULTITHREADING);
+	time = timer.stop();
 	output += format(lnum, "radix_sort = {:L} ms\n\n", time);
-
 
 	bool isEqual = false;
 	if constexpr (floating_point<T>)
@@ -268,13 +294,13 @@ void show_off::validate(vector<T>& v, string& output)
 		{
 			output += "index: (radix value, expected value) hex(radix value, expected value)\n";
 			
-			using U = fp2i<T>;
+			using TU = fp2i<T>;
 			
 			for (int i = 0; i < size; i++)
 			{
 				if (vRadix[i] != vExpected[i])
 					output += format("{}:\t({}, {})\thex({}, {})\n", i, vRadix[i], vExpected[i],
-						bit_cast<U>(vRadix[i]), bit_cast<U>(vExpected[i]));
+						bit_cast<TU>(vRadix[i]), bit_cast<TU>(vExpected[i]));
 			}
 		}
 		else if constexpr (!same_as<T, Employee>)
@@ -292,23 +318,27 @@ void show_off::validate(vector<T>& v, string& output)
 	output += "\n";
 }
 
-template<typename T>
+template<typename T, typename U>
 void show_off::validate(int n, string& output)
 {
 	vector<T> v(generators::generate<T>(n));
-	validate(v, output);
+	validate<T, U>(v, output);
 }
 
 void show_off::validate(RunParams params)
 {
 	string output = "=========================\n\n";
-	const vector<int> RUN_TYPE = { 
+	const vector<int> RUN_TYPE = 
+	{ 
 		params.CHAR, params.UCHAR,
 		params.SHORT, params.USHORT,
 		params.INT, params.UINT,
 		params.LL, params.ULL,
 		params.FLOAT, params.DOUBLE,
-		params.STRING, params.COMPLEX};
+		params.STRING, 
+		params.COMPLEX_I32, params.COMPLEX_LL,
+		params.COMPLEX_FP, params.COMPLEX_STR
+	};
 
 	for (const auto& instance : RUN_DATATYPE)
 	{
@@ -350,8 +380,18 @@ void show_off::validate(RunParams params)
 				case DataType::STRING:
 					validate<string>(instance.n, output);
 					break;
-				case DataType::COMPLEX:
-					validate<Employee>(instance.n, output);
+				case DataType::COMPLEX_I32:
+					validate<Employee, decltype(Employee::age)>(instance.n, output);
+					break;
+				case DataType::COMPLEX_LL:
+					validate<Employee, decltype(Employee::id)>(instance.n, output);
+					break;
+				case DataType::COMPLEX_FP:
+					validate<Employee, decltype(Employee::salary)>(instance.n, output);
+					break;
+				case DataType::COMPLEX_STR:
+					validate<Employee, decltype(Employee::name)>(instance.n, output);
+					break;
 			}
 			output += "=========================\n\n";
 			cout << output;

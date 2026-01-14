@@ -1,5 +1,7 @@
 #pragma once
 #pragma region HEADERS
+#include <format>
+#include <locale>
 #include <string>
 #include <vector>
 #pragma endregion
@@ -13,7 +15,8 @@ class show_off
 		SORT_PAR,
 		STABLE_SORT,
 		STABLE_SORT_PAR,
-		RADIX_SORT
+		RADIX_SORT,
+		RADIX_SORT_PAR
 	};
 
 	enum DataType
@@ -29,31 +32,45 @@ class show_off
 		FLOAT,
 		DOUBLE,
 		STRING,
-		COMPLEX,
+		COMPLEX_I32,
+		COMPLEX_LL,
+		COMPLEX_FP,
+		COMPLEX_STR,
 	};
 
 	struct RunParams
 	{
-		const int CHAR	  = 0;
-		const int UCHAR	  = 0;
-		const int SHORT	  = 0;
-		const int USHORT  = 0;
-		const int INT	  = 0;
-		const int UINT	  = 0;
-		const int LL	  = 0;
-		const int ULL	  = 0;
-		const int FLOAT	  = 0;
-		const int DOUBLE  = 0;
-		const int STRING  = 0;
-		const int COMPLEX = 0;
+		const int CHAR	      = 0;
+		const int UCHAR	      = 0;
+		const int SHORT	      = 0;
+		const int USHORT      = 0;
+		const int INT	      = 0;
+		const int UINT	      = 0;
+		const int LL	      = 0;
+		const int ULL	      = 0;
+		const int FLOAT	      = 0;
+		const int DOUBLE      = 0;
+		const int STRING      = 0;
+		const int COMPLEX_I32 = 0;
+		const int COMPLEX_LL  = 0;
+		const int COMPLEX_FP  = 0;
+		const int COMPLEX_STR = 0;
 	};
 
-	struct DataTypeRun {
+	static const std::vector<std::string> method2str;
+	static const std::vector<std::string> type2str;
+	static const std::locale lnum;
+
+	struct DataTypeRun 
+	{
 		DataType type;
 		int n;
 		std::string output;
 
-		DataTypeRun(DataType type, int n, std::string output) : type(type), n(n), output(output) {}
+		DataTypeRun(DataType type, int n) : type(type), n(n) 
+		{
+			output = std::format(lnum, "{}\nSIZE = {:L}\n\n", type2str[type], n);
+		}
 	};
 
 	static const std::vector<int> RUN_METHOD;
@@ -69,9 +86,9 @@ class show_off
 #pragma endregion
 
 #pragma region SHOW OFF METHODS
-	template<typename T>
+	template<typename T, typename U = T>
 	static void showOff(std::vector<T>& v, Method method, std::string& output);
-	template<typename T>
+	template<typename T, typename U = T>
 	static void showOff(int n, std::string& output);
 public:	
 	static void showOff(RunParams params);
@@ -79,9 +96,9 @@ public:
 
 #pragma region VALIDATION METHODS
 private:
-	template<typename T>
+	template<typename T, typename U = T>
 	static void validate(std::vector<T>& v, std::string& output);
-	template<typename T>
+	template<typename T, typename U = T>
 	static void validate(int n, std::string& output);
 public:
 	static void validate(RunParams params);
