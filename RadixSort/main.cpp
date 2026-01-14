@@ -4,8 +4,8 @@
 
 int main()
 {
-	show_off::showOff
-	//show_off::validate
+	//show_off::showOff
+	show_off::validate
 	({
 		.CHAR        = 1,
 		.UCHAR       = 1,

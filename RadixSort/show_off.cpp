@@ -29,9 +29,13 @@ const vector<int> RUN_METHOD =
 	1, // RADIX_SORT_PAR
 };
 
-constexpr int RUN_SIZE = 1e8;
-constexpr int RUN_SIZE_STR = 5e7;
-constexpr int RUN_SIZE_CLX = 1e7;
+constexpr int RUN_SIZE     = static_cast<size_t>(1e8);
+constexpr int RUN_SIZE_STR = static_cast<size_t>(5e7);
+constexpr int RUN_SIZE_CLX = static_cast<size_t>(1e7);
+
+//constexpr size_t RUN_SIZE     = static_cast<size_t>(1e6);
+//constexpr size_t RUN_SIZE_STR = static_cast<size_t>(1e6);
+//constexpr size_t RUN_SIZE_CLX = static_cast<size_t>(1e6);
 constexpr bool VALID_ENABLE_MULTITHREADING = true;
 #pragma endregion
 
@@ -82,10 +86,10 @@ namespace show_off
 	struct DataTypeRun
 	{
 		DataType type;
-		int n;
+		size_t n;
 		std::string output;
 
-		DataTypeRun(DataType type, int n) : type(type), n(n)
+		DataTypeRun(DataType type, size_t n) : type(type), n(n)
 		{
 			output = std::format(lnum, "{}\nSIZE = {:L}\n\n", type2str[type], n);
 		}
@@ -145,13 +149,13 @@ namespace show_off
 		else if constexpr (same_as<T, Employee>)
 		{
 			if constexpr (same_as<U, int32_t>)
-				return [](const Employee& a, const Employee& b) -> const auto& { return a.age < b.age; };
+				return [](const Employee& a, const Employee& b) { return a.age < b.age; };
 			else if constexpr (same_as<U, long long>)
-				return [](const Employee& a, const Employee& b) -> const auto& { return a.id < b.id; };
+				return [](const Employee& a, const Employee& b) { return a.id < b.id; };
 			else if constexpr (floating_point<U>)
-				return [](const Employee& a, const Employee& b) -> const auto& { return std::strong_order(a.salary, b.salary) < 0; };
+				return [](const Employee& a, const Employee& b) { return std::strong_order(a.salary, b.salary) < 0; };
 			else if constexpr (same_as<U, string>)
-				return [](const Employee& a, const Employee& b) -> const auto& { return a.name < b.name; };
+				return [](const Employee& a, const Employee& b) { return a.name < b.name; };
 		}
 		else
 			return std::less<>();
@@ -222,7 +226,7 @@ namespace show_off
 	}
 
 	template<typename T, typename U = T>
-	void showOff(int n, string& output)
+	void showOff(size_t n, string& output)
 	{
 		vector<T> v(generators::generate<T>(n));
 
@@ -327,7 +331,7 @@ namespace show_off
 			std::sort(std::execution::par, vExpected.begin(), vExpected.end(), LAMBDA_STD);
 		auto time = timer.stop();
 
-		constexpr string METHOD_NAME = (same_as<T, Employee>) ? "stable_sort_par" : "sort_par";
+		const string METHOD_NAME = (same_as<T, Employee>) ? "stable_sort_par" : "sort_par";
 		output += format(lnum, "{} = {:L} ms\n", METHOD_NAME, time);
 
 		timer.start();
@@ -345,7 +349,7 @@ namespace show_off
 			output += "Sort is valid!\n";
 		else
 		{
-			int size = v.size();
+			size_t size = v.size();
 			output += "ERROR: Outputs are different!\n";
 
 			if constexpr (floating_point<T>)
@@ -354,7 +358,7 @@ namespace show_off
 
 				using TU = fp2i<T>;
 
-				for (int i = 0; i < size; i++)
+				for (size_t i = 0; i < size; i++)
 				{
 					if (vRadix[i] != vExpected[i])
 						output += format("{}:\t({}, {})\thex({}, {})\n", i, vRadix[i], vExpected[i],
@@ -365,7 +369,7 @@ namespace show_off
 			{
 				output += "index: (radix value, expected value)\n";
 
-				for (int i = 0; i < size; i++)
+				for (size_t i = 0; i < size; i++)
 				{
 					if (vRadix[i] != vExpected[i])
 						output += format("{}:\t({}, {})\n", i, vRadix[i], vExpected[i]);
@@ -377,7 +381,7 @@ namespace show_off
 	}
 
 	template<typename T, typename U = T>
-	void validate(int n, string& output)
+	void validate(size_t n, string& output)
 	{
 		vector<T> v(generators::generate<T>(n));
 		validate<T, U>(v, output);

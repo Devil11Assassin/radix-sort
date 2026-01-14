@@ -16,7 +16,7 @@ struct Employee
 
 	Employee() = default;
 
-	Employee(unsigned long long id, std::string name, float salary, unsigned int age)
+	Employee(long long id, std::string name, float salary, int age)
 		: id(id), name(name), salary(salary), age(age) {
 	}
 
@@ -59,7 +59,7 @@ namespace generators
 		using gen_t = gen_t_impl<sizeof(T), T>::type;
 
 		template <std::integral T>
-		inline std::vector<T> generate_impl(int n)
+		inline std::vector<T> generate_impl(std::size_t n)
 		{
 			std::vector<T> v;
 			v.reserve(n);
@@ -74,7 +74,7 @@ namespace generators
 		}
 
 		template <std::floating_point T>
-		inline std::vector<T> generate_impl(int n, bool testStrongOrder = true)
+		inline std::vector<T> generate_impl(std::size_t n, bool testStrongOrder = true)
 		{
 			static_assert(
 				std::numeric_limits<T>::is_iec559,
@@ -107,22 +107,22 @@ namespace generators
 		}
 	
 		template <typename T> requires std::same_as<T, std::string>
-		inline std::vector<T> generate_impl(int n, int maxLen = 20, const bool fixed = false)
+		inline std::vector<T> generate_impl(std::size_t n, std::size_t maxLen = 20, const bool fixed = false)
 		{
 			std::vector<T> v;
 			v.reserve(n);
 
 			std::mt19937_64 gen(69);
-			std::uniform_int_distribution<int> lenDist(0, maxLen);
+			std::uniform_int_distribution<std::size_t> lenDist(0, maxLen);
 			std::uniform_int_distribution<int> charDist(0, 255); // or (32, 126)
 
 			while (n--)
 			{
-				int len = (fixed) ? maxLen : lenDist(gen);
+				std::size_t len = (fixed) ? maxLen : lenDist(gen);
 
 				T s(len, '\0');
 
-				for (int i = 0; i < len; i++)
+				for (std::size_t i = 0; i < len; i++)
 					s[i] = static_cast<char>(charDist(gen));
 
 				v.emplace_back(std::move(s));
@@ -132,7 +132,7 @@ namespace generators
 		}
 
 		template <typename T> requires std::same_as<T, Employee>
-		inline std::vector<T> generate_impl(int n)
+		inline std::vector<T> generate_impl(std::size_t n)
 		{
 			std::vector<T> v;
 			v.reserve(n);
@@ -142,21 +142,21 @@ namespace generators
 			std::vector<float> salaries = generate_impl<float>(n);
 			std::vector<int> ages = generate_impl<int>(n);
 
-			for (int i = 0; i < n; i++)
+			for (size_t i = 0; i < n; i++)
 				v.emplace_back(ids[i], names[i], salaries[i], ages[i]);
 
 			return v;
 		}
 
 		template<unknown T>
-		inline std::vector<T> generate_impl(int n)
+		inline std::vector<T> generate_impl(std::size_t n)
 		{
 			static_assert(sizeof(T) == 0, "ERROR: Unable to generate vector!\nCAUSE: Unsupported type!\n");
 		}
 	}
 
 	template <typename T>
-	inline std::vector<T> generate(int n)
+	inline std::vector<T> generate(std::size_t n)
 	{
 		return internal::generate_impl<T>(n);
 	}
