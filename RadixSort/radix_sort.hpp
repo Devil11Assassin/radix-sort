@@ -31,11 +31,14 @@ namespace radix_sort
 			inline constexpr Index MASK = 0xFF;
 			inline constexpr Index INVERT_MASK = 0x80;
 
+			inline constexpr Index CHARS = 256;
+			inline constexpr Index CHARS_ALLOC = 257;
+
 			inline constexpr Index SIZE_THRESHOLD = 8'000'000;
 			inline constexpr Index BUCKET_THRESHOLD = 1'000'000;
-
-			inline constexpr Index CHARS_ALLOC = 257;
-			inline constexpr Index CHARS = 256;
+			inline constexpr Index INSERTION_SORT_THRESHOLD_STR = 10;
+			inline constexpr Index INSERTION_SORT_THRESHOLD_ALL = 100;
+			inline constexpr Index ALLOW_SLEEP_THRESHOLD = 1'000'000;
 
 			struct Region
 			{
@@ -397,7 +400,7 @@ namespace radix_sort
 				regionsLocal.reserve(v.size() / 100);
 				regionsLocal.emplace_back(initialRegion);
 
-				constexpr Index INSERTION_SORT_THRESHOLD = (is_string<T>) ? 10 : 100;
+				constexpr Index INSERTION_SORT_THRESHOLD = (is_string<T>) ? INSERTION_SORT_THRESHOLD_ALL : INSERTION_SORT_THRESHOLD_ALL;
 				constexpr Index ALLOC_SIZE = (is_string<T>) ? CHARS_ALLOC : BASE;
 
 				while (regionsLocal.size())
@@ -485,7 +488,7 @@ namespace radix_sort
 
 				bool isIdle = false;
 				Index iterationsIdle = 0;
-				const bool ALLOW_SLEEP = v.size() > 1e6;
+				const bool ALLOW_SLEEP = v.size() > ALLOW_SLEEP_THRESHOLD;
 
 				while (true)
 				{
@@ -626,7 +629,7 @@ namespace radix_sort
 				if (isSortedBi(v))
 					return;
 
-				constexpr Index INSERTION_SORT_THRESHOLD = (is_string<T>) ? 10 : 100;
+				constexpr Index INSERTION_SORT_THRESHOLD = (is_string<T>) ? INSERTION_SORT_THRESHOLD_STR : INSERTION_SORT_THRESHOLD_ALL;
 				if (v.size() <= INSERTION_SORT_THRESHOLD)
 				{
 					insertionSort(v, 0, v.size());
@@ -999,8 +1002,9 @@ namespace radix_sort
 			inline void sortByIndices(std::vector<T>& v, std::vector<Index>& indices, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
+				Index threadCount = static_cast<Index>(ceil(SIZE / BUCKET_THRESHOLD));
 
-				if (!enableMultiThreading)
+				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
 				{
 					std::vector<T> tmp;
 					tmp.reserve(SIZE);
@@ -1014,7 +1018,7 @@ namespace radix_sort
 				{
 					std::vector<T> tmp(SIZE);
 					std::vector<std::thread> threads;
-					Index threadCount = std::thread::hardware_concurrency();
+					threadCount = std::min(threadCount, static_cast<Index>(std::thread::hardware_concurrency()));
 					Index bucketSize = SIZE / threadCount;
 
 					for (Index i = 0; i < threadCount; i++)
@@ -1044,7 +1048,7 @@ namespace radix_sort
 				regionsLocal.reserve(v.size() / 100);
 				regionsLocal.emplace_back(initialRegion);
 
-				constexpr Index INSERTION_SORT_THRESHOLD = (std::same_as<Key, std::string>) ? 10 : 100;
+				constexpr Index INSERTION_SORT_THRESHOLD = (std::same_as<Key, std::string>) ? INSERTION_SORT_THRESHOLD_STR : INSERTION_SORT_THRESHOLD_ALL;
 				constexpr Index ALLOC_SIZE = (std::same_as<Key, std::string>) ? CHARS_ALLOC : BASE;
 
 				while (regionsLocal.size())
@@ -1133,7 +1137,7 @@ namespace radix_sort
 				regionsLocal.reserve(v.size() / 100);
 				regionsLocal.emplace_back(initialRegion);
 
-				constexpr Index INSERTION_SORT_THRESHOLD = (std::same_as<Key, std::string>) ? 10 : 100;
+				constexpr Index INSERTION_SORT_THRESHOLD = (std::same_as<Key, std::string>) ? INSERTION_SORT_THRESHOLD_STR : INSERTION_SORT_THRESHOLD_ALL;
 				constexpr Index ALLOC_SIZE = (std::same_as<Key, std::string>) ? CHARS_ALLOC : BASE;
 
 				while (regionsLocal.size())
@@ -1222,7 +1226,7 @@ namespace radix_sort
 
 				bool isIdle = false;
 				Index iterationsIdle = 0;
-				const bool ALLOW_SLEEP = v.size() > 1e6;
+				const bool ALLOW_SLEEP = v.size() > ALLOW_SLEEP_THRESHOLD;
 
 				while (true)
 				{
@@ -1278,7 +1282,7 @@ namespace radix_sort
 
 				bool isIdle = false;
 				Index iterationsIdle = 0;
-				const bool ALLOW_SLEEP = v.size() > 1e6;
+				const bool ALLOW_SLEEP = v.size() > ALLOW_SLEEP_THRESHOLD;
 
 				while (true)
 				{
@@ -1489,14 +1493,14 @@ namespace radix_sort
 					static_assert(
 						std::numeric_limits<Key>::is_iec559,
 						"ERROR: generators.hpp requires IEEE-754/IEC-559 compliance.\n"
-						);
+					);
 				}
 
 				if (isSorted(v, func))
 					return;
 
 				Index SIZE = v.size();
-				constexpr Index INSERTION_SORT_THRESHOLD = (is_string<Key>) ? 10 : 100;
+				constexpr Index INSERTION_SORT_THRESHOLD = (is_string<Key>) ? INSERTION_SORT_THRESHOLD_STR : INSERTION_SORT_THRESHOLD_ALL;
 				if (SIZE <= INSERTION_SORT_THRESHOLD)
 				{
 					insertionSort(v, func, 0, SIZE);
@@ -1510,7 +1514,7 @@ namespace radix_sort
 				if constexpr (is_floating_point<Key>)
 				{
 					std::vector<Index> indices(SIZE);
-					std::iota(indices.begin(), indices.end(), 0);
+					std::iota(indices.begin(), indices.end(), static_cast<Index>(0));
 					sort_impl(v, func, len, indices, enableMultiThreading);
 					sortByIndices(v, indices, enableMultiThreading);
 				}
@@ -1523,7 +1527,7 @@ namespace radix_sort
 					else
 					{
 						std::vector<Index> indices(SIZE);
-						std::iota(indices.begin(), indices.end(), 0);
+						std::iota(indices.begin(), indices.end(), static_cast<Index>(0));
 						
 						if constexpr (is_string<Key>)
 						{

@@ -16,9 +16,10 @@ struct Employee
 
 	Employee() = default;
 
-	Employee(long long id, std::string name, float salary, int age)
-		: id(id), name(name), salary(salary), age(age) {
-	}
+	Employee(
+		decltype(Employee::id) id, decltype(Employee::name) name, 
+		decltype(Employee::salary) salary, decltype(Employee::age) age
+	) : id(id), name(name), salary(salary), age(age) {}
 
 	bool operator==(const Employee& other) const
 	{
@@ -137,10 +138,10 @@ namespace generators
 			std::vector<T> v;
 			v.reserve(n);
 
-			std::vector<long long> ids = generate_impl<long long>(n);
-			std::vector<std::string> names = generate_impl<std::string>(n);
-			std::vector<float> salaries = generate_impl<float>(n);
-			std::vector<int> ages = generate_impl<int>(n);
+			std::vector<decltype(Employee::id)> ids = generate_impl<decltype(Employee::id)>(n);
+			std::vector<decltype(Employee::name)> names = generate_impl<decltype(Employee::name)>(n);
+			std::vector<decltype(Employee::salary)> salaries = generate_impl<decltype(Employee::salary)>(n);
+			std::vector<decltype(Employee::age)> ages = generate_impl<decltype(Employee::age)>(n);
 
 			for (size_t i = 0; i < n; i++)
 				v.emplace_back(ids[i], names[i], salaries[i], ages[i]);
