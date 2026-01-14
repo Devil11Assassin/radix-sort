@@ -166,14 +166,18 @@ namespace show_off
 	{
 		if constexpr (same_as<T, Employee>)
 		{
-			if constexpr (same_as<U, int32_t>)
-				return [](const Employee& e) -> const auto& { return e.age; };
-			else if constexpr (same_as<U, long long>)
-				return [](const Employee& e) -> const auto& { return e.id; };
-			else if constexpr (floating_point<U>)
-				return [](const Employee& e) -> const auto& { return e.salary; };
-			else if constexpr (same_as<U, string>)
-				return [](const Employee& e) -> const auto& { return e.name; };
+			if constexpr (same_as<U, decltype(Employee::age)>)
+				return &Employee::age;
+				//return [](const Employee& e) -> const auto& { return e.age; };
+			else if constexpr (same_as<U, decltype(Employee::id)>)
+				return &Employee::id;
+				//return [](const Employee& e) -> const auto& { return e.id; };
+			else if constexpr (same_as<U, decltype(Employee::salary)>)
+				return &Employee::salary;
+				//return [](const Employee& e) -> const auto& { return e.salary; };
+			else if constexpr (same_as<U, decltype(Employee::name)>)
+				return &Employee::name;
+				//return [](const Employee& e) -> const auto& { return e.name; };
 		}
 		else
 			return std::identity{};
