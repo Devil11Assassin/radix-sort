@@ -20,7 +20,8 @@ int main()
 		.STRING      = 1,
 		.COMPLEX_I32 = 1,
 		.COMPLEX_LL  = 1,
-		.COMPLEX_FP  = 1,
+		.COMPLEX_FLT = 1,
+		.COMPLEX_DBL = 1,
 		.COMPLEX_STR = 1,
 	});
 

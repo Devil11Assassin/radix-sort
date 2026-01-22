@@ -21,21 +21,21 @@ using namespace std;
 #pragma region RUN CONFIG
 const vector<int> RUN_METHOD =
 {
-	1, // SORT 
-	1, // SORT_PAR
-	1, // STABLE_SORT
-	1, // STABLE_SORT_PAR
+	0, // SORT 
+	0, // SORT_PAR
+	0, // STABLE_SORT
+	0, // STABLE_SORT_PAR
 	1, // RADIX_SORT
 	1, // RADIX_SORT_PAR
 };
 
-constexpr int RUN_SIZE     = static_cast<size_t>(1e8);
-constexpr int RUN_SIZE_STR = static_cast<size_t>(5e7);
-constexpr int RUN_SIZE_CLX = static_cast<size_t>(1e7);
+//constexpr int RUN_SIZE     = static_cast<size_t>(1e8);
+//constexpr int RUN_SIZE_STR = static_cast<size_t>(5e7);
+//constexpr int RUN_SIZE_CLX = static_cast<size_t>(5e7);
 
-//constexpr size_t RUN_SIZE     = static_cast<size_t>(1e6);
-//constexpr size_t RUN_SIZE_STR = static_cast<size_t>(1e6);
-//constexpr size_t RUN_SIZE_CLX = static_cast<size_t>(1e6);
+constexpr size_t RUN_SIZE     = static_cast<size_t>(1e8);
+constexpr size_t RUN_SIZE_STR = static_cast<size_t>(5e7);
+constexpr size_t RUN_SIZE_CLX = static_cast<size_t>(1e7);
 constexpr bool VALID_ENABLE_MULTITHREADING = true;
 #pragma endregion
 
@@ -68,7 +68,8 @@ namespace show_off
 		STRING,
 		COMPLEX_I32,
 		COMPLEX_LL,
-		COMPLEX_FP,
+		COMPLEX_FLT,
+		COMPLEX_DBL,
 		COMPLEX_STR,
 	};
 
@@ -79,7 +80,7 @@ namespace show_off
 	const vector<string> type2str =
 	{
 		"CHAR", "UCHAR", "SHORT", "USHORT",	"INT", "UINT", "LL", "ULL", "FLOAT", "DOUBLE", "STRING",
-		"COMPLEX_I32", "COMPLEX_LL", "COMPLEX_FP", "COMPLEX_STR",
+		"COMPLEX_INT", "COMPLEX_LL", "COMPLEX_FLOAT", "COMPLEX_DOUBLE", "COMPLEX_STR",
 	};
 	const locale lnum = locale("en_US.UTF-8");
 
@@ -97,20 +98,21 @@ namespace show_off
 
 	const vector<DataTypeRun> RUN_DATATYPE =
 	{
-		DataTypeRun(CHAR,     RUN_SIZE),
-		DataTypeRun(UCHAR,     RUN_SIZE),
-		DataTypeRun(SHORT,     RUN_SIZE),
-		DataTypeRun(USHORT,     RUN_SIZE),
-		DataTypeRun(INT,     RUN_SIZE),
-		DataTypeRun(UINT,     RUN_SIZE),
+		DataTypeRun(CHAR,   RUN_SIZE),
+		DataTypeRun(UCHAR,  RUN_SIZE),
+		DataTypeRun(SHORT,  RUN_SIZE),
+		DataTypeRun(USHORT, RUN_SIZE),
+		DataTypeRun(INT,    RUN_SIZE),
+		DataTypeRun(UINT,   RUN_SIZE),
 		DataTypeRun(LL,     RUN_SIZE),
-		DataTypeRun(ULL,     RUN_SIZE),
-		DataTypeRun(FLOAT,     RUN_SIZE),
-		DataTypeRun(DOUBLE,     RUN_SIZE),
+		DataTypeRun(ULL,    RUN_SIZE),
+		DataTypeRun(FLOAT,  RUN_SIZE),
+		DataTypeRun(DOUBLE, RUN_SIZE),
 		DataTypeRun(STRING, RUN_SIZE_STR),
 		DataTypeRun(COMPLEX_I32, RUN_SIZE_CLX),
-		DataTypeRun(COMPLEX_LL, RUN_SIZE_CLX),
-		DataTypeRun(COMPLEX_FP, RUN_SIZE_CLX),
+		DataTypeRun(COMPLEX_LL,  RUN_SIZE_CLX),
+		DataTypeRun(COMPLEX_FLT, RUN_SIZE_CLX),
+		DataTypeRun(COMPLEX_DBL, RUN_SIZE_CLX),
 		DataTypeRun(COMPLEX_STR, RUN_SIZE_CLX),
 	};
 
@@ -148,13 +150,15 @@ namespace show_off
 			return [](const auto& a, const auto& b) { return std::strong_order(a, b) < 0; };
 		else if constexpr (same_as<T, Employee>)
 		{
-			if constexpr (same_as<U, int32_t>)
+			if constexpr (same_as<U, decltype(Employee::age)>)
 				return [](const Employee& a, const Employee& b) { return a.age < b.age; };
-			else if constexpr (same_as<U, long long>)
+			else if constexpr (same_as<U, decltype(Employee::id)>)
 				return [](const Employee& a, const Employee& b) { return a.id < b.id; };
-			else if constexpr (floating_point<U>)
+			else if constexpr (same_as<U, decltype(Employee::salary_f)>)
+				return [](const Employee& a, const Employee& b) { return std::strong_order(a.salary_f, b.salary_f) < 0; };
+			else if constexpr (same_as<U, decltype(Employee::salary)>)
 				return [](const Employee& a, const Employee& b) { return std::strong_order(a.salary, b.salary) < 0; };
-			else if constexpr (same_as<U, string>)
+			else if constexpr (same_as<U, decltype(Employee::name)>)
 				return [](const Employee& a, const Employee& b) { return a.name < b.name; };
 		}
 		else
@@ -172,6 +176,9 @@ namespace show_off
 			else if constexpr (same_as<U, decltype(Employee::id)>)
 				return &Employee::id;
 				//return [](const Employee& e) -> const auto& { return e.id; };
+			else if constexpr (same_as<U, decltype(Employee::salary_f)>)
+				return &Employee::salary_f;
+				//return [](const Employee& e) -> const auto& { return e.salary_f; };
 			else if constexpr (same_as<U, decltype(Employee::salary)>)
 				return &Employee::salary;
 				//return [](const Employee& e) -> const auto& { return e.salary; };
@@ -253,7 +260,8 @@ namespace show_off
 			params.FLOAT, params.DOUBLE,
 			params.STRING,
 			params.COMPLEX_I32, params.COMPLEX_LL,
-			params.COMPLEX_FP, params.COMPLEX_STR,
+			params.COMPLEX_FLT, params.COMPLEX_DBL,
+			params.COMPLEX_STR,
 		};
 
 		for (const auto& instance : RUN_DATATYPE)
@@ -302,7 +310,10 @@ namespace show_off
 					case DataType::COMPLEX_LL:
 						showOff<Employee, decltype(Employee::id)>(instance.n, output);
 						break;
-					case DataType::COMPLEX_FP:
+					case DataType::COMPLEX_FLT:
+						showOff<Employee, decltype(Employee::salary_f)>(instance.n, output);
+						break;
+					case DataType::COMPLEX_DBL:
 						showOff<Employee, decltype(Employee::salary)>(instance.n, output);
 						break;
 					case DataType::COMPLEX_STR:
@@ -403,7 +414,8 @@ namespace show_off
 			params.FLOAT, params.DOUBLE,
 			params.STRING,
 			params.COMPLEX_I32, params.COMPLEX_LL,
-			params.COMPLEX_FP, params.COMPLEX_STR
+			params.COMPLEX_FLT, params.COMPLEX_DBL,
+			params.COMPLEX_STR
 		};
 
 		for (const auto& instance : RUN_DATATYPE)
@@ -452,7 +464,10 @@ namespace show_off
 					case DataType::COMPLEX_LL:
 						validate<Employee, decltype(Employee::id)>(instance.n, output);
 						break;
-					case DataType::COMPLEX_FP:
+					case DataType::COMPLEX_FLT:
+						validate<Employee, decltype(Employee::salary_f)>(instance.n, output);
+						break;
+					case DataType::COMPLEX_DBL:
 						validate<Employee, decltype(Employee::salary)>(instance.n, output);
 						break;
 					case DataType::COMPLEX_STR:

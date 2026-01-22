@@ -17,7 +17,8 @@ namespace show_off
 		const int STRING      = 0;
 		const int COMPLEX_I32 = 0;
 		const int COMPLEX_LL  = 0;
-		const int COMPLEX_FP  = 0;
+		const int COMPLEX_FLT = 0;
+		const int COMPLEX_DBL = 0;
 		const int COMPLEX_STR = 0;
 	};
 

@@ -9,24 +9,27 @@
 
 struct Employee
 {
-	long long id = 0L;
-	std::string name = "";
-	float salary = 0.0;
 	int32_t age = 0;
+	long long id = 0L;
+	float salary_f = 0.f;
+	double salary = 0.0;
+	std::string name = "";
 
 	Employee() = default;
 
 	Employee(
-		decltype(Employee::id) id, decltype(Employee::name) name, 
-		decltype(Employee::salary) salary, decltype(Employee::age) age
-	) : id(id), name(name), salary(salary), age(age) {}
+		decltype(Employee::age) age, decltype(Employee::id) id,
+		decltype(Employee::salary_f) salary_f, decltype(Employee::salary) salary,
+		decltype(Employee::name) name
+	) : age(age), id(id), salary_f(salary_f), salary(salary), name(name) {}
 
 	bool operator==(const Employee& other) const
 	{
-		return id == other.id 
-			&& name == other.name 
-			&& std::strong_order(salary, other.salary) == 0 
-			&& age == other.age;
+		return age == other.age 
+			&& id == other.id
+			&& std::strong_order(salary_f, other.salary_f) == 0
+			&& std::strong_order(salary, other.salary) == 0
+			&& name == other.name;
 	}
 };
 
@@ -138,13 +141,14 @@ namespace generators
 			std::vector<T> v;
 			v.reserve(n);
 
-			std::vector<decltype(Employee::id)> ids = generate_impl<decltype(Employee::id)>(n);
-			std::vector<decltype(Employee::name)> names = generate_impl<decltype(Employee::name)>(n);
-			std::vector<decltype(Employee::salary)> salaries = generate_impl<decltype(Employee::salary)>(n);
 			std::vector<decltype(Employee::age)> ages = generate_impl<decltype(Employee::age)>(n);
+			std::vector<decltype(Employee::id)> ids = generate_impl<decltype(Employee::id)>(n);
+			std::vector<decltype(Employee::salary_f)> salaries_f = generate_impl<decltype(Employee::salary_f)>(n);
+			std::vector<decltype(Employee::salary)> salaries = generate_impl<decltype(Employee::salary)>(n);
+			std::vector<decltype(Employee::name)> names = generate_impl<decltype(Employee::name)>(n);
 
 			for (size_t i = 0; i < n; i++)
-				v.emplace_back(ids[i], names[i], salaries[i], ages[i]);
+				v.emplace_back(ages[i], ids[i], salaries_f[i], salaries[i], names[i]);
 
 			return v;
 		}

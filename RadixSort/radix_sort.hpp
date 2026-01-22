@@ -34,11 +34,14 @@ namespace radix_sort
 			inline constexpr Index CHARS = 256;
 			inline constexpr Index CHARS_ALLOC = 257;
 
-			inline constexpr Index SIZE_THRESHOLD = 8'000'000;
-			inline constexpr Index BUCKET_THRESHOLD = 1'000'000;
+			inline constexpr Index RADIX_MSD_THRESHOLD_BYTES = 2;
 			inline constexpr Index INSERTION_SORT_THRESHOLD_STR = 10;
 			inline constexpr Index INSERTION_SORT_THRESHOLD_ALL = 100;
-			inline constexpr Index ALLOW_SLEEP_THRESHOLD = 1'000'000;
+
+			inline constexpr Index MAX_THREADS = 12;
+			inline constexpr Index MULTI_THREADING_THRESHOLD = 1'000'000;
+			inline constexpr Index SLEEP_ITERATIONS_THRESHOLD = 100;
+			inline constexpr Index GLOBAL_BUCKET_THRESHOLD = 10'000;
 
 			struct Region
 			{
@@ -54,10 +57,10 @@ namespace radix_sort
 			// ====================================
 
 			template <typename T>
-			concept is_small_integral = std::integral<T> && sizeof(T) <= 4;
+			concept is_small_integral = std::integral<T> && sizeof(T) < RADIX_MSD_THRESHOLD_BYTES;
 
 			template <typename T>
-			concept is_large_integral = std::integral<T> && sizeof(T) > 4;
+			concept is_large_integral = std::integral<T> && sizeof(T) >= RADIX_MSD_THRESHOLD_BYTES;
 
 			template <typename T>
 			concept is_floating_point = std::floating_point<T>;
@@ -66,10 +69,10 @@ namespace radix_sort
 			concept is_string = std::same_as<T, std::string>;
 
 			template <typename T>
-			concept known = std::integral<T> || is_floating_point<T> || is_string<T>;
+			concept supported = std::integral<T> || is_floating_point<T> || is_string<T>;
 
 			template <typename T>
-			concept unknown = !known<T>;
+			concept unsupported = !supported<T>;
 
 			template <typename T, typename Proj>
 			using invoke_result = std::invoke_result_t<Proj&, const T&>;
@@ -80,7 +83,7 @@ namespace radix_sort
 			template <typename T, typename Proj>
 			concept sortable = requires(Proj proj, const T& t) { 
 				{ std::invoke(proj, t) } -> std::same_as<invoke_result<T, Proj>>;
-			} && known<sort_key<T, Proj>>;
+			} && supported<sort_key<T, Proj>>;
 
 			template <size_t S> struct t2u_impl;
 			template <> struct t2u_impl<1> { using type = std::uint8_t; };
@@ -98,6 +101,16 @@ namespace radix_sort
 			inline int getChar(const std::string& s, Index index)
 			{
 				return (index < s.length()) ? static_cast<unsigned char>(s[index]) : 256;
+			}
+
+			inline Index getNumOfThreads(Index n)
+			{
+				if (n <= MULTI_THREADING_THRESHOLD)
+					return 1;
+
+				double k = std::ceil(std::log2(n / MULTI_THREADING_THRESHOLD) / 1.0);
+				Index t = static_cast<Index>(1) << static_cast<Index>(k);
+				return std::min({ t, MAX_THREADS, static_cast<Index>(std::thread::hardware_concurrency()) });
 			}
 
 			template <typename T>
@@ -134,33 +147,33 @@ namespace radix_sort
 			inline void getCountVector(std::vector<T>& v, std::vector<Index>& count, Index curShiftOrIndex, Index l, Index r, bool enableMultiThreading)
 			{
 				const Index SIZE = r - l;
-				Index threadCount = static_cast<Index>(ceil(SIZE / BUCKET_THRESHOLD));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
 					getCountVectorThread(v, count, curShiftOrIndex, l, r);
 				}
 				else
 				{
 					constexpr Index ALLOC_SIZE = (is_string<T>) ? CHARS_ALLOC : BASE;
-
-					threadCount = std::min(threadCount, static_cast<Index>(std::thread::hardware_concurrency()));
-					Index bucketSize = SIZE / threadCount;
-
+					std::vector<std::vector<Index>> counts(numOfThreads, std::vector<Index>(ALLOC_SIZE));
+					
 					std::vector<std::thread> threads;
-					std::vector<std::vector<Index>> counts(threadCount, std::vector<Index>(ALLOC_SIZE));
+					Index bucketSize = SIZE / numOfThreads;
 
-					for (Index i = 0; i < threadCount; i++)
+					for (Index i = 0; i < numOfThreads; i++)
 					{
 						Index start = l + i * bucketSize;
-						Index end = (i == threadCount - 1) ? r : start + bucketSize;
-						threads.emplace_back(getCountVectorThread<T>, std::ref(v), std::ref(counts[i]), curShiftOrIndex, start, end);
+						Index end = (i == numOfThreads - 1) ? r : start + bucketSize;
+						threads.emplace_back([&v, &counts, i, curShiftOrIndex, start, end]() {
+							getCountVectorThread(v, counts[i], curShiftOrIndex, start, end);
+						});
 					}
 
 					for (auto& t : threads)
 						t.join();
 
-					for (Index curThread = 0; curThread < threadCount; curThread++)
+					for (Index curThread = 0; curThread < numOfThreads; curThread++)
 					{
 						for (Index i = 0; i < ALLOC_SIZE; i++)
 							count[i] += counts[curThread][i];
@@ -288,7 +301,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename U>
-			inline void getConvertedVectorThread(std::vector<T>& v, std::vector<U>& vu, bool reverse, Index l, Index r)
+			inline void getUnsignedVectorThread(std::vector<T>& v, std::vector<U>& vu, bool reverse, Index l, Index r)
 			{
 				constexpr Index SIGN_SHIFT = (sizeof(T) * 8) - 1;
 				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
@@ -312,27 +325,26 @@ namespace radix_sort
 			}
 
 			template <typename T, typename U>
-			inline void getConvertedVector(std::vector<T>& v, std::vector<U>& vu, bool reverse, bool enableMultiThreading)
+			inline void getUnsignedVector(std::vector<T>& v, std::vector<U>& vu, bool reverse, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
-				Index threadCount = static_cast<Index>(ceil(SIZE / BUCKET_THRESHOLD));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
-					getConvertedVectorThread(v, vu, reverse, 0, SIZE);
+					getUnsignedVectorThread(v, vu, reverse, 0, SIZE);
 				}
 				else
 				{
 					std::vector<std::thread> threads;
-					threadCount = std::min(threadCount, static_cast<Index>(std::thread::hardware_concurrency()));
-					Index bucketSize = SIZE / threadCount;
+					Index bucketSize = SIZE / numOfThreads;
 
-					for (Index i = 0; i < threadCount; i++)
+					for (Index i = 0; i < numOfThreads; i++)
 					{
 						Index start = i * bucketSize;
-						Index end = (i == threadCount - 1) ? SIZE : start + bucketSize;
+						Index end = (i == numOfThreads - 1) ? SIZE : start + bucketSize;
 						threads.emplace_back([&v, &vu, reverse, start, end]() {
-							getConvertedVectorThread(v, vu, reverse, start, end);
+							getUnsignedVectorThread(v, vu, reverse, start, end);
 						});
 					}
 
@@ -342,7 +354,7 @@ namespace radix_sort
 			}
 
 			template <typename T>
-			inline void getUpdatedVector(std::vector<T>& v, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShift)
+			inline void getSortedVector(std::vector<T>& v, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShift)
 			{
 				if constexpr (std::unsigned_integral<T>)
 				{
@@ -367,7 +379,7 @@ namespace radix_sort
 			}
 
 			template <typename T>
-			inline void getUpdatedVector(std::vector<T>& v, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShiftOrIndex, Index l, Index r)
+			inline void getSortedVector(std::vector<T>& v, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShiftOrIndex, Index l, Index r)
 			{
 				if constexpr (is_string<T>)
 				{
@@ -432,7 +444,7 @@ namespace radix_sort
 
 					getCountVector(v, count, curShiftOrIndex, l, r, enableMultiThreading);
 					getPrefixVector<T>(prefix, count, l);
-					getUpdatedVector(v, tmp, prefix, curShiftOrIndex, l, r);
+					getSortedVector(v, tmp, prefix, curShiftOrIndex, l, r);
 
 					std::move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
 
@@ -463,13 +475,11 @@ namespace radix_sort
 					}
 					else
 					{
-						const Index LOCAL_BUCKET_THRESHOLD = std::max((r - l) / 1000, static_cast<Index>(1000));
-
-						for (Index i = 0; i < CHARS; i++)
+						for (Index i = 0; i < BASE; i++)
 						{
 							if (count[i] > 1)
 							{
-								if (count[i] < LOCAL_BUCKET_THRESHOLD)
+								if (count[i] < GLOBAL_BUCKET_THRESHOLD)
 									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
 								else
 								{
@@ -493,7 +503,6 @@ namespace radix_sort
 
 				bool isIdle = false;
 				Index iterationsIdle = 0;
-				const bool ALLOW_SLEEP = v.size() > ALLOW_SLEEP_THRESHOLD;
 
 				while (true)
 				{
@@ -530,7 +539,7 @@ namespace radix_sort
 						lkRegions.unlock();
 						iterationsIdle++;
 
-						if (ALLOW_SLEEP && iterationsIdle > 100)
+						if (iterationsIdle > SLEEP_ITERATIONS_THRESHOLD)
 						{
 							iterationsIdle = 0;
 							std::this_thread::sleep_for(std::chrono::nanoseconds(1));
@@ -544,7 +553,7 @@ namespace radix_sort
 			// =========================
 		
 			template <is_small_integral T>
-			inline void sort_impl(std::vector<T>& v, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, Index len, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
@@ -557,7 +566,7 @@ namespace radix_sort
 
 					getCountVector(v, count, curShift, 0, SIZE, enableMultiThreading);
 					getPrefixVector<T>(prefix, count, 0);
-					getUpdatedVector(v, tmp, prefix, curShift);
+					getSortedVector(v, tmp, prefix, curShift);
 
 					std::swap(v, tmp);
 
@@ -566,14 +575,14 @@ namespace radix_sort
 			}
 
 			template <typename T> requires (is_large_integral<T> || is_string<T>)
-			inline void sort_impl(std::vector<T>& v, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, Index len, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
 				constexpr Index curShiftOrIndex = (is_string<T>) ? 0 : (sizeof(T) - 1) * 8;
-				const Index LOCAL_BUCKET_THRESHOLD = std::max(static_cast<Index>(SIZE / 1000), static_cast<Index>(1000));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || static_cast<Index>(SIZE / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
 					std::mutex tmpMutex;
 					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
@@ -583,7 +592,6 @@ namespace radix_sort
 				}
 				else
 				{
-					Index numOfThreads = std::thread::hardware_concurrency();
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
 					std::mutex idleLock;
@@ -592,6 +600,7 @@ namespace radix_sort
 					std::vector<Region> regions;
 					regions.reserve(SIZE / 1000);
 					regions.emplace_back(0, SIZE, len, curShiftOrIndex);
+					
 					for (Index i = 0; i < numOfThreads; i++)
 					{
 						threads.emplace_back([&v, &tmp, &regions, &regionsLock, &runningCounter, i]() {
@@ -605,23 +614,23 @@ namespace radix_sort
 			}
 
 			template <is_floating_point T>
-			inline void sort_impl(std::vector<T>& v, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, Index len, bool enableMultiThreading)
 			{
 				using U = t2u<T>;
 				const Index SIZE = v.size();
 				std::vector<U> vu(SIZE);
 
-				getConvertedVector(v, vu, false, enableMultiThreading);
-				sort_impl<U>(vu, len, enableMultiThreading);
-				getConvertedVector(v, vu, true, enableMultiThreading);
+				getUnsignedVector(v, vu, false, enableMultiThreading);
+				sortImpl<U>(vu, len, enableMultiThreading);
+				getUnsignedVector(v, vu, true, enableMultiThreading);
 			}
 
 			// =====================
 			// -----Entry Point-----
 			// =====================
 
-			template <known T>
-			inline void sort_dispatcher(std::vector<T>& v, bool enableMultiThreading)
+			template <supported T>
+			inline void sortDispatcher(std::vector<T>& v, bool enableMultiThreading)
 			{
 				if constexpr (is_floating_point<T>)
 				{
@@ -642,14 +651,7 @@ namespace radix_sort
 				}
 
 				Index len = getMaxLength(v);
-				sort_impl(v, len, enableMultiThreading);
-			}
-
-			template <unknown T>
-			inline void sort_dispatcher(std::vector<T>& v, bool enableMultiThreading)
-			{
-				static_assert(sizeof(T) == 0,
-					"ERROR: Unable to sort vector! CAUSE: Unsupported type!\n");
+				sortImpl(v, len, enableMultiThreading);
 			}
 		}
 
@@ -749,7 +751,7 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, known Key>
+			template <typename T, supported Key>
 			inline void insertionSort(std::vector<T>& v, std::vector<Key>& k, Index l, Index r)
 			{
 				constexpr auto cmp = (is_floating_point<Key>) ?
@@ -775,7 +777,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Proj, typename U>
-			inline void getConvertedVectorThread(std::vector<T>& v, Proj proj, std::vector<U>& vu, Index l, Index r)
+			inline void getUnsignedVectorThread(std::vector<T>& v, Proj proj, std::vector<U>& vu, Index l, Index r)
 			{
 				constexpr Index SIGN_SHIFT = (sizeof(U) * 8) - 1;
 				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
@@ -788,27 +790,26 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Proj, typename U>
-			inline void getConvertedVector(std::vector<T>& v, Proj proj, std::vector<U>& vu, bool enableMultiThreading)
+			inline void getUnsignedVector(std::vector<T>& v, Proj proj, std::vector<U>& vu, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
-				Index threadCount = static_cast<Index>(ceil(SIZE / BUCKET_THRESHOLD));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
-					getConvertedVectorThread(v, proj, vu, 0, SIZE);
+					getUnsignedVectorThread(v, proj, vu, 0, SIZE);
 				}
 				else
 				{
 					std::vector<std::thread> threads;
-					threadCount = std::min(threadCount, static_cast<Index>(std::thread::hardware_concurrency()));
-					Index bucketSize = SIZE / threadCount;
+					Index bucketSize = SIZE / numOfThreads;
 
-					for (Index i = 0; i < threadCount; i++)
+					for (Index i = 0; i < numOfThreads; i++)
 					{
 						Index start = i * bucketSize;
-						Index end = (i == threadCount - 1) ? SIZE : start + bucketSize;
+						Index end = (i == numOfThreads - 1) ? SIZE : start + bucketSize;
 						threads.emplace_back([&v, &proj, &vu, start, end]() {
-							getConvertedVectorThread(v, proj, vu, start, end);
+							getUnsignedVectorThread(v, proj, vu, start, end);
 						});
 					}
 
@@ -855,26 +856,24 @@ namespace radix_sort
 				using Key = sort_key<T, Proj>;
 
 				const Index SIZE = r - l;
-				Index threadCount = static_cast<Index>(ceil(SIZE / BUCKET_THRESHOLD));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
 					getCountVectorThread(v, proj, count, curShiftOrIndex, l, r);
 				}
 				else
 				{
 					constexpr Index ALLOC_SIZE = (std::same_as<Key, std::string>) ? CHARS_ALLOC : BASE;
-
-					threadCount = std::min(threadCount, static_cast<Index>(std::thread::hardware_concurrency()));
-					Index bucketSize = SIZE / threadCount;
+					std::vector<std::vector<Index>> counts(numOfThreads, std::vector<Index>(ALLOC_SIZE));
 
 					std::vector<std::thread> threads;
-					std::vector<std::vector<Index>> counts(threadCount, std::vector<Index>(ALLOC_SIZE));
+					Index bucketSize = SIZE / numOfThreads;
 
-					for (Index i = 0; i < threadCount; i++)
+					for (Index i = 0; i < numOfThreads; i++)
 					{
 						Index start = l + i * bucketSize;
-						Index end = (i == threadCount - 1) ? r : start + bucketSize;
+						Index end = (i == numOfThreads - 1) ? r : start + bucketSize;
 						threads.emplace_back([&v, &proj, &counts, i, curShiftOrIndex, start, end]() {
 								getCountVectorThread(v, proj, counts[i], curShiftOrIndex, start, end);
 						});
@@ -883,7 +882,7 @@ namespace radix_sort
 					for (auto& t : threads)
 						t.join();
 
-					for (Index curThread = 0; curThread < threadCount; curThread++)
+					for (Index curThread = 0; curThread < numOfThreads; curThread++)
 					{
 						for (Index i = 0; i < ALLOC_SIZE; i++)
 							count[i] += counts[curThread][i];
@@ -892,7 +891,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Proj>
-			inline void getUpdatedVector(std::vector<T>& v, Proj proj, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShift)
+			inline void getSortedVector(std::vector<T>& v, Proj proj, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShift)
 			{
 				using Key = sort_key<T, Proj>;
 
@@ -919,7 +918,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Proj>
-			inline void getUpdatedVector(std::vector<T>& v, Proj proj, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShiftOrIndex, Index l, Index r)
+			inline void getSortedVector(std::vector<T>& v, Proj proj, std::vector<T>& tmp, std::vector<Index>& prefix, Index curShiftOrIndex, Index l, Index r)
 			{
 				using Key = sort_key<T, Proj>;
 
@@ -950,8 +949,8 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, known Key>
-			inline void getUpdatedVector(std::vector<T>& v, std::vector<Key>& k, std::vector<T>& tmp, std::vector<Key>& tmpKey, std::vector<Index>& prefix, Index curShiftOrIndex, Index l, Index r)
+			template <typename T, supported Key>
+			inline void getSortedVector(std::vector<T>& v, std::vector<Key>& k, std::vector<T>& tmp, std::vector<Key>& tmpKey, std::vector<Index>& prefix, Index curShiftOrIndex, Index l, Index r)
 			{
 				if constexpr (is_string<Key>)
 				{
@@ -1007,9 +1006,9 @@ namespace radix_sort
 			inline void sortByIndices(std::vector<T>& v, std::vector<Index>& indices, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
-				Index threadCount = static_cast<Index>(ceil(SIZE / BUCKET_THRESHOLD));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || threadCount <= 1 || SIZE < SIZE_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
 					std::vector<T> tmp;
 					tmp.reserve(SIZE);
@@ -1023,13 +1022,12 @@ namespace radix_sort
 				{
 					std::vector<T> tmp(SIZE);
 					std::vector<std::thread> threads;
-					threadCount = std::min(threadCount, static_cast<Index>(std::thread::hardware_concurrency()));
-					Index bucketSize = SIZE / threadCount;
+					Index bucketSize = SIZE / numOfThreads;
 
-					for (Index i = 0; i < threadCount; i++)
+					for (Index i = 0; i < numOfThreads; i++)
 					{
 						Index start = i * bucketSize;
-						Index end = (i == threadCount - 1) ? SIZE : start + bucketSize;
+						Index end = (i == numOfThreads - 1) ? SIZE : start + bucketSize;
 						threads.emplace_back([&v, &tmp, &indices, start, end]() {
 							sortByIndicesThread(v, tmp, indices, start, end);
 						});
@@ -1080,7 +1078,7 @@ namespace radix_sort
 
 					getCountVector(v, proj, count, curShiftOrIndex, l, r, enableMultiThreading);
 					getPrefixVector<Key>(prefix, count, l);
-					getUpdatedVector(v, proj, tmp, prefix, curShiftOrIndex, l, r);
+					getSortedVector(v, proj, tmp, prefix, curShiftOrIndex, l, r);
 
 					std::move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
 
@@ -1111,13 +1109,11 @@ namespace radix_sort
 					}
 					else
 					{
-						const Index LOCAL_BUCKET_THRESHOLD = std::max((r - l) / 1000, static_cast<Index>(1000));
-
-						for (Index i = 0; i < CHARS; i++)
+						for (Index i = 0; i < BASE; i++)
 						{
 							if (count[i] > 1)
 							{
-								if (count[i] < LOCAL_BUCKET_THRESHOLD)
+								if (count[i] < GLOBAL_BUCKET_THRESHOLD)
 									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
 								else
 								{
@@ -1132,7 +1128,7 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, known Key>
+			template <typename T, supported Key>
 			inline void sortInstance(std::vector<T>& v, std::vector<Key>& k, 
 				std::vector<T>& tmp, std::vector<Key>& tmpKey,
 				std::vector<Region>& regions, std::unique_lock<std::mutex>& lkRegions,
@@ -1169,7 +1165,7 @@ namespace radix_sort
 
 					getCountVector(k, count, curShiftOrIndex, l, r, enableMultiThreading);
 					getPrefixVector<Key>(prefix, count, l);
-					getUpdatedVector(v, k, tmp, tmpKey, prefix, curShiftOrIndex, l, r);
+					getSortedVector(v, k, tmp, tmpKey, prefix, curShiftOrIndex, l, r);
 
 					std::move(tmp.begin() + l, tmp.begin() + r, v.begin() + l);
 					std::move(tmpKey.begin() + l, tmpKey.begin() + r, k.begin() + l);
@@ -1201,13 +1197,11 @@ namespace radix_sort
 					}
 					else
 					{
-						const Index LOCAL_BUCKET_THRESHOLD = std::max((r - l) / 1000, static_cast<Index>(1000));
-
-						for (Index i = 0; i < CHARS; i++)
+						for (Index i = 0; i < BASE; i++)
 						{
 							if (count[i] > 1)
 							{
-								if (count[i] < LOCAL_BUCKET_THRESHOLD)
+								if (count[i] < GLOBAL_BUCKET_THRESHOLD)
 									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
 								else
 								{
@@ -1231,7 +1225,6 @@ namespace radix_sort
 
 				bool isIdle = false;
 				Index iterationsIdle = 0;
-				const bool ALLOW_SLEEP = v.size() > ALLOW_SLEEP_THRESHOLD;
 
 				while (true)
 				{
@@ -1268,7 +1261,7 @@ namespace radix_sort
 						lkRegions.unlock();
 						iterationsIdle++;
 
-						if (ALLOW_SLEEP && iterationsIdle > 100)
+						if (iterationsIdle > SLEEP_ITERATIONS_THRESHOLD)
 						{
 							iterationsIdle = 0;
 							std::this_thread::sleep_for(std::chrono::nanoseconds(1));
@@ -1277,7 +1270,7 @@ namespace radix_sort
 				}
 			}
 
-			template <typename T, known Key>
+			template <typename T, supported Key>
 			inline void sortThread(std::vector<T>& v, std::vector<Key>& k, 
 				std::vector<T>& tmp, std::vector<Key>& tmpKey,
 				std::vector<Region>& regions, std::mutex& regionsLock,
@@ -1287,7 +1280,6 @@ namespace radix_sort
 
 				bool isIdle = false;
 				Index iterationsIdle = 0;
-				const bool ALLOW_SLEEP = v.size() > ALLOW_SLEEP_THRESHOLD;
 
 				while (true)
 				{
@@ -1324,7 +1316,7 @@ namespace radix_sort
 						lkRegions.unlock();
 						iterationsIdle++;
 
-						if (ALLOW_SLEEP && iterationsIdle > 100)
+						if (iterationsIdle > SLEEP_ITERATIONS_THRESHOLD)
 						{
 							iterationsIdle = 0;
 							std::this_thread::sleep_for(std::chrono::nanoseconds(1));
@@ -1339,7 +1331,7 @@ namespace radix_sort
 
 			template <typename T, typename Proj>
 			requires is_small_integral<sort_key<T, Proj>>
-			inline void sort_impl(std::vector<T>& v, Proj proj, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, Proj proj, Index len, bool enableMultiThreading)
 			{
 				using Key = sort_key<T, Proj>;
 				
@@ -1354,7 +1346,7 @@ namespace radix_sort
 
 					getCountVector(v, proj, count, curShift, 0, SIZE, enableMultiThreading);
 					getPrefixVector<Key>(prefix, count, 0);
-					getUpdatedVector(v, proj, tmp, prefix, curShift);
+					getSortedVector(v, proj, tmp, prefix, curShift);
 
 					std::swap(v, tmp);
 
@@ -1363,7 +1355,7 @@ namespace radix_sort
 			}
 
 			template <typename T, is_small_integral Key>
-			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, std::vector<Key>& k, Index len, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
@@ -1377,7 +1369,7 @@ namespace radix_sort
 
 					getCountVector(k, count, curShift, 0, SIZE, enableMultiThreading);
 					getPrefixVector<Key>(prefix, count, 0);
-					getUpdatedVector(v, k, tmp, tmpKey, prefix, curShift, 0, SIZE);
+					getSortedVector(v, k, tmp, tmpKey, prefix, curShift, 0, SIZE);
 
 					std::swap(v, tmp);
 					std::swap(k, tmpKey);
@@ -1388,16 +1380,16 @@ namespace radix_sort
 
 			template <typename T, typename Proj>
 			requires (is_large_integral<sort_key<T, Proj>> || is_string<sort_key<T, Proj>>)
-			inline void sort_impl(std::vector<T>& v, Proj proj, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, Proj proj, Index len, bool enableMultiThreading)
 			{
 				using Key = sort_key<T, Proj>;
 
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
 				constexpr Index curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
-				const Index LOCAL_BUCKET_THRESHOLD = std::max(static_cast<Index>(SIZE / 1000), static_cast<Index>(1000));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || static_cast<Index>(SIZE / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 0)
 				{
 					std::mutex tmpMutex;
 					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
@@ -1407,7 +1399,6 @@ namespace radix_sort
 				}
 				else
 				{
-					Index numOfThreads = std::thread::hardware_concurrency();
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
 					std::mutex idleLock;
@@ -1416,6 +1407,7 @@ namespace radix_sort
 					std::vector<Region> regions;
 					regions.reserve(SIZE / 1000);
 					regions.emplace_back(0, SIZE, len, curShiftOrIndex);
+					
 					for (Index i = 0; i < numOfThreads; i++)
 					{
 						threads.emplace_back([&v, &proj, &tmp, &regions, &regionsLock, &runningCounter, i]() {
@@ -1430,15 +1422,15 @@ namespace radix_sort
 
 			template <typename T, typename Key>
 			requires (is_large_integral<Key> || is_string<Key>)
-			inline void sort_impl(std::vector<T>& v, std::vector<Key>& k, Index len, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, std::vector<Key>& k, Index len, bool enableMultiThreading)
 			{
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
 				std::vector<Key> tmpKey(SIZE);
 				constexpr Index curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
-				const Index LOCAL_BUCKET_THRESHOLD = std::max(static_cast<Index>(SIZE / 1000), static_cast<Index>(1000));
+				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || static_cast<Index>(SIZE / 256) - (LOCAL_BUCKET_THRESHOLD / 10) < LOCAL_BUCKET_THRESHOLD)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
 					std::mutex tmpMutex;
 					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
@@ -1448,7 +1440,6 @@ namespace radix_sort
 				}
 				else
 				{
-					Index numOfThreads = std::thread::hardware_concurrency();
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
 					std::mutex idleLock;
@@ -1457,6 +1448,7 @@ namespace radix_sort
 					std::vector<Region> regions;
 					regions.reserve(SIZE / 1000);
 					regions.emplace_back(0, SIZE, len, curShiftOrIndex);
+
 					for (Index i = 0; i < numOfThreads; i++)
 					{
 						threads.emplace_back([&v, &k, &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
@@ -1471,7 +1463,7 @@ namespace radix_sort
 
 			template <typename T, typename Proj>
 			requires is_floating_point<sort_key<T, Proj>>
-			inline void sort_impl(std::vector<T>& v, Proj proj, Index len, std::vector<Index>& indices, bool enableMultiThreading)
+			inline void sortImpl(std::vector<T>& v, Proj proj, Index len, std::vector<Index>& indices, bool enableMultiThreading)
 			{
 				using Key = sort_key<T, Proj>;
 
@@ -1479,8 +1471,8 @@ namespace radix_sort
 				const Index SIZE = v.size();
 				std::vector<U> vu(SIZE);
 
-				getConvertedVector(v, proj, vu, enableMultiThreading);
-				sort_impl(indices, vu, len, enableMultiThreading);
+				getUnsignedVector(v, proj, vu, enableMultiThreading);
+				sortImpl(indices, vu, len, enableMultiThreading);
 			}
 
 			// =====================
@@ -1489,7 +1481,7 @@ namespace radix_sort
 
 			template <typename T, typename Proj>
 			requires sortable<T, Proj>
-			inline void sort_dispatcher(std::vector<T>& v, Proj proj, bool enableMultiThreading)
+			inline void sortDispatcher(std::vector<T>& v, Proj proj, bool enableMultiThreading)
 			{
 				using Key = sort_key<T, Proj>;
 
@@ -1520,14 +1512,14 @@ namespace radix_sort
 				{
 					std::vector<Index> indices(SIZE);
 					std::iota(indices.begin(), indices.end(), static_cast<Index>(0));
-					sort_impl(v, proj, len, indices, enableMultiThreading);
+					sortImpl(v, proj, len, indices, enableMultiThreading);
 					sortByIndices(v, indices, enableMultiThreading);
 				}
 				else
 				{
 					if (COMPLEX_SIZE <= INDEX_SIZE || len <= 1)
 					{
-						sort_impl(v, proj, len, enableMultiThreading);
+						sortImpl(v, proj, len, enableMultiThreading);
 					}
 					else
 					{
@@ -1537,7 +1529,7 @@ namespace radix_sort
 						if constexpr (is_string<Key>)
 						{
 							auto tmpFunc = [&v, &proj](const Index& i) -> const Key& { return std::invoke(proj, v[i]); };
-							sort_impl(indices, tmpFunc, len, enableMultiThreading);
+							sortImpl(indices, tmpFunc, len, enableMultiThreading);
 						}
 						else
 						{
@@ -1547,20 +1539,12 @@ namespace radix_sort
 							for (const auto& obj : v)
 								k.emplace_back(std::invoke(proj, obj));
 
-							sort_impl(indices, k, len, enableMultiThreading);
+							sortImpl(indices, k, len, enableMultiThreading);
 						}
 
 						sortByIndices(v, indices, enableMultiThreading);
 					}
 				}
-			}
-
-			template <typename T, typename Proj>
-			requires (!sortable<T, Proj>)
-			inline void sort_dispatcher(std::vector<T>& v, Proj proj, bool enableMultiThreading)
-			{
-				static_assert(sizeof(T) == 0,
-					"ERROR: Unable to sort vector! CAUSE: Key extractor is invalid or returns an unsupported type!\n");
 			}
 		}
 	}
@@ -1569,18 +1553,26 @@ namespace radix_sort
 	// -----API-----
 	// =============
 
-	template <typename T>
-	inline void sort(std::vector<T>& v, bool enableMultiThreading = false)
-	{
-		internal::value::sort_dispatcher(v, enableMultiThreading);
-	}
-
 	template <typename T, typename Proj = std::identity>
 	inline void sort(std::vector<T>& v, Proj proj = {}, bool enableMultiThreading = false)
 	{
 		if constexpr (std::same_as<std::remove_cvref_t<Proj>, std::identity>)
-			internal::value::sort_dispatcher(v, enableMultiThreading);
+		{
+			static_assert(
+				internal::shared::supported<T>,
+				"ERROR: Unable to sort vector! CAUSE: Unsupported type!"
+			);
+
+			internal::value::sortDispatcher(v, enableMultiThreading);
+		}
 		else
-			internal::key::sort_dispatcher(v, proj, enableMultiThreading);
+		{
+			static_assert(
+				internal::shared::sortable<T, Proj>,
+				"ERROR: Unable to sort vector! CAUSE: Key extractor is invalid or returns an unsupported type!"
+			);
+
+			internal::key::sortDispatcher(v, proj, enableMultiThreading);
+		}
 	}
 };
