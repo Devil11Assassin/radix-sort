@@ -39,7 +39,8 @@ namespace radix_sort
 			inline constexpr Index INSERTION_SORT_THRESHOLD_STR = 10;
 			inline constexpr Index INSERTION_SORT_THRESHOLD_ALL = 100;
 
-			inline constexpr Index MAX_THREADS = 12;
+			inline const Index MAX_HW_THREADS = static_cast<Index>(std::thread::hardware_concurrency());
+			inline constexpr Index MAX_SW_THREADS = 12;
 			inline constexpr Index MULTI_THREADING_THRESHOLD = 1'000'000;
 			inline constexpr Index SLEEP_ITERATIONS_THRESHOLD = 100;
 			inline constexpr Index GLOBAL_BUCKET_THRESHOLD = 10'000;
@@ -106,12 +107,15 @@ namespace radix_sort
 
 			inline Index getNumOfThreads(Index n)
 			{
-				if (n <= MULTI_THREADING_THRESHOLD)
+				if (n < (MULTI_THREADING_THRESHOLD << 1))
 					return 1;
 
-				double k = std::ceil(std::log2(n / MULTI_THREADING_THRESHOLD) / 1.0);
-				Index t = static_cast<Index>(1) << static_cast<Index>(k);
-				return std::min({ t, MAX_THREADS, static_cast<Index>(std::thread::hardware_concurrency()) });
+				Index ratio = n / MULTI_THREADING_THRESHOLD;
+				Index numOfThreads = 1;
+				while ((numOfThreads << 1) <= ratio) 
+					numOfThreads <<= 1;
+
+				return std::min({ numOfThreads, MAX_HW_THREADS, MAX_SW_THREADS });
 			}
 
 			template <typename T>
@@ -215,6 +219,9 @@ namespace radix_sort
 			template <typename T>
 			inline bool isSortedBi(std::vector<T>& v)
 			{
+				if (v.size() < 2)
+					return true;
+
 				constexpr auto cmpLess = (is_floating_point<T>) ?
 					[](const T& a, const T& b) { return std::strong_order(a, b) < 0; } :
 					[](const T& a, const T& b) { return a < b; };
@@ -595,7 +602,6 @@ namespace radix_sort
 				{
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
-					std::mutex idleLock;
 					Index runningCounter = numOfThreads;
 
 					std::vector<Region> regions;
@@ -619,7 +625,7 @@ namespace radix_sort
 			// =====================
 
 			template <typename T>
-			inline void selectSortImpl(std::vector<T>& v, bool enableMultiThreading)
+			inline void selectSortStrategy(std::vector<T>& v, bool enableMultiThreading)
 			{
 				Index len = getMaxLength(v);
 				Index numOfThreads = getNumOfThreads(v.size());
@@ -655,12 +661,12 @@ namespace radix_sort
 				}
 
 				if constexpr (!is_floating_point<T>)
-					selectSortImpl(v, enableMultiThreading);
+					selectSortStrategy(v, enableMultiThreading);
 				else 
 				{
 					std::vector<t2u<T>> vu(SIZE);
 					getUnsignedVector(v, vu, false, enableMultiThreading);
-					selectSortImpl(vu, enableMultiThreading);
+					selectSortStrategy(vu, enableMultiThreading);
 					getUnsignedVector(v, vu, true, enableMultiThreading);
 				}
 			}
@@ -683,6 +689,9 @@ namespace radix_sort
 			template <typename T, typename Proj>
 			inline bool isSorted(std::vector<T>& v, Proj proj)
 			{
+				if (v.size() < 2)
+					return true;
+
 				using Key = sort_key<T, Proj>;
 				constexpr auto cmpGreater = (is_floating_point<Key>) ?
 					[](const Key& a, const Key& b) { return std::strong_order(a, b) > 0; } :
@@ -1410,7 +1419,6 @@ namespace radix_sort
 				{
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
-					std::mutex idleLock;
 					Index runningCounter = numOfThreads;
 
 					std::vector<Region> regions;
@@ -1450,7 +1458,6 @@ namespace radix_sort
 				{
 					std::vector<std::thread> threads;
 					std::mutex regionsLock;
-					std::mutex idleLock;
 					Index runningCounter = numOfThreads;
 
 					std::vector<Region> regions;
@@ -1474,7 +1481,7 @@ namespace radix_sort
 			// =====================
 
 			template <typename T, typename Proj>
-			inline void selectSortImpl(std::vector<T>& v, Proj proj, Index len, bool enableMultiThreading)
+			inline void selectSortStrategy(std::vector<T>& v, Proj proj, Index len, bool enableMultiThreading)
 			{
 				using Key = sort_key<T, Proj>;
 				Index numOfThreads = getNumOfThreads(v.size());
@@ -1488,7 +1495,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Key>
-			inline void selectSortImpl(std::vector<T>& v, std::vector<Key>& k, Index len, bool enableMultiThreading)
+			inline void selectSortStrategy(std::vector<T>& v, std::vector<Key>& k, Index len, bool enableMultiThreading)
 			{
 				Index numOfThreads = getNumOfThreads(v.size());
 
@@ -1514,7 +1521,7 @@ namespace radix_sort
 					std::iota(indices.begin(), indices.end(), static_cast<Index>(0));
 
 					getUnsignedVector(v, proj, vu, enableMultiThreading);
-					selectSortImpl(indices, vu, len, enableMultiThreading);
+					selectSortStrategy(indices, vu, len, enableMultiThreading);
 					sortByIndices(v, indices, enableMultiThreading);
 				}
 				else
@@ -1524,7 +1531,7 @@ namespace radix_sort
 
 					if (COMPLEX_SIZE <= INDEX_SIZE || len <= 1)
 					{
-						selectSortImpl(v, proj, len, enableMultiThreading);
+						selectSortStrategy(v, proj, len, enableMultiThreading);
 						return;
 					}
 
@@ -1534,7 +1541,7 @@ namespace radix_sort
 					if constexpr (is_string<Key>)
 					{
 						auto tmpFunc = [&v, &proj](const Index& i) -> const Key& { return std::invoke(proj, v[i]); };
-						selectSortImpl(indices, tmpFunc, len, enableMultiThreading);
+						selectSortStrategy(indices, tmpFunc, len, enableMultiThreading);
 					}
 					else
 					{
@@ -1544,7 +1551,7 @@ namespace radix_sort
 						for (const auto& obj : v)
 							k.emplace_back(std::invoke(proj, obj));
 
-						selectSortImpl(indices, k, len, enableMultiThreading);
+						selectSortStrategy(indices, k, len, enableMultiThreading);
 					}
 
 					sortByIndices(v, indices, enableMultiThreading);
