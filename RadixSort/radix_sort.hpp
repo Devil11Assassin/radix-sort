@@ -39,7 +39,7 @@ namespace radix_sort
 			inline constexpr Index INSERTION_SORT_THRESHOLD_STR = 10;
 			inline constexpr Index INSERTION_SORT_THRESHOLD_ALL = 100;
 
-			inline const Index MAX_HW_THREADS = static_cast<Index>(std::thread::hardware_concurrency());
+			inline const Index MAX_HW_THREADS = std::thread::hardware_concurrency();
 			inline constexpr Index MAX_SW_THREADS = 12;
 			inline constexpr Index MULTI_THREADING_THRESHOLD = 1'000'000;
 			inline constexpr Index SLEEP_ITERATIONS_THRESHOLD = 100;
@@ -100,7 +100,7 @@ namespace radix_sort
 			// -----Helpers-----
 			// =================
 
-			inline int getChar(const std::string& s, Index index)
+			inline Index getChar(const std::string& s, Index index)
 			{
 				return (index < s.length()) ? static_cast<unsigned char>(s[index]) : 256;
 			}
