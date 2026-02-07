@@ -29,6 +29,12 @@ namespace benchmark
 		const int RADIX_SORT      = 0;
 		const int RADIX_SORT_PAR  = 0;
 
+		const int RANDOMIZED     = 0;
+		const int SORTED         = 0;
+		const int REVERSE_SORTED = 0;
+		const int NEARLY_SORTED  = 0;
+		const int DUPLICATES     = 0;
+
 		std::vector<size_t> RUN_SIZE     = { static_cast<size_t>(1e8) };
 		std::vector<size_t> RUN_SIZE_STR = { static_cast<size_t>(5e7) };
 		std::vector<size_t> RUN_SIZE_CLX = { static_cast<size_t>(1e7) };

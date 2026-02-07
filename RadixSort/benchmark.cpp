@@ -50,12 +50,12 @@ namespace benchmark
 	const locale lnum = locale("en_US.UTF-8");
 	const vector<string> method2str =
 	{
-		"sort           ", 
-		"sort_par       ", 
-		"stable_sort    ", 
-		"stable_sort_par", 
-		"radix_sort     ", 
-		"radix_sort_par ",
+		"sort           ", "sort_par       ", 
+		"stable_sort    ", "stable_sort_par", 
+		"radix_sort     ", "radix_sort_par ",
+	};
+	const vector<string> shape2str = {
+		"randomized", "sorted", "reverse sorted", "nearly sorted", "duplicates"
 	};
 	const vector<string> type2str =
 	{
@@ -172,9 +172,9 @@ namespace benchmark
 	}
 
 	template <typename T, typename U = T>
-	void benchmark(size_t n, int iterations, const vector<int> METHODS, string& output)
+	void benchmark(size_t n, int shape, int iterations, const vector<int> METHODS, string& output)
 	{
-		vector<T> v(generators::generate<T>(n));
+		vector<T> v(generators::generate<T>(n, static_cast<generators::Shape>(shape)));
 
 		for (int i = Method::SORT; i <= Method::RADIX_SORT_PAR; i++)
 		{
@@ -190,6 +190,13 @@ namespace benchmark
 			params.SORT, params.SORT_PAR,
 			params.STABLE_SORT, params.STABLE_SORT_PAR,
 			params.RADIX_SORT, params.RADIX_SORT_PAR
+		};
+
+		const vector<int> SHAPES =
+		{
+			params.RANDOMIZED, params.SORTED,
+			params.REVERSE_SORTED, params.NEARLY_SORTED,
+			params.DUPLICATES
 		};
 
 		const vector<vector<size_t>> SIZES =
@@ -220,7 +227,6 @@ namespace benchmark
 
 		int iterations = params.ITERATIONS;
 
-
 		string curDateTime = format(
 			"{:%Y-%m-%d %H-%M-%S}", 
 			chrono::zoned_time{ chrono::current_zone(), floor<chrono::seconds>(chrono::system_clock::now()) }
@@ -238,64 +244,70 @@ namespace benchmark
 		file << output;
 
 		output.clear();
-		output = "=========================\n\n";
+		output += "=========================\n\n";
 
-		for (int type = Type::CHAR; type <= Type::COMPLEX_STR; type++)
+		for (int shape = generators::Shape::RANDOMIZED; shape <= generators::Shape::DUPLICATES; shape++)
 		{
-			if (TYPES[type])
+			if (!SHAPES[shape])
+				continue;
+
+			for (int type = Type::CHAR; type <= Type::COMPLEX_STR; type++)
 			{
+				if (!TYPES[type])
+					continue;
+
 				for (const size_t& n : SIZES[type])
 				{
-					output += std::format(lnum, "{}\nSIZE = {:L}\n\n", type2str[type], n);
+					output += std::format(lnum, "{}\nSIZE = {:L} ({})\n\n", type2str[type], n, shape2str[shape]);
 					switch (type)
 					{
 						case Type::CHAR:
-							benchmark<char>(n, iterations, METHODS, output);
+							benchmark<char>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::UCHAR:
-							benchmark<unsigned char>(n, iterations, METHODS, output);
+							benchmark<unsigned char>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::SHORT:
-							benchmark<short>(n, iterations, METHODS, output);
+							benchmark<short>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::USHORT:
-							benchmark<unsigned short>(n, iterations, METHODS, output);
+							benchmark<unsigned short>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::INT:
-							benchmark<int>(n, iterations, METHODS, output);
+							benchmark<int>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::UINT:
-							benchmark<unsigned int>(n, iterations, METHODS, output);
+							benchmark<unsigned int>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::LL:
-							benchmark<long long>(n, iterations, METHODS, output);
+							benchmark<long long>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::ULL:
-							benchmark<unsigned long long>(n, iterations, METHODS, output);
+							benchmark<unsigned long long>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::FLOAT:
-							benchmark<float>(n, iterations, METHODS, output);
+							benchmark<float>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::DOUBLE:
-							benchmark<double>(n, iterations, METHODS, output);
+							benchmark<double>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::STRING:
-							benchmark<string>(n, iterations, METHODS, output);
+							benchmark<string>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::COMPLEX_I32:
-							benchmark<Employee, decltype(Employee::age)>(n, iterations, METHODS, output);
+							benchmark<Employee, decltype(Employee::age)>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::COMPLEX_LL:
-							benchmark<Employee, decltype(Employee::id)>(n, iterations, METHODS, output);
+							benchmark<Employee, decltype(Employee::id)>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::COMPLEX_FLT:
-							benchmark<Employee, decltype(Employee::salary_f)>(n, iterations, METHODS, output);
+							benchmark<Employee, decltype(Employee::salary_f)>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::COMPLEX_DBL:
-							benchmark<Employee, decltype(Employee::salary)>(n, iterations, METHODS, output);
+							benchmark<Employee, decltype(Employee::salary)>(n, shape, iterations, METHODS, output);
 							break;
 						case Type::COMPLEX_STR:
-							benchmark<Employee, decltype(Employee::name)>(n, iterations, METHODS, output);
+							benchmark<Employee, decltype(Employee::name)>(n, shape, iterations, METHODS, output);
 							break;
 					}
 					output += "\n=========================\n\n";

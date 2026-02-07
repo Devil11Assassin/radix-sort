@@ -5,6 +5,7 @@
 #include <limits>
 #include <random>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 struct Employee
@@ -35,6 +36,15 @@ struct Employee
 
 namespace generators
 {
+	enum Shape 
+	{
+		RANDOMIZED,
+		SORTED,
+		REVERSE_SORTED,
+		NEARLY_SORTED,
+		DUPLICATES
+	};
+
 	namespace internal 
 	{
 		template <typename T>
@@ -63,7 +73,7 @@ namespace generators
 		using gen_t = gen_t_impl<sizeof(T), T>::type;
 
 		template <std::integral T>
-		inline std::vector<T> generate_impl(std::size_t n)
+		inline std::vector<T> generate_impl(std::size_t n, Shape shape)
 		{
 			std::vector<T> v;
 			v.reserve(n);
@@ -71,14 +81,77 @@ namespace generators
 			std::mt19937_64 gen(SEED);
 			std::uniform_int_distribution<gen_t<T>> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
-			while (n--)
-				v.emplace_back(dist(gen));
+			switch (shape)
+			{
+				case Shape::RANDOMIZED:
+				{
+					while (n--)
+						v.emplace_back(dist(gen));
+
+					break;
+				}
+				case Shape::DUPLICATES:
+				{
+					std::vector<T> unique;
+					unique.reserve(256);
+
+					std::uniform_int_distribution<gen_t<T>> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+					for (size_t i = 0; i < 256; i++)
+						unique.emplace_back(dist(gen));
+
+					std::uniform_int_distribution<std::size_t> indices(0, 255);
+					while (n--)
+						v.emplace_back(unique[indices(gen)]);
+
+					break;
+				}
+				case Shape::SORTED:
+				case Shape::REVERSE_SORTED:
+				case Shape::NEARLY_SORTED:
+				{
+					if constexpr (sizeof(T) < sizeof(double))
+					{
+						double step = static_cast<double>(std::numeric_limits<std::make_unsigned_t<T>>::max()) / (n - 1);
+						double accum = static_cast<double>(std::numeric_limits<T>::min());
+
+						for (size_t i = 0; i < n; ++i, accum += step)
+							v.emplace_back(static_cast<T>(accum));
+						v.back() = std::numeric_limits<T>::max();
+					}
+					else
+					{
+						T step = std::numeric_limits<std::make_unsigned_t<T>>::max() / (n - 1);
+						T accum = std::numeric_limits<T>::min();
+
+						for (size_t i = 0; i < n; ++i, accum += step)
+							v.emplace_back(accum);
+						v.back() = std::numeric_limits<T>::max();
+					}
+
+					if (shape == Shape::REVERSE_SORTED)
+						std::reverse(v.begin(), v.end());
+					else if (shape == Shape::NEARLY_SORTED)
+					{
+						std::uniform_int_distribution<std::size_t> dist(0, n - 1);
+
+						size_t swaps = static_cast<size_t>(std::ceil(n * 0.05));
+						while (swaps--)
+						{
+							size_t i = dist(gen);
+							size_t j = dist(gen);
+							std::swap(v[i], v[j]);
+						}
+					}
+
+					break;
+				}
+			}
 
 			return v;
 		}
 
 		template <std::floating_point T>
-		inline std::vector<T> generate_impl(std::size_t n, bool testStrongOrder = true)
+		inline std::vector<T> generate_impl(std::size_t n, Shape shape, bool testStrongOrder = true)
 		{
 			static_assert(
 				std::numeric_limits<T>::is_iec559,
@@ -111,7 +184,7 @@ namespace generators
 		}
 	
 		template <typename T> requires std::same_as<T, std::string>
-		inline std::vector<T> generate_impl(std::size_t n, std::size_t maxLen = 20, const bool fixed = false)
+		inline std::vector<T> generate_impl(std::size_t n, Shape shape, std::size_t maxLen = 20, const bool fixed = false)
 		{
 			std::vector<T> v;
 			v.reserve(n);
@@ -136,33 +209,34 @@ namespace generators
 		}
 
 		template <typename T> requires std::same_as<T, Employee>
-		inline std::vector<T> generate_impl(std::size_t n)
+		inline std::vector<T> generate_impl(std::size_t n, Shape shape)
 		{
 			std::vector<T> v;
 			v.reserve(n);
 
-			std::vector<decltype(Employee::age)> ages = generate_impl<decltype(Employee::age)>(n);
-			std::vector<decltype(Employee::id)> ids = generate_impl<decltype(Employee::id)>(n);
-			std::vector<decltype(Employee::salary_f)> salaries_f = generate_impl<decltype(Employee::salary_f)>(n);
-			std::vector<decltype(Employee::salary)> salaries = generate_impl<decltype(Employee::salary)>(n);
-			std::vector<decltype(Employee::name)> names = generate_impl<decltype(Employee::name)>(n);
+			std::vector<decltype(Employee::age)> ages = generate_impl<decltype(Employee::age)>(n, shape);
+			std::vector<decltype(Employee::id)> ids = generate_impl<decltype(Employee::id)>(n, shape);
+			std::vector<decltype(Employee::salary_f)> salaries_f = generate_impl<decltype(Employee::salary_f)>(n, shape);
+			std::vector<decltype(Employee::salary)> salaries = generate_impl<decltype(Employee::salary)>(n, shape);
+			std::vector<decltype(Employee::name)> names = generate_impl<decltype(Employee::name)>(n, shape);
 
 			for (size_t i = 0; i < n; i++)
 				v.emplace_back(ages[i], ids[i], salaries_f[i], salaries[i], names[i]);
 
 			return v;
 		}
-
-		template<unknown T>
-		inline std::vector<T> generate_impl(std::size_t n)
-		{
-			static_assert(sizeof(T) == 0, "ERROR: Unable to generate vector!\nCAUSE: Unsupported type!\n");
-		}
 	}
 
 	template <typename T>
-	inline std::vector<T> generate(std::size_t n)
+	inline std::vector<T> generate(std::size_t n, Shape shape = Shape::RANDOMIZED)
 	{
-		return internal::generate_impl<T>(n);
+		static_assert(!internal::unknown<T>, "ERROR: Unable to generate vector!\nCAUSE: Unsupported type!\n");
+
+		if (n <= 0)
+			return std::vector<T>();
+		else if (n == 1)
+			return std::vector<T>({ T() });
+
+		return internal::generate_impl<T>(n, shape);
 	}
 };
