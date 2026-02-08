@@ -127,13 +127,11 @@
   <ItemGroup>
     <ClCompile Include="benchmark.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="show_off.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="benchmark.hpp" />
     <ClInclude Include="generators.hpp" />
     <ClInclude Include="radix_sort.hpp" />
-    <ClInclude Include="show_off.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

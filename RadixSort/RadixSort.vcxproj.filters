@@ -18,7 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="show_off.cpp">
+    <ClCompile Include="benchmark.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClInclude Include="radix_sort.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="show_off.hpp">
+    <ClInclude Include="benchmark.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
