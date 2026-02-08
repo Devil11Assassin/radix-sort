@@ -2,9 +2,11 @@
 #include <algorithm>
 #include <compare>
 #include <concepts>
+#include <cstddef>
 #include <limits>
 #include <mutex>
 #include <numeric>
+#include <span>
 #include <string>
 #include <thread>
 #include <type_traits>
@@ -123,13 +125,13 @@ namespace radix_sort
 			{
 				if constexpr (is_string<T>)
 				{
-					for (Index i = l; i < r; i++)
-						count[getChar(v[i], curShiftOrIndex)]++;
+					for (const auto& str : std::span(v).subspan(l, r - l))
+						count[getChar(str, curShiftOrIndex)]++;
 				}
 				else if constexpr (std::unsigned_integral<T>)
 				{
-					for (Index i = l; i < r; i++)
-						count[(v[i] >> curShiftOrIndex) & MASK]++;
+					for (const auto& num : std::span(v).subspan(l, r - l))
+						count[(num >> curShiftOrIndex) & MASK]++;
 				}
 				else if constexpr (std::signed_integral<T>)
 				{
@@ -137,13 +139,13 @@ namespace radix_sort
 
 					if (curShiftOrIndex != MAX_SHIFT)
 					{
-						for (Index i = l; i < r; i++)
-							count[(static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK]++;
+						for (const auto& num : std::span(v).subspan(l, r - l))
+							count[(static_cast<t2u<T>>(num) >> curShiftOrIndex) & MASK]++;
 					}
 					else
 					{
-						for (Index i = l; i < r; i++)
-							count[((static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++;
+						for (const auto& num : std::span(v).subspan(l, r - l))
+							count[((static_cast<t2u<T>>(num) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++;
 					}
 				}
 			}
@@ -237,10 +239,8 @@ namespace radix_sort
 				{
 					if (sortedAsc && cmpGreater(v[i], v[i + 1]))
 						sortedAsc = false;
-
 					if (sortedDesc && cmpLess(v[i], v[i + 1]))
 						sortedDesc = false;
-
 					if (!sortedAsc && !sortedDesc)
 						break;
 				}
@@ -259,6 +259,9 @@ namespace radix_sort
 			template <typename T>
 			inline Index getMaxLength(std::vector<T>& v)
 			{
+				if constexpr (sizeof(T) == 1)
+					return 1;
+
 				Index len = 0;
 
 				if constexpr (std::signed_integral<T> || is_floating_point<T>)
@@ -391,13 +394,13 @@ namespace radix_sort
 			{
 				if constexpr (is_string<T>)
 				{
-					for (Index i = l; i < r; i++)
-						tmp[prefix[getChar(v[i], curShiftOrIndex)]++] = std::move(v[i]);
+					for (auto& str : std::span(v).subspan(l, r - l))
+						tmp[prefix[getChar(str, curShiftOrIndex)]++] = std::move(str);
 				}
 				else if constexpr (std::unsigned_integral<T>)
 				{
-					for (Index i = l; i < r; i++)
-						tmp[prefix[(v[i] >> curShiftOrIndex) & MASK]++] = v[i];
+					for (const auto& num : std::span(v).subspan(l, r - l))
+						tmp[prefix[(num >> curShiftOrIndex) & MASK]++] = num;
 				}
 				else if constexpr (std::signed_integral<T>)
 				{
@@ -405,13 +408,13 @@ namespace radix_sort
 
 					if (curShiftOrIndex != MAX_SHIFT)
 					{
-						for (Index i = l; i < r; i++)
-							tmp[prefix[(static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK]++] = v[i];
+						for (const auto& num : std::span(v).subspan(l, r - l))
+							tmp[prefix[(static_cast<t2u<T>>(num) >> curShiftOrIndex) & MASK]++] = num;
 					}
 					else
 					{
-						for (Index i = l; i < r; i++)
-							tmp[prefix[((static_cast<t2u<T>>(v[i]) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++] = v[i];
+						for (const auto& num : std::span(v).subspan(l, r - l))
+							tmp[prefix[((static_cast<t2u<T>>(num) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++] = num;
 					}
 				}
 			}
@@ -716,6 +719,9 @@ namespace radix_sort
 			{
 				using Key = sort_key<T, Proj>;
 
+				if constexpr (sizeof(Key) == 1)
+					return 1;
+
 				Index len = 0;
 
 				if constexpr (std::signed_integral<Key> || is_floating_point<Key>)
@@ -845,13 +851,13 @@ namespace radix_sort
 
 				if constexpr (std::same_as<Key, std::string>)
 				{
-					for (Index i = l; i < r; i++)
-						count[getChar(std::invoke(proj, v[i]), curShiftOrIndex)]++;
+					for (const auto& obj : std::span(v).subspan(l, r - l))
+						count[getChar(std::invoke(proj, obj), curShiftOrIndex)]++;
 				}
 				else if constexpr (std::unsigned_integral<Key>)
 				{
-					for (Index i = l; i < r; i++)
-						count[(std::invoke(proj, v[i]) >> curShiftOrIndex) & MASK]++;
+					for (const auto& obj : std::span(v).subspan(l, r - l))
+						count[(std::invoke(proj, obj) >> curShiftOrIndex) & MASK]++;
 				}
 				else if constexpr (std::signed_integral<Key>)
 				{
@@ -859,13 +865,13 @@ namespace radix_sort
 
 					if (curShiftOrIndex != MAX_SHIFT)
 					{
-						for (Index i = l; i < r; i++)
-							count[(static_cast<t2u<Key>>(std::invoke(proj, v[i])) >> curShiftOrIndex) & MASK]++;
+						for (const auto& obj : std::span(v).subspan(l, r - l))
+							count[(static_cast<t2u<Key>>(std::invoke(proj, obj)) >> curShiftOrIndex) & MASK]++;
 					}
 					else
 					{
-						for (Index i = l; i < r; i++)
-							count[((static_cast<t2u<Key>>(std::invoke(proj, v[i])) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++;
+						for (const auto& obj : std::span(v).subspan(l, r - l))
+							count[((static_cast<t2u<Key>>(std::invoke(proj, obj)) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++;
 					}
 				}
 			}
@@ -944,13 +950,13 @@ namespace radix_sort
 
 				if constexpr (is_string<Key>)
 				{
-					for (Index i = l; i < r; i++)
-						tmp[prefix[getChar(std::invoke(proj, v[i]), curShiftOrIndex)]++] = std::move(v[i]);
+					for (auto& obj : std::span(v).subspan(l, r - l))
+						tmp[prefix[getChar(std::invoke(proj, obj), curShiftOrIndex)]++] = std::move(obj);
 				}
 				else if constexpr (std::unsigned_integral<Key>)
 				{
-					for (Index i = l; i < r; i++)
-						tmp[prefix[(std::invoke(proj, v[i]) >> curShiftOrIndex) & MASK]++] = std::move(v[i]);
+					for (auto& obj : std::span(v).subspan(l, r - l))
+						tmp[prefix[(std::invoke(proj, obj) >> curShiftOrIndex) & MASK]++] = std::move(obj);
 				}
 				else if constexpr (std::signed_integral<Key>)
 				{
@@ -958,13 +964,13 @@ namespace radix_sort
 
 					if (curShiftOrIndex != MAX_SHIFT)
 					{
-						for (Index i = l; i < r; i++)
-							tmp[prefix[(static_cast<t2u<Key>>(std::invoke(proj, v[i])) >> curShiftOrIndex) & MASK]++] = std::move(v[i]);
+						for (auto& obj : std::span(v).subspan(l, r - l))
+							tmp[prefix[(static_cast<t2u<Key>>(std::invoke(proj, obj)) >> curShiftOrIndex) & MASK]++] = std::move(obj);
 					}
 					else
 					{
-						for (Index i = l; i < r; i++)
-							tmp[prefix[((static_cast<t2u<Key>>(std::invoke(proj, v[i])) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++] = std::move(v[i]);
+						for (auto& obj : std::span(v).subspan(l, r - l))
+							tmp[prefix[((static_cast<t2u<Key>>(std::invoke(proj, obj)) >> curShiftOrIndex) & MASK) ^ INVERT_MASK]++] = std::move(obj);
 					}
 				}
 			}
@@ -1508,7 +1514,7 @@ namespace radix_sort
 			}
 
 			template <typename T, typename Proj>
-			inline void selectProjImpl(std::vector<T>& v, Proj proj, bool enableMultiThreading)
+			inline void selectProjStrategy(std::vector<T>& v, Proj proj, bool enableMultiThreading)
 			{
 				using Key = sort_key<T, Proj>;
 				const Index SIZE = v.size();
@@ -1583,7 +1589,7 @@ namespace radix_sort
 					return;
 				}
 
-				selectProjImpl(v, proj, enableMultiThreading);
+				selectProjStrategy(v, proj, enableMultiThreading);
 			}
 		}
 	}
