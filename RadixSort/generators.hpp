@@ -92,16 +92,16 @@ namespace generators
 				}
 				case Shape::DUPLICATES:
 				{
+					constexpr std::size_t DUPLICATES_COUNT = 256;
 					std::vector<T> unique;
-					unique.reserve(256);
+					unique.reserve(DUPLICATES_COUNT);
 
-					std::uniform_int_distribution<gen_t<T>> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
-					for (size_t i = 0; i < 256; i++)
+					for (std::size_t i = 0; i < DUPLICATES_COUNT; i++)
 						unique.emplace_back(dist(gen));
 
-					std::uniform_int_distribution<std::size_t> indices(0, 255);
+					std::uniform_int_distribution<std::size_t> indexDist(0, DUPLICATES_COUNT - 1);
 					while (n--)
-						v.emplace_back(unique[indices(gen)]);
+						v.emplace_back(unique[indexDist(gen)]);
 
 					break;
 				}
@@ -114,7 +114,7 @@ namespace generators
 						double step = static_cast<double>(std::numeric_limits<std::make_unsigned_t<T>>::max()) / (n - 1);
 						double accum = static_cast<double>(std::numeric_limits<T>::min());
 
-						for (size_t i = 0; i < n; ++i, accum += step)
+						for (std::size_t i = 0; i < n; ++i, accum += step)
 							v.emplace_back(static_cast<T>(accum));
 						v.back() = std::numeric_limits<T>::max();
 					}
@@ -123,7 +123,7 @@ namespace generators
 						T step = std::numeric_limits<std::make_unsigned_t<T>>::max() / (n - 1);
 						T accum = std::numeric_limits<T>::min();
 
-						for (size_t i = 0; i < n; ++i, accum += step)
+						for (std::size_t i = 0; i < n; ++i, accum += step)
 							v.emplace_back(accum);
 						v.back() = std::numeric_limits<T>::max();
 					}
@@ -132,13 +132,13 @@ namespace generators
 						std::reverse(v.begin(), v.end());
 					else if (shape == Shape::NEARLY_SORTED)
 					{
-						std::uniform_int_distribution<std::size_t> dist(0, n - 1);
+						std::uniform_int_distribution<std::size_t> indexDist(0, n - 1);
 
-						size_t swaps = static_cast<size_t>(std::ceil(n * 0.05));
+						std::size_t swaps = static_cast<std::size_t>(std::ceil(n * 0.05));
 						while (swaps--)
 						{
-							size_t i = dist(gen);
-							size_t j = dist(gen);
+							std::size_t i = indexDist(gen);
+							std::size_t j = indexDist(gen);
 							std::swap(v[i], v[j]);
 						}
 					}
@@ -167,17 +167,94 @@ namespace generators
 			std::mt19937_64 gen(SEED);
 			std::uniform_int_distribution<U> dist(std::numeric_limits<U>::min(), std::numeric_limits<U>::max());
 
-			while (n--)
+			switch (shape)
 			{
-				U num = 0;
-				while (true)
+				case Shape::RANDOMIZED:
 				{
-					num = dist(gen);
+					while (n--)
+					{
+						U num = 0;
+						while (true)
+						{
+							num = dist(gen);
 
-					if (testStrongOrder || (num & MASK) != MASK)
-						break;
+							if (testStrongOrder || (num & MASK) != MASK)
+								break;
+						}
+						v.emplace_back(std::bit_cast<T>(num));
+					}
+
+					break;
 				}
-				v.emplace_back(bit_cast<T>(num));
+				case Shape::DUPLICATES:
+				{
+					constexpr std::size_t DUPLICATES_COUNT = 256;
+					std::vector<T> unique;
+					unique.reserve(DUPLICATES_COUNT);
+
+					for (std::size_t i = 0; i < DUPLICATES_COUNT; i++)
+					{
+						U num = 0;
+						while (true)
+						{
+							num = dist(gen);
+
+							if (testStrongOrder || (num & MASK) != MASK)
+								break;
+						}
+						unique.emplace_back(std::bit_cast<T>(num));
+					}
+
+					std::uniform_int_distribution<std::size_t> indexDist(0, DUPLICATES_COUNT - 1);
+					while (n--)
+						v.emplace_back(unique[indexDist(gen)]);
+
+					break;
+				}
+				case Shape::SORTED:
+				case Shape::REVERSE_SORTED:
+				case Shape::NEARLY_SORTED:
+				{
+					if constexpr (sizeof(T) < sizeof(double))
+					{
+						constexpr double MIN_VAL = static_cast<double>(std::numeric_limits<T>::lowest());
+						constexpr double MAX_VAL = static_cast<double>(std::numeric_limits<T>::max());
+						double step = (MAX_VAL - MIN_VAL) / (n - 1);
+						double accum = MIN_VAL;
+
+						for (std::size_t i = 0; i < n; ++i, accum += step)
+							v.emplace_back(static_cast<T>(accum));
+						v.back() = std::numeric_limits<T>::max();
+					}
+					else
+					{
+						constexpr T MIN_VAL = std::numeric_limits<T>::lowest();
+						constexpr T MAX_VAL = std::numeric_limits<T>::max();
+						T step = (MAX_VAL / (n - 1)) - (MIN_VAL / (n - 1));
+						T accum = MIN_VAL;
+
+						for (std::size_t i = 0; i < n; ++i, accum += step)
+							v.emplace_back(accum);
+						v.back() = MAX_VAL;
+					}
+
+					if (shape == Shape::REVERSE_SORTED)
+						std::reverse(v.begin(), v.end());
+					else if (shape == Shape::NEARLY_SORTED)
+					{
+						std::uniform_int_distribution<std::size_t> indexDist(0, n - 1);
+
+						std::size_t swaps = static_cast<std::size_t>(std::ceil(n * 0.05));
+						while (swaps--)
+						{
+							std::size_t i = indexDist(gen);
+							std::size_t j = indexDist(gen);
+							std::swap(v[i], v[j]);
+						}
+ 					}
+
+					break;
+				}
 			}
 
 			return v;
@@ -189,20 +266,103 @@ namespace generators
 			std::vector<T> v;
 			v.reserve(n);
 
+			constexpr int MIN_CHAR =   0; // or  32
+			constexpr int MAX_CHAR = 255; // or 126
 			std::mt19937_64 gen(69);
 			std::uniform_int_distribution<std::size_t> lenDist(0, maxLen);
-			std::uniform_int_distribution<int> charDist(0, 255); // or (32, 126)
+			std::uniform_int_distribution<int> charDist(MIN_CHAR, MAX_CHAR); // or (32, 126)
 
-			while (n--)
+			switch (shape)
 			{
-				std::size_t len = (fixed) ? maxLen : lenDist(gen);
+				case Shape::RANDOMIZED:
+				{
+					while (n--)
+					{
+						std::size_t len = (fixed) ? maxLen : lenDist(gen);
+						T s(len, '\0');
 
-				T s(len, '\0');
+						for (std::size_t i = 0; i < len; i++)
+							s[i] = static_cast<char>(charDist(gen));
 
-				for (std::size_t i = 0; i < len; i++)
-					s[i] = static_cast<char>(charDist(gen));
+						v.emplace_back(std::move(s));
+					}
 
-				v.emplace_back(std::move(s));
+					break;
+				}
+				case Shape::DUPLICATES:
+				{
+					constexpr std::size_t DUPLICATES_COUNT = 256;
+					std::vector<T> unique;
+					unique.reserve(DUPLICATES_COUNT);
+
+					for (std::size_t i = 0; i < DUPLICATES_COUNT; i++)
+					{
+						std::size_t len = (fixed) ? maxLen : lenDist(gen);
+						T s(len, '\0');
+
+						for (std::size_t j = 0; j < len; j++)
+							s[j] = static_cast<char>(charDist(gen));
+
+						unique.emplace_back(std::move(s));
+					}
+
+					std::uniform_int_distribution<std::size_t> indexDist(0, DUPLICATES_COUNT - 1);
+					while (n--)
+						v.emplace_back(unique[indexDist(gen)]);
+
+					break;
+				}
+				case Shape::SORTED:
+				case Shape::REVERSE_SORTED:
+				case Shape::NEARLY_SORTED:
+				{
+					std::vector<int> chars;
+
+					if (fixed)
+						chars.assign(maxLen, MIN_CHAR);
+					
+					for (std::size_t i = 0; i < n; i++)
+					{
+						std::size_t size = chars.size();
+						T s(size, '\0');
+
+						for (std::size_t j = 0; j < size; j++)
+							s[j] = static_cast<char>(chars[j]);
+
+						v.emplace_back(std::move(s));
+
+						std::size_t index = size;
+						while (index)
+						{
+							chars[index - 1]++;
+							if (chars[index - 1] <= MAX_CHAR)
+								break;
+
+							chars[index - 1] = MIN_CHAR;
+							index--;
+						}
+
+						if (index == 0)
+							chars.assign(size + 1, MIN_CHAR);
+					}
+
+					if (shape == Shape::REVERSE_SORTED)
+						std::reverse(v.begin(), v.end());
+					else if (shape == Shape::NEARLY_SORTED)
+					{
+						std::uniform_int_distribution<std::size_t> indexDist(0, n - 1);
+
+						std::size_t swaps = static_cast<std::size_t>(std::ceil(n * 0.05));
+						while (swaps--)
+						{
+							std::size_t i = indexDist(gen);
+							std::size_t j = indexDist(gen);
+							std::swap(v[i], v[j]);
+						}
+					}
+
+					break;
+				}
 			}
 
 			return v;

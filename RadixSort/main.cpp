@@ -30,17 +30,17 @@ int main()
 
 	benchmark::benchmark
 	({
-		.SORT            = 1,
-		.SORT_PAR        = 1,
-		.STABLE_SORT     = 1,
-		.STABLE_SORT_PAR = 1,
+		//.SORT            = 1,
+		//.SORT_PAR        = 1,
+		//.STABLE_SORT     = 1,
+		//.STABLE_SORT_PAR = 1,
 		.RADIX_SORT      = 1,
 		.RADIX_SORT_PAR  = 1,
 		.RANDOMIZED     = 1,
-		.SORTED         = 1,
-		.REVERSE_SORTED = 1,
-		.NEARLY_SORTED  = 1,
-		.DUPLICATES     = 1,
+		//.SORTED         = 1,
+		//.REVERSE_SORTED = 1,
+		//.NEARLY_SORTED  = 1,
+		//.DUPLICATES     = 1,
 		//.RUN_SIZE     = { 100, 1'000, 10'000, 100'000, 1'000'000, 10'000'000, 100'000'000 },
 		//.RUN_SIZE_STR = { 100, 1'000, 10'000, 100'000, 1'000'000, 10'000'000, 50'000'000 },
 		//.RUN_SIZE_CLX = { 100, 1'000, 10'000, 100'000, 1'000'000, 10'000'000 },
@@ -64,7 +64,7 @@ int main()
 	});
 
 
-	//auto v = generators::generate<short>(10, generators::Shape::SORTED);
+	//auto v = generators::generate<std::string>(200, generators::Shape::SORTED);
 	//for (const auto& elem : v)
 	//	std::cout << elem << ' ';
 	//std::cout << '\n';

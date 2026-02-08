@@ -236,15 +236,15 @@ namespace benchmark
 		file.open(format("benchmarks//{}.txt", curDateTime));
 
 		string output = "";
-		output += "===========================\n";
-		output += "-----BENCHMARK STARTED-----\n";
-		output += "===========================\n\n";
+		output += "===============================\n";
+		output += "-------BENCHMARK STARTED-------\n";
+		output += "===============================\n\n";
 
 		cout << output;
 		file << output;
 
 		output.clear();
-		output += "=========================\n\n";
+		output += "===============================\n\n";
 
 		for (int shape = generators::Shape::RANDOMIZED; shape <= generators::Shape::DUPLICATES; shape++)
 		{
@@ -310,7 +310,7 @@ namespace benchmark
 							benchmark<Employee, decltype(Employee::name)>(n, shape, iterations, METHODS, output);
 							break;
 					}
-					output += "\n=========================\n\n";
+					output += "\n===============================\n\n";
 					cout << output;
 					file << output;
 					output.clear();
@@ -318,9 +318,9 @@ namespace benchmark
 			}
 		}
 
-		output += "===========================\n";
-		output += "-----BENCHMARK STOPPED-----\n";
-		output += "===========================\n\n";
+		output += "===============================\n";
+		output += "-------BENCHMARK STOPPED-------\n";
+		output += "===============================\n\n";
 
 		cout << output;
 		file << output;
