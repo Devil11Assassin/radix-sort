@@ -3,6 +3,7 @@
 #include <compare>
 #include <concepts>
 #include <cstddef>
+#include <execution>
 #include <limits>
 #include <mutex>
 #include <numeric>
@@ -40,6 +41,7 @@ namespace radix_sort
 			inline constexpr Index LARGE_INTEGRAL_THRESHOLD_BYTES = 8;
 			inline constexpr Index INSERTION_SORT_THRESHOLD_STR = 10;
 			inline constexpr Index INSERTION_SORT_THRESHOLD_ALL = 100;
+			inline constexpr Index STRING_MSD_MAX_DEPTH = 3;
 
 			inline const Index MAX_HW_THREADS = std::thread::hardware_concurrency();
 			inline constexpr Index MAX_SW_THREADS = 12;
@@ -204,6 +206,52 @@ namespace radix_sort
 				for (Index i = 1; i < BASE; i++)
 					prefix[i] = prefix[i - 1] + count[i - 1];
 			}
+
+			template <typename T>
+			inline void partitionRegions(std::vector<Index>& count, std::vector<Region>& regionsLocal,
+				std::vector<Region>& regions, std::unique_lock<std::mutex>& lkRegions,
+				Index len, Index curShiftOrIndex, Index l, bool enableMultiThreading)
+			{
+				Index start = 0;
+				if constexpr (is_string<T>)
+				{
+					start = l + count[256];
+					curShiftOrIndex++;
+				}
+				else
+				{
+					start = l;
+					curShiftOrIndex -= SHIFT_BITS;
+				}
+
+				if (!enableMultiThreading)
+				{
+					for (Index i = 0; i < BASE; i++)
+					{
+						if (count[i] > 1)
+							regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
+						start += count[i];
+					}
+				}
+				else
+				{
+					for (Index i = 0; i < BASE; i++)
+					{
+						if (count[i] > 1)
+						{
+							if (count[i] < GLOBAL_BUCKET_THRESHOLD)
+								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
+							else
+							{
+								lkRegions.lock();
+								regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
+								lkRegions.unlock();
+							}
+						}
+						start += count[i];
+					}
+				}
+			}
 		}
 
 		// =======================
@@ -259,23 +307,55 @@ namespace radix_sort
 			template <typename T>
 			inline Index getMaxLength(std::vector<T>& v)
 			{
-				if constexpr (sizeof(T) == 1)
-					return 1;
-
 				Index len = 0;
+				constexpr Index MAX_LEN = sizeof(T);
 
-				if constexpr (std::signed_integral<T> || is_floating_point<T>)
+				if constexpr (MAX_LEN == 1 || is_floating_point<T>)
 				{
-					len = sizeof(T);
+					return MAX_LEN;
+				}
+				if constexpr (std::signed_integral<T>)
+				{
+					T maxNum = std::numeric_limits<T>::min();
+
+					for (const auto& num : v)
+					{
+						if (num < 0)
+							return MAX_LEN;
+						else if (num > maxNum)
+						{
+							maxNum = num;
+							while (len != MAX_LEN)
+							{
+								if (maxNum >> (SHIFT_BITS * len) == 0)
+									break;
+
+								len++;
+								if (len == MAX_LEN)
+									return MAX_LEN;
+							}
+						}
+					}
 				}
 				else if constexpr (std::unsigned_integral<T>)
 				{
-					T maxVal = *std::max_element(v.begin(), v.end());
+					T maxNum = std::numeric_limits<T>::min();
 
-					while (maxVal > 0)
+					for (const auto& num : v)
 					{
-						len++;
-						maxVal >>= SHIFT_BITS;
+						if (num > maxNum)
+						{
+							maxNum = num;
+							while (len != MAX_LEN)
+							{
+								if (maxNum >> (SHIFT_BITS * len) == 0)
+									break;
+								
+								len++;
+								if (len == MAX_LEN)
+									return MAX_LEN;
+							}
+						}
 					}
 				}
 				else if constexpr (is_string<T>)
@@ -476,6 +556,18 @@ namespace radix_sort
 						continue;
 					}
 
+					if constexpr (is_string<T>)
+					{
+						if (curShiftOrIndex >= STRING_MSD_MAX_DEPTH)
+						{
+							if (enableMultiThreading)
+								std::sort(std::execution::par, v.begin() + l, v.begin() + r);
+							else
+								std::sort(v.begin() + l, v.begin() + r);
+							continue;
+						}
+					}
+
 					std::vector<Index> count(ALLOC_SIZE);
 					std::vector<Index> prefix(ALLOC_SIZE);
 
@@ -489,45 +581,7 @@ namespace radix_sort
 					if (len == 0)
 						continue;
 
-					Index start = 0;
-					if constexpr (is_string<T>)
-					{
-						start = l + count[256];
-						curShiftOrIndex++;
-					}
-					else
-					{
-						start = l;
-						curShiftOrIndex -= SHIFT_BITS;
-					}
-
-					if (!enableMultiThreading)
-					{
-						for (Index i = 0; i < BASE; i++)
-						{
-							if (count[i] > 1)
-								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-							start += count[i];
-						}
-					}
-					else
-					{
-						for (Index i = 0; i < BASE; i++)
-						{
-							if (count[i] > 1)
-							{
-								if (count[i] < GLOBAL_BUCKET_THRESHOLD)
-									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-								else
-								{
-									lkRegions.lock();
-									regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
-									lkRegions.unlock();
-								}
-							}
-							start += count[i];
-						}
-					}
+					partitionRegions<T>(count, regionsLocal, regions, lkRegions, len, curShiftOrIndex, l, enableMultiThreading);
 				}
 			}
 
@@ -590,7 +644,7 @@ namespace radix_sort
 			{
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
-				constexpr Index curShiftOrIndex = (is_string<T>) ? 0 : (sizeof(T) - 1) * 8;
+				Index curShiftOrIndex = (is_string<T>) ? 0 : (len - 1) * 8;
 				Index numOfThreads = getNumOfThreads(SIZE);
 
 				if (!enableMultiThreading || numOfThreads <= 1)
@@ -719,26 +773,59 @@ namespace radix_sort
 			{
 				using Key = sort_key<T, Proj>;
 
-				if constexpr (sizeof(Key) == 1)
-					return 1;
-
 				Index len = 0;
+				constexpr Index MAX_LEN = sizeof(Key);
 
-				if constexpr (std::signed_integral<Key> || is_floating_point<Key>)
+				if constexpr (MAX_LEN == 1 || is_floating_point<Key>)
 				{
-					len = sizeof(Key);
+					return MAX_LEN;
+				}
+				else if constexpr (std::signed_integral<Key>)
+				{
+					Key maxNum = std::numeric_limits<Key>::min();
+
+					for (const auto& obj : v)
+					{
+						const Key& num = std::invoke(proj, obj);
+
+						if (num < 0)
+							return MAX_LEN;
+						else if (num > maxNum)
+						{
+							maxNum = num;
+							while (len != MAX_LEN)
+							{
+								if (maxNum >> (SHIFT_BITS * len) == 0)
+									break;
+
+								len++;
+								if (len == MAX_LEN)
+									return MAX_LEN;
+							}
+						}
+					}
 				}
 				else if constexpr (std::unsigned_integral<Key>)
 				{
-					Key maxVal = std::invoke(proj, *std::max_element(v.begin(), v.end(),
-						[&proj](const T& a, const T& b) {
-							return std::invoke(proj, a) < std::invoke(proj, b);
-						}));
+					Key maxNum = std::numeric_limits<Key>::min();
 
-					while (maxVal > 0)
+					for (const auto& obj : v)
 					{
-						len++;
-						maxVal >>= SHIFT_BITS;
+						const Key& num = std::invoke(proj, obj);
+
+						if (num > maxNum)
+						{
+							maxNum = num;
+							while (len != MAX_LEN)
+							{
+								if (maxNum >> (SHIFT_BITS * len) == 0)
+									break;
+
+								len++;
+								if (len == MAX_LEN)
+									return MAX_LEN;
+							}
+						}
 					}
 				}
 				else if constexpr (std::same_as<Key, std::string>)
@@ -1151,6 +1238,22 @@ namespace radix_sort
 						continue;
 					}
 
+					if constexpr (is_string<Key>)
+					{
+						if (curShiftOrIndex >= STRING_MSD_MAX_DEPTH)
+						{
+							const auto LAMBDA = [&proj](const T& a, const T& b) {
+								return std::invoke(proj, a) < std::invoke(proj, b);
+							};
+							
+							if (enableMultiThreading)
+								std::stable_sort(std::execution::par, v.begin() + l, v.begin() + r, LAMBDA);
+							else
+								std::stable_sort(v.begin() + l, v.begin() + r, LAMBDA);
+							continue;
+						}
+					}
+
 					std::vector<Index> count(ALLOC_SIZE);
 					std::vector<Index> prefix(ALLOC_SIZE);
 
@@ -1164,45 +1267,7 @@ namespace radix_sort
 					if (len == 0)
 						continue;
 
-					Index start = 0;
-					if constexpr (is_string<Key>)
-					{
-						start = l + count[256];
-						curShiftOrIndex++;
-					}
-					else
-					{
-						start = l;
-						curShiftOrIndex -= SHIFT_BITS;
-					}
-
-					if (!enableMultiThreading)
-					{
-						for (Index i = 0; i < BASE; i++)
-						{
-							if (count[i] > 1)
-								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-							start += count[i];
-						}
-					}
-					else
-					{
-						for (Index i = 0; i < BASE; i++)
-						{
-							if (count[i] > 1)
-							{
-								if (count[i] < GLOBAL_BUCKET_THRESHOLD)
-									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-								else
-								{
-									lkRegions.lock();
-									regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
-									lkRegions.unlock();
-								}
-							}
-							start += count[i];
-						}
-					}
+					partitionRegions<Key>(count, regionsLocal, regions, lkRegions, len, curShiftOrIndex, l, enableMultiThreading);
 				}
 			}
 
@@ -1252,45 +1317,7 @@ namespace radix_sort
 					if (len == 0)
 						continue;
 
-					Index start = 0;
-					if constexpr (is_string<T>)
-					{
-						start = l + count[256];
-						curShiftOrIndex++;
-					}
-					else
-					{
-						start = l;
-						curShiftOrIndex -= SHIFT_BITS;
-					}
-
-					if (!enableMultiThreading)
-					{
-						for (Index i = 0; i < BASE; i++)
-						{
-							if (count[i] > 1)
-								regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-							start += count[i];
-						}
-					}
-					else
-					{
-						for (Index i = 0; i < BASE; i++)
-						{
-							if (count[i] > 1)
-							{
-								if (count[i] < GLOBAL_BUCKET_THRESHOLD)
-									regionsLocal.emplace_back(start, start + count[i], len, curShiftOrIndex);
-								else
-								{
-									lkRegions.lock();
-									regions.emplace_back(start, start + count[i], len, curShiftOrIndex);
-									lkRegions.unlock();
-								}
-							}
-							start += count[i];
-						}
-					}
+					partitionRegions<Key>(count, regionsLocal, regions, lkRegions, len, curShiftOrIndex, l, enableMultiThreading);
 				}
 			}
 
@@ -1410,10 +1437,10 @@ namespace radix_sort
 
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
-				constexpr Index curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
+				Index curShiftOrIndex = (is_string<Key>) ? 0 : (len - 1) * 8;
 				Index numOfThreads = getNumOfThreads(SIZE);
 
-				if (!enableMultiThreading || numOfThreads <= 0)
+				if (!enableMultiThreading || numOfThreads <= 1)
 				{
 					std::mutex tmpMutex;
 					std::unique_lock<std::mutex> tmpLock(tmpMutex, std::defer_lock);
@@ -1449,7 +1476,7 @@ namespace radix_sort
 				const Index SIZE = v.size();
 				std::vector<T> tmp(SIZE);
 				std::vector<Key> tmpKey(SIZE);
-				constexpr Index curShiftOrIndex = (is_string<Key>) ? 0 : (sizeof(Key) - 1) * 8;
+				Index curShiftOrIndex = (is_string<Key>) ? 0 : (len - 1) * 8;
 				Index numOfThreads = getNumOfThreads(SIZE);
 
 				if (!enableMultiThreading || numOfThreads <= 1)
