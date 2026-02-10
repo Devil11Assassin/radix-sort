@@ -39,7 +39,7 @@ This library is designed for **maximum scalable performance** while **maintainin
   - Nearly sorted data
   - Sorted / reverse sorted data
 
-- [**Benchmarked across data shapes**](https://github.com/Devil11Assassin/radix-sort/tree/master/RadixSort/benchmarks)
+- [**Benchmarked across data shapes**](https://github.com/Devil11Assassin/radix-sort/tree/master/benchmarks)
   - Randomized
   - Sorted
   - Reverse sorted

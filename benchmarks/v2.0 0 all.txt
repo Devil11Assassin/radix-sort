@@ -1,0 +1,9310 @@
+===============================
+-------BENCHMARK STARTED-------
+===============================
+
+===============================
+
+CHAR
+SIZE = 0 (randomized)
+
+sort            = 5 us
+sort_par        = 1 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 100 (randomized)
+
+sort            = 5 us
+sort_par        = 101 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+CHAR
+SIZE = 1,000 (randomized)
+
+sort            = 26 us
+sort_par        = 30 us
+stable_sort     = 25 us
+stable_sort_par = 41 us
+radix_sort      = 5 us
+radix_sort_par  = 2 us
+
+===============================
+
+CHAR
+SIZE = 10,000 (randomized)
+
+sort            = 426 us
+sort_par        = 252 us
+stable_sort     = 612 us
+stable_sort_par = 347 us
+radix_sort      = 43 us
+radix_sort_par  = 47 us
+
+===============================
+
+CHAR
+SIZE = 100,000 (randomized)
+
+sort            = 2,834 us
+sort_par        = 1,022 us
+stable_sort     = 3,620 us
+stable_sort_par = 1,420 us
+radix_sort      = 266 us
+radix_sort_par  = 267 us
+
+===============================
+
+CHAR
+SIZE = 1,000,000 (randomized)
+
+sort            = 27,365 us
+sort_par        = 8,738 us
+stable_sort     = 39,681 us
+stable_sort_par = 16,552 us
+radix_sort      = 2,930 us
+radix_sort_par  = 2,826 us
+
+===============================
+
+CHAR
+SIZE = 10,000,000 (randomized)
+
+sort            = 261,842 us
+sort_par        = 96,196 us
+stable_sort     = 403,711 us
+stable_sort_par = 193,397 us
+radix_sort      = 28,086 us
+radix_sort_par  = 25,489 us
+
+===============================
+
+CHAR
+SIZE = 100,000,000 (randomized)
+
+sort            = 2,564,226 us
+sort_par        = 975,544 us
+stable_sort     = 4,202,031 us
+stable_sort_par = 2,022,241 us
+radix_sort      = 271,268 us
+radix_sort_par  = 223,579 us
+
+===============================
+
+UCHAR
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 100 (randomized)
+
+sort            = 3 us
+sort_par        = 17 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+UCHAR
+SIZE = 1,000 (randomized)
+
+sort            = 51 us
+sort_par        = 42 us
+stable_sort     = 25 us
+stable_sort_par = 48 us
+radix_sort      = 3 us
+radix_sort_par  = 2 us
+
+===============================
+
+UCHAR
+SIZE = 10,000 (randomized)
+
+sort            = 530 us
+sort_par        = 144 us
+stable_sort     = 344 us
+stable_sort_par = 232 us
+radix_sort      = 20 us
+radix_sort_par  = 21 us
+
+===============================
+
+UCHAR
+SIZE = 100,000 (randomized)
+
+sort            = 2,876 us
+sort_par        = 1,219 us
+stable_sort     = 3,677 us
+stable_sort_par = 1,417 us
+radix_sort      = 284 us
+radix_sort_par  = 248 us
+
+===============================
+
+UCHAR
+SIZE = 1,000,000 (randomized)
+
+sort            = 26,918 us
+sort_par        = 8,803 us
+stable_sort     = 37,969 us
+stable_sort_par = 16,380 us
+radix_sort      = 2,575 us
+radix_sort_par  = 2,705 us
+
+===============================
+
+UCHAR
+SIZE = 10,000,000 (randomized)
+
+sort            = 260,267 us
+sort_par        = 98,572 us
+stable_sort     = 405,624 us
+stable_sort_par = 197,996 us
+radix_sort      = 26,473 us
+radix_sort_par  = 25,227 us
+
+===============================
+
+UCHAR
+SIZE = 100,000,000 (randomized)
+
+sort            = 2,590,784 us
+sort_par        = 989,372 us
+stable_sort     = 4,202,208 us
+stable_sort_par = 2,029,775 us
+radix_sort      = 257,393 us
+radix_sort_par  = 221,545 us
+
+===============================
+
+SHORT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 100 (randomized)
+
+sort            = 3 us
+sort_par        = 13 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 3 us
+radix_sort_par  = 2 us
+
+===============================
+
+SHORT
+SIZE = 1,000 (randomized)
+
+sort            = 55 us
+sort_par        = 33 us
+stable_sort     = 26 us
+stable_sort_par = 37 us
+radix_sort      = 5 us
+radix_sort_par  = 4 us
+
+===============================
+
+SHORT
+SIZE = 10,000 (randomized)
+
+sort            = 446 us
+sort_par        = 193 us
+stable_sort     = 407 us
+stable_sort_par = 286 us
+radix_sort      = 42 us
+radix_sort_par  = 42 us
+
+===============================
+
+SHORT
+SIZE = 100,000 (randomized)
+
+sort            = 5,590 us
+sort_par        = 1,313 us
+stable_sort     = 5,338 us
+stable_sort_par = 2,307 us
+radix_sort      = 529 us
+radix_sort_par  = 521 us
+
+===============================
+
+SHORT
+SIZE = 1,000,000 (randomized)
+
+sort            = 60,675 us
+sort_par        = 11,624 us
+stable_sort     = 62,471 us
+stable_sort_par = 22,421 us
+radix_sort      = 5,891 us
+radix_sort_par  = 5,870 us
+
+===============================
+
+SHORT
+SIZE = 10,000,000 (randomized)
+
+sort            = 563,174 us
+sort_par        = 120,084 us
+stable_sort     = 666,494 us
+stable_sort_par = 276,300 us
+radix_sort      = 58,590 us
+radix_sort_par  = 56,242 us
+
+===============================
+
+SHORT
+SIZE = 100,000,000 (randomized)
+
+sort            = 5,488,322 us
+sort_par        = 1,149,901 us
+stable_sort     = 6,882,319 us
+stable_sort_par = 3,272,677 us
+radix_sort      = 577,932 us
+radix_sort_par  = 359,722 us
+
+===============================
+
+USHORT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 100 (randomized)
+
+sort            = 1 us
+sort_par        = 12 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+USHORT
+SIZE = 1,000 (randomized)
+
+sort            = 41 us
+sort_par        = 54 us
+stable_sort     = 50 us
+stable_sort_par = 48 us
+radix_sort      = 10 us
+radix_sort_par  = 8 us
+
+===============================
+
+USHORT
+SIZE = 10,000 (randomized)
+
+sort            = 606 us
+sort_par        = 171 us
+stable_sort     = 392 us
+stable_sort_par = 264 us
+radix_sort      = 43 us
+radix_sort_par  = 49 us
+
+===============================
+
+USHORT
+SIZE = 100,000 (randomized)
+
+sort            = 5,806 us
+sort_par        = 1,374 us
+stable_sort     = 5,156 us
+stable_sort_par = 2,165 us
+radix_sort      = 563 us
+radix_sort_par  = 546 us
+
+===============================
+
+USHORT
+SIZE = 1,000,000 (randomized)
+
+sort            = 62,322 us
+sort_par        = 12,264 us
+stable_sort     = 60,352 us
+stable_sort_par = 21,954 us
+radix_sort      = 5,750 us
+radix_sort_par  = 5,766 us
+
+===============================
+
+USHORT
+SIZE = 10,000,000 (randomized)
+
+sort            = 586,342 us
+sort_par        = 127,428 us
+stable_sort     = 647,503 us
+stable_sort_par = 273,488 us
+radix_sort      = 58,749 us
+radix_sort_par  = 57,439 us
+
+===============================
+
+USHORT
+SIZE = 100,000,000 (randomized)
+
+sort            = 5,782,913 us
+sort_par        = 1,230,640 us
+stable_sort     = 6,611,746 us
+stable_sort_par = 3,280,957 us
+radix_sort      = 578,207 us
+radix_sort_par  = 352,132 us
+
+===============================
+
+INT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 100 (randomized)
+
+sort            = 1 us
+sort_par        = 8 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+INT
+SIZE = 1,000 (randomized)
+
+sort            = 28 us
+sort_par        = 33 us
+stable_sort     = 26 us
+stable_sort_par = 39 us
+radix_sort      = 10 us
+radix_sort_par  = 9 us
+
+===============================
+
+INT
+SIZE = 10,000 (randomized)
+
+sort            = 457 us
+sort_par        = 163 us
+stable_sort     = 561 us
+stable_sort_par = 408 us
+radix_sort      = 95 us
+radix_sort_par  = 84 us
+
+===============================
+
+INT
+SIZE = 100,000 (randomized)
+
+sort            = 5,754 us
+sort_par        = 1,582 us
+stable_sort     = 5,265 us
+stable_sort_par = 2,281 us
+radix_sort      = 1,154 us
+radix_sort_par  = 1,112 us
+
+===============================
+
+INT
+SIZE = 1,000,000 (randomized)
+
+sort            = 69,279 us
+sort_par        = 12,465 us
+stable_sort     = 65,415 us
+stable_sort_par = 25,026 us
+radix_sort      = 12,137 us
+radix_sort_par  = 11,791 us
+
+===============================
+
+INT
+SIZE = 10,000,000 (randomized)
+
+sort            = 824,270 us
+sort_par        = 140,103 us
+stable_sort     = 779,839 us
+stable_sort_par = 325,960 us
+radix_sort      = 133,175 us
+radix_sort_par  = 73,434 us
+
+===============================
+
+INT
+SIZE = 100,000,000 (randomized)
+
+sort            = 9,485,268 us
+sort_par        = 1,574,006 us
+stable_sort     = 9,070,282 us
+stable_sort_par = 3,942,523 us
+radix_sort      = 1,167,911 us
+radix_sort_par  = 563,744 us
+
+===============================
+
+UINT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 100 (randomized)
+
+sort            = 1 us
+sort_par        = 13 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+UINT
+SIZE = 1,000 (randomized)
+
+sort            = 27 us
+sort_par        = 29 us
+stable_sort     = 27 us
+stable_sort_par = 37 us
+radix_sort      = 9 us
+radix_sort_par  = 8 us
+
+===============================
+
+UINT
+SIZE = 10,000 (randomized)
+
+sort            = 613 us
+sort_par        = 223 us
+stable_sort     = 575 us
+stable_sort_par = 272 us
+radix_sort      = 85 us
+radix_sort_par  = 130 us
+
+===============================
+
+UINT
+SIZE = 100,000 (randomized)
+
+sort            = 5,654 us
+sort_par        = 1,480 us
+stable_sort     = 5,425 us
+stable_sort_par = 2,127 us
+radix_sort      = 1,013 us
+radix_sort_par  = 1,035 us
+
+===============================
+
+UINT
+SIZE = 1,000,000 (randomized)
+
+sort            = 68,206 us
+sort_par        = 12,173 us
+stable_sort     = 67,323 us
+stable_sort_par = 24,345 us
+radix_sort      = 12,140 us
+radix_sort_par  = 12,029 us
+
+===============================
+
+UINT
+SIZE = 10,000,000 (randomized)
+
+sort            = 810,826 us
+sort_par        = 139,329 us
+stable_sort     = 803,869 us
+stable_sort_par = 323,056 us
+radix_sort      = 117,265 us
+radix_sort_par  = 88,221 us
+
+===============================
+
+UINT
+SIZE = 100,000,000 (randomized)
+
+sort            = 9,344,424 us
+sort_par        = 1,545,752 us
+stable_sort     = 9,415,601 us
+stable_sort_par = 3,910,432 us
+radix_sort      = 1,168,006 us
+radix_sort_par  = 567,169 us
+
+===============================
+
+LL
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 100 (randomized)
+
+sort            = 1 us
+sort_par        = 15 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+LL
+SIZE = 1,000 (randomized)
+
+sort            = 30 us
+sort_par        = 31 us
+stable_sort     = 26 us
+stable_sort_par = 39 us
+radix_sort      = 13 us
+radix_sort_par  = 6 us
+
+===============================
+
+LL
+SIZE = 10,000 (randomized)
+
+sort            = 456 us
+sort_par        = 201 us
+stable_sort     = 409 us
+stable_sort_par = 323 us
+radix_sort      = 171 us
+radix_sort_par  = 169 us
+
+===============================
+
+LL
+SIZE = 100,000 (randomized)
+
+sort            = 5,785 us
+sort_par        = 1,356 us
+stable_sort     = 5,375 us
+stable_sort_par = 2,092 us
+radix_sort      = 1,623 us
+radix_sort_par  = 1,591 us
+
+===============================
+
+LL
+SIZE = 1,000,000 (randomized)
+
+sort            = 69,390 us
+sort_par        = 12,785 us
+stable_sort     = 67,982 us
+stable_sort_par = 25,710 us
+radix_sort      = 19,220 us
+radix_sort_par  = 19,108 us
+
+===============================
+
+LL
+SIZE = 10,000,000 (randomized)
+
+sort            = 817,202 us
+sort_par        = 152,328 us
+stable_sort     = 802,409 us
+stable_sort_par = 334,415 us
+radix_sort      = 197,798 us
+radix_sort_par  = 91,805 us
+
+===============================
+
+LL
+SIZE = 100,000,000 (randomized)
+
+sort            = 9,348,485 us
+sort_par        = 1,591,972 us
+stable_sort     = 9,303,260 us
+stable_sort_par = 4,083,639 us
+radix_sort      = 2,163,105 us
+radix_sort_par  = 871,356 us
+
+===============================
+
+ULL
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 100 (randomized)
+
+sort            = 3 us
+sort_par        = 13 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 2 us
+radix_sort_par  = 2 us
+
+===============================
+
+ULL
+SIZE = 1,000 (randomized)
+
+sort            = 28 us
+sort_par        = 38 us
+stable_sort     = 28 us
+stable_sort_par = 37 us
+radix_sort      = 13 us
+radix_sort_par  = 6 us
+
+===============================
+
+ULL
+SIZE = 10,000 (randomized)
+
+sort            = 624 us
+sort_par        = 199 us
+stable_sort     = 591 us
+stable_sort_par = 321 us
+radix_sort      = 176 us
+radix_sort_par  = 171 us
+
+===============================
+
+ULL
+SIZE = 100,000 (randomized)
+
+sort            = 6,108 us
+sort_par        = 1,325 us
+stable_sort     = 5,641 us
+stable_sort_par = 2,128 us
+radix_sort      = 1,631 us
+radix_sort_par  = 1,652 us
+
+===============================
+
+ULL
+SIZE = 1,000,000 (randomized)
+
+sort            = 69,950 us
+sort_par        = 13,061 us
+stable_sort     = 71,016 us
+stable_sort_par = 27,669 us
+radix_sort      = 19,354 us
+radix_sort_par  = 19,196 us
+
+===============================
+
+ULL
+SIZE = 10,000,000 (randomized)
+
+sort            = 821,817 us
+sort_par        = 151,367 us
+stable_sort     = 848,404 us
+stable_sort_par = 367,459 us
+radix_sort      = 197,680 us
+radix_sort_par  = 89,907 us
+
+===============================
+
+ULL
+SIZE = 100,000,000 (randomized)
+
+sort            = 9,400,904 us
+sort_par        = 1,576,875 us
+stable_sort     = 9,769,630 us
+stable_sort_par = 4,522,267 us
+radix_sort      = 2,151,002 us
+radix_sort_par  = 836,776 us
+
+===============================
+
+FLOAT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 100 (randomized)
+
+sort            = 2 us
+sort_par        = 9 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 4 us
+radix_sort_par  = 4 us
+
+===============================
+
+FLOAT
+SIZE = 1,000 (randomized)
+
+sort            = 48 us
+sort_par        = 41 us
+stable_sort     = 42 us
+stable_sort_par = 45 us
+radix_sort      = 14 us
+radix_sort_par  = 10 us
+
+===============================
+
+FLOAT
+SIZE = 10,000 (randomized)
+
+sort            = 860 us
+sort_par        = 293 us
+stable_sort     = 710 us
+stable_sort_par = 392 us
+radix_sort      = 155 us
+radix_sort_par  = 114 us
+
+===============================
+
+FLOAT
+SIZE = 100,000 (randomized)
+
+sort            = 8,698 us
+sort_par        = 2,071 us
+stable_sort     = 7,685 us
+stable_sort_par = 2,852 us
+radix_sort      = 1,715 us
+radix_sort_par  = 1,409 us
+
+===============================
+
+FLOAT
+SIZE = 1,000,000 (randomized)
+
+sort            = 104,187 us
+sort_par        = 21,027 us
+stable_sort     = 94,362 us
+stable_sort_par = 33,104 us
+radix_sort      = 15,262 us
+radix_sort_par  = 15,283 us
+
+===============================
+
+FLOAT
+SIZE = 10,000,000 (randomized)
+
+sort            = 1,226,771 us
+sort_par        = 242,293 us
+stable_sort     = 1,108,339 us
+stable_sort_par = 433,004 us
+radix_sort      = 144,694 us
+radix_sort_par  = 103,173 us
+
+===============================
+
+FLOAT
+SIZE = 100,000,000 (randomized)
+
+sort            = 14,101,578 us
+sort_par        = 2,667,527 us
+stable_sort     = 12,836,074 us
+stable_sort_par = 5,259,090 us
+radix_sort      = 1,499,723 us
+radix_sort_par  = 743,865 us
+
+===============================
+
+DOUBLE
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 100 (randomized)
+
+sort            = 2 us
+sort_par        = 12 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000 (randomized)
+
+sort            = 75 us
+sort_par        = 41 us
+stable_sort     = 42 us
+stable_sort_par = 57 us
+radix_sort      = 19 us
+radix_sort_par  = 9 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000 (randomized)
+
+sort            = 701 us
+sort_par        = 384 us
+stable_sort     = 616 us
+stable_sort_par = 556 us
+radix_sort      = 227 us
+radix_sort_par  = 232 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000 (randomized)
+
+sort            = 8,814 us
+sort_par        = 2,022 us
+stable_sort     = 7,893 us
+stable_sort_par = 2,801 us
+radix_sort      = 2,258 us
+radix_sort_par  = 2,190 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000,000 (randomized)
+
+sort            = 106,688 us
+sort_par        = 21,368 us
+stable_sort     = 98,081 us
+stable_sort_par = 34,608 us
+radix_sort      = 23,934 us
+radix_sort_par  = 23,864 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000,000 (randomized)
+
+sort            = 1,258,661 us
+sort_par        = 256,761 us
+stable_sort     = 1,151,099 us
+stable_sort_par = 449,901 us
+radix_sort      = 237,445 us
+radix_sort_par  = 125,856 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000,000 (randomized)
+
+sort            = 14,431,504 us
+sort_par        = 2,776,605 us
+stable_sort     = 13,225,410 us
+stable_sort_par = 5,474,788 us
+radix_sort      = 2,574,499 us
+radix_sort_par  = 1,248,312 us
+
+===============================
+
+STRING
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 100 (randomized)
+
+sort            = 8 us
+sort_par        = 19 us
+stable_sort     = 9 us
+stable_sort_par = 7 us
+radix_sort      = 9 us
+radix_sort_par  = 3 us
+
+===============================
+
+STRING
+SIZE = 1,000 (randomized)
+
+sort            = 156 us
+sort_par        = 89 us
+stable_sort     = 160 us
+stable_sort_par = 115 us
+radix_sort      = 58 us
+radix_sort_par  = 48 us
+
+===============================
+
+STRING
+SIZE = 10,000 (randomized)
+
+sort            = 2,094 us
+sort_par        = 771 us
+stable_sort     = 2,146 us
+stable_sort_par = 1,025 us
+radix_sort      = 577 us
+radix_sort_par  = 583 us
+
+===============================
+
+STRING
+SIZE = 100,000 (randomized)
+
+sort            = 25,992 us
+sort_par        = 5,374 us
+stable_sort     = 29,105 us
+stable_sort_par = 9,101 us
+radix_sort      = 9,005 us
+radix_sort_par  = 8,972 us
+
+===============================
+
+STRING
+SIZE = 1,000,000 (randomized)
+
+sort            = 364,740 us
+sort_par        = 81,459 us
+stable_sort     = 440,236 us
+stable_sort_par = 131,632 us
+radix_sort      = 122,241 us
+radix_sort_par  = 123,428 us
+
+===============================
+
+STRING
+SIZE = 10,000,000 (randomized)
+
+sort            = 4,790,719 us
+sort_par        = 974,649 us
+stable_sort     = 5,569,097 us
+stable_sort_par = 1,641,836 us
+radix_sort      = 1,053,247 us
+radix_sort_par  = 603,551 us
+
+===============================
+
+STRING
+SIZE = 50,000,000 (randomized)
+
+sort            = 29,441,240 us
+sort_par        = 5,997,745 us
+stable_sort     = 31,926,343 us
+stable_sort_par = 9,797,944 us
+radix_sort      = 7,361,965 us
+radix_sort_par  = 3,074,462 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100 (randomized)
+
+sort            = 4 us
+sort_par        = 15 us
+stable_sort     = 5 us
+stable_sort_par = 6 us
+radix_sort      = 10 us
+radix_sort_par  = 10 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000 (randomized)
+
+sort            = 83 us
+sort_par        = 107 us
+stable_sort     = 69 us
+stable_sort_par = 97 us
+radix_sort      = 23 us
+radix_sort_par  = 21 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000 (randomized)
+
+sort            = 1,264 us
+sort_par        = 489 us
+stable_sort     = 983 us
+stable_sort_par = 688 us
+radix_sort      = 231 us
+radix_sort_par  = 225 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100,000 (randomized)
+
+sort            = 14,262 us
+sort_par        = 3,935 us
+stable_sort     = 19,886 us
+stable_sort_par = 7,794 us
+radix_sort      = 6,723 us
+radix_sort_par  = 6,680 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000,000 (randomized)
+
+sort            = 185,458 us
+sort_par        = 50,315 us
+stable_sort     = 233,459 us
+stable_sort_par = 127,135 us
+radix_sort      = 72,534 us
+radix_sort_par  = 72,610 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000,000 (randomized)
+
+sort            = 2,122,945 us
+sort_par        = 651,477 us
+stable_sort     = 2,856,814 us
+stable_sort_par = 1,939,340 us
+radix_sort      = 967,043 us
+radix_sort_par  = 626,630 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100 (randomized)
+
+sort            = 5 us
+sort_par        = 18 us
+stable_sort     = 5 us
+stable_sort_par = 6 us
+radix_sort      = 11 us
+radix_sort_par  = 11 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000 (randomized)
+
+sort            = 79 us
+sort_par        = 65 us
+stable_sort     = 72 us
+stable_sort_par = 104 us
+radix_sort      = 27 us
+radix_sort_par  = 16 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000 (randomized)
+
+sort            = 1,124 us
+sort_par        = 459 us
+stable_sort     = 1,009 us
+stable_sort_par = 689 us
+radix_sort      = 417 us
+radix_sort_par  = 359 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100,000 (randomized)
+
+sort            = 14,243 us
+sort_par        = 3,795 us
+stable_sort     = 19,215 us
+stable_sort_par = 7,953 us
+radix_sort      = 7,104 us
+radix_sort_par  = 7,244 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000,000 (randomized)
+
+sort            = 181,702 us
+sort_par        = 47,710 us
+stable_sort     = 235,717 us
+stable_sort_par = 129,071 us
+radix_sort      = 84,132 us
+radix_sort_par  = 84,407 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000,000 (randomized)
+
+sort            = 2,203,030 us
+sort_par        = 691,768 us
+stable_sort     = 2,879,944 us
+stable_sort_par = 1,942,144 us
+radix_sort      = 1,051,259 us
+radix_sort_par  = 646,061 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100 (randomized)
+
+sort            = 5 us
+sort_par        = 19 us
+stable_sort     = 5 us
+stable_sort_par = 5 us
+radix_sort      = 17 us
+radix_sort_par  = 23 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000 (randomized)
+
+sort            = 139 us
+sort_par        = 77 us
+stable_sort     = 82 us
+stable_sort_par = 104 us
+radix_sort      = 25 us
+radix_sort_par  = 22 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000 (randomized)
+
+sort            = 1,344 us
+sort_par        = 463 us
+stable_sort     = 1,140 us
+stable_sort_par = 664 us
+radix_sort      = 244 us
+radix_sort_par  = 230 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100,000 (randomized)
+
+sort            = 17,353 us
+sort_par        = 4,456 us
+stable_sort     = 20,773 us
+stable_sort_par = 8,151 us
+radix_sort      = 6,706 us
+radix_sort_par  = 6,674 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000,000 (randomized)
+
+sort            = 214,964 us
+sort_par        = 55,529 us
+stable_sort     = 243,548 us
+stable_sort_par = 132,789 us
+radix_sort      = 72,891 us
+radix_sort_par  = 73,007 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000,000 (randomized)
+
+sort            = 2,490,927 us
+sort_par        = 654,611 us
+stable_sort     = 2,974,565 us
+stable_sort_par = 2,006,963 us
+radix_sort      = 957,880 us
+radix_sort_par  = 611,157 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100 (randomized)
+
+sort            = 5 us
+sort_par        = 22 us
+stable_sort     = 5 us
+stable_sort_par = 5 us
+radix_sort      = 10 us
+radix_sort_par  = 10 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000 (randomized)
+
+sort            = 98 us
+sort_par        = 69 us
+stable_sort     = 146 us
+stable_sort_par = 119 us
+radix_sort      = 23 us
+radix_sort_par  = 16 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000 (randomized)
+
+sort            = 1,310 us
+sort_par        = 514 us
+stable_sort     = 1,126 us
+stable_sort_par = 649 us
+radix_sort      = 382 us
+radix_sort_par  = 366 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100,000 (randomized)
+
+sort            = 17,026 us
+sort_par        = 4,582 us
+stable_sort     = 20,658 us
+stable_sort_par = 8,355 us
+radix_sort      = 7,074 us
+radix_sort_par  = 7,128 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000,000 (randomized)
+
+sort            = 208,168 us
+sort_par        = 51,877 us
+stable_sort     = 242,562 us
+stable_sort_par = 132,430 us
+radix_sort      = 85,904 us
+radix_sort_par  = 85,100 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000,000 (randomized)
+
+sort            = 2,565,935 us
+sort_par        = 761,408 us
+stable_sort     = 2,964,191 us
+stable_sort_par = 2,009,831 us
+radix_sort      = 1,054,918 us
+radix_sort_par  = 643,060 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 0 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10 (randomized)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100 (randomized)
+
+sort            = 11 us
+sort_par        = 29 us
+stable_sort     = 10 us
+stable_sort_par = 10 us
+radix_sort      = 7 us
+radix_sort_par  = 3 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000 (randomized)
+
+sort            = 244 us
+sort_par        = 101 us
+stable_sort     = 329 us
+stable_sort_par = 188 us
+radix_sort      = 43 us
+radix_sort_par  = 29 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000 (randomized)
+
+sort            = 2,587 us
+sort_par        = 898 us
+stable_sort     = 2,253 us
+stable_sort_par = 977 us
+radix_sort      = 489 us
+radix_sort_par  = 478 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100,000 (randomized)
+
+sort            = 32,599 us
+sort_par        = 7,359 us
+stable_sort     = 40,232 us
+stable_sort_par = 12,928 us
+radix_sort      = 11,646 us
+radix_sort_par  = 11,589 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000,000 (randomized)
+
+sort            = 464,506 us
+sort_par        = 110,780 us
+stable_sort     = 504,823 us
+stable_sort_par = 203,380 us
+radix_sort      = 166,634 us
+radix_sort_par  = 166,227 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000,000 (randomized)
+
+sort            = 5,992,086 us
+sort_par        = 1,303,182 us
+stable_sort     = 6,447,501 us
+stable_sort_par = 2,897,731 us
+radix_sort      = 2,387,182 us
+radix_sort_par  = 920,699 us
+
+===============================
+
+CHAR
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1,000 (sorted)
+
+sort            = 4 us
+sort_par        = 15 us
+stable_sort     = 2 us
+stable_sort_par = 4 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10,000 (sorted)
+
+sort            = 45 us
+sort_par        = 50 us
+stable_sort     = 36 us
+stable_sort_par = 66 us
+radix_sort      = 15 us
+radix_sort_par  = 15 us
+
+===============================
+
+CHAR
+SIZE = 100,000 (sorted)
+
+sort            = 482 us
+sort_par        = 219 us
+stable_sort     = 621 us
+stable_sort_par = 338 us
+radix_sort      = 76 us
+radix_sort_par  = 128 us
+
+===============================
+
+CHAR
+SIZE = 1,000,000 (sorted)
+
+sort            = 4,122 us
+sort_par        = 1,738 us
+stable_sort     = 5,159 us
+stable_sort_par = 2,333 us
+radix_sort      = 745 us
+radix_sort_par  = 744 us
+
+===============================
+
+CHAR
+SIZE = 10,000,000 (sorted)
+
+sort            = 41,051 us
+sort_par        = 15,074 us
+stable_sort     = 70,857 us
+stable_sort_par = 21,492 us
+radix_sort      = 7,471 us
+radix_sort_par  = 7,464 us
+
+===============================
+
+CHAR
+SIZE = 100,000,000 (sorted)
+
+sort            = 410,167 us
+sort_par        = 155,077 us
+stable_sort     = 788,476 us
+stable_sort_par = 206,109 us
+radix_sort      = 74,592 us
+radix_sort_par  = 74,599 us
+
+===============================
+
+UCHAR
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1,000 (sorted)
+
+sort            = 4 us
+sort_par        = 11 us
+stable_sort     = 2 us
+stable_sort_par = 4 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10,000 (sorted)
+
+sort            = 39 us
+sort_par        = 47 us
+stable_sort     = 36 us
+stable_sort_par = 46 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+UCHAR
+SIZE = 100,000 (sorted)
+
+sort            = 514 us
+sort_par        = 186 us
+stable_sort     = 442 us
+stable_sort_par = 271 us
+radix_sort      = 74 us
+radix_sort_par  = 74 us
+
+===============================
+
+UCHAR
+SIZE = 1,000,000 (sorted)
+
+sort            = 3,378 us
+sort_par        = 1,418 us
+stable_sort     = 5,109 us
+stable_sort_par = 2,209 us
+radix_sort      = 746 us
+radix_sort_par  = 745 us
+
+===============================
+
+UCHAR
+SIZE = 10,000,000 (sorted)
+
+sort            = 33,786 us
+sort_par        = 12,399 us
+stable_sort     = 70,066 us
+stable_sort_par = 17,722 us
+radix_sort      = 7,474 us
+radix_sort_par  = 7,458 us
+
+===============================
+
+UCHAR
+SIZE = 100,000,000 (sorted)
+
+sort            = 338,764 us
+sort_par        = 126,962 us
+stable_sort     = 785,399 us
+stable_sort_par = 168,322 us
+radix_sort      = 74,543 us
+radix_sort_par  = 74,564 us
+
+===============================
+
+SHORT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1,000 (sorted)
+
+sort            = 4 us
+sort_par        = 16 us
+stable_sort     = 3 us
+stable_sort_par = 10 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+SHORT
+SIZE = 10,000 (sorted)
+
+sort            = 75 us
+sort_par        = 67 us
+stable_sort     = 47 us
+stable_sort_par = 48 us
+radix_sort      = 10 us
+radix_sort_par  = 9 us
+
+===============================
+
+SHORT
+SIZE = 100,000 (sorted)
+
+sort            = 939 us
+sort_par        = 503 us
+stable_sort     = 594 us
+stable_sort_par = 335 us
+radix_sort      = 99 us
+radix_sort_par  = 98 us
+
+===============================
+
+SHORT
+SIZE = 1,000,000 (sorted)
+
+sort            = 10,205 us
+sort_par        = 2,961 us
+stable_sort     = 7,072 us
+stable_sort_par = 2,354 us
+radix_sort      = 1,113 us
+radix_sort_par  = 1,000 us
+
+===============================
+
+SHORT
+SIZE = 10,000,000 (sorted)
+
+sort            = 93,574 us
+sort_par        = 25,165 us
+stable_sort     = 105,134 us
+stable_sort_par = 22,305 us
+radix_sort      = 9,954 us
+radix_sort_par  = 9,953 us
+
+===============================
+
+SHORT
+SIZE = 100,000,000 (sorted)
+
+sort            = 912,669 us
+sort_par        = 252,532 us
+stable_sort     = 1,182,824 us
+stable_sort_par = 219,939 us
+radix_sort      = 99,418 us
+radix_sort_par  = 99,361 us
+
+===============================
+
+USHORT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 18 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1,000 (sorted)
+
+sort            = 8 us
+sort_par        = 24 us
+stable_sort     = 4 us
+stable_sort_par = 8 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+USHORT
+SIZE = 10,000 (sorted)
+
+sort            = 124 us
+sort_par        = 90 us
+stable_sort     = 34 us
+stable_sort_par = 58 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+USHORT
+SIZE = 100,000 (sorted)
+
+sort            = 797 us
+sort_par        = 321 us
+stable_sort     = 423 us
+stable_sort_par = 273 us
+radix_sort      = 107 us
+radix_sort_par  = 74 us
+
+===============================
+
+USHORT
+SIZE = 1,000,000 (sorted)
+
+sort            = 8,644 us
+sort_par        = 2,532 us
+stable_sort     = 5,079 us
+stable_sort_par = 2,070 us
+radix_sort      = 1,293 us
+radix_sort_par  = 754 us
+
+===============================
+
+USHORT
+SIZE = 10,000,000 (sorted)
+
+sort            = 76,283 us
+sort_par        = 20,028 us
+stable_sort     = 80,809 us
+stable_sort_par = 20,552 us
+radix_sort      = 9,718 us
+radix_sort_par  = 7,487 us
+
+===============================
+
+USHORT
+SIZE = 100,000,000 (sorted)
+
+sort            = 748,135 us
+sort_par        = 207,737 us
+stable_sort     = 918,486 us
+stable_sort_par = 196,764 us
+radix_sort      = 75,039 us
+radix_sort_par  = 74,936 us
+
+===============================
+
+INT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 13 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1,000 (sorted)
+
+sort            = 9 us
+sort_par        = 26 us
+stable_sort     = 2 us
+stable_sort_par = 4 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10,000 (sorted)
+
+sort            = 81 us
+sort_par        = 73 us
+stable_sort     = 37 us
+stable_sort_par = 64 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+INT
+SIZE = 100,000 (sorted)
+
+sort            = 946 us
+sort_par        = 485 us
+stable_sort     = 528 us
+stable_sort_par = 396 us
+radix_sort      = 148 us
+radix_sort_par  = 149 us
+
+===============================
+
+INT
+SIZE = 1,000,000 (sorted)
+
+sort            = 11,278 us
+sort_par        = 3,260 us
+stable_sort     = 6,081 us
+stable_sort_par = 3,496 us
+radix_sort      = 880 us
+radix_sort_par  = 787 us
+
+===============================
+
+INT
+SIZE = 10,000,000 (sorted)
+
+sort            = 143,331 us
+sort_par        = 35,794 us
+stable_sort     = 124,878 us
+stable_sort_par = 34,942 us
+radix_sort      = 7,706 us
+radix_sort_par  = 7,724 us
+
+===============================
+
+INT
+SIZE = 100,000,000 (sorted)
+
+sort            = 1,595,785 us
+sort_par        = 399,320 us
+stable_sort     = 1,441,826 us
+stable_sort_par = 380,299 us
+radix_sort      = 78,582 us
+radix_sort_par  = 78,506 us
+
+===============================
+
+UINT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1,000 (sorted)
+
+sort            = 5 us
+sort_par        = 15 us
+stable_sort     = 3 us
+stable_sort_par = 4 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+UINT
+SIZE = 10,000 (sorted)
+
+sort            = 76 us
+sort_par        = 76 us
+stable_sort     = 46 us
+stable_sort_par = 54 us
+radix_sort      = 9 us
+radix_sort_par  = 9 us
+
+===============================
+
+UINT
+SIZE = 100,000 (sorted)
+
+sort            = 948 us
+sort_par        = 463 us
+stable_sort     = 597 us
+stable_sort_par = 308 us
+radix_sort      = 99 us
+radix_sort_par  = 99 us
+
+===============================
+
+UINT
+SIZE = 1,000,000 (sorted)
+
+sort            = 11,373 us
+sort_par        = 3,314 us
+stable_sort     = 7,573 us
+stable_sort_par = 3,292 us
+radix_sort      = 1,017 us
+radix_sort_par  = 1,016 us
+
+===============================
+
+UINT
+SIZE = 10,000,000 (sorted)
+
+sort            = 140,117 us
+sort_par        = 35,759 us
+stable_sort     = 135,130 us
+stable_sort_par = 33,476 us
+radix_sort      = 10,116 us
+radix_sort_par  = 10,126 us
+
+===============================
+
+UINT
+SIZE = 100,000,000 (sorted)
+
+sort            = 1,594,454 us
+sort_par        = 400,276 us
+stable_sort     = 1,579,023 us
+stable_sort_par = 369,065 us
+radix_sort      = 102,492 us
+radix_sort_par  = 102,402 us
+
+===============================
+
+LL
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1,000 (sorted)
+
+sort            = 4 us
+sort_par        = 19 us
+stable_sort     = 2 us
+stable_sort_par = 5 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10,000 (sorted)
+
+sort            = 65 us
+sort_par        = 77 us
+stable_sort     = 40 us
+stable_sort_par = 78 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+LL
+SIZE = 100,000 (sorted)
+
+sort            = 984 us
+sort_par        = 414 us
+stable_sort     = 536 us
+stable_sort_par = 379 us
+radix_sort      = 149 us
+radix_sort_par  = 102 us
+
+===============================
+
+LL
+SIZE = 1,000,000 (sorted)
+
+sort            = 10,830 us
+sort_par        = 3,031 us
+stable_sort     = 18,104 us
+stable_sort_par = 6,017 us
+radix_sort      = 964 us
+radix_sort_par  = 851 us
+
+===============================
+
+LL
+SIZE = 10,000,000 (sorted)
+
+sort            = 125,792 us
+sort_par        = 35,804 us
+stable_sort     = 219,457 us
+stable_sort_par = 70,156 us
+radix_sort      = 8,309 us
+radix_sort_par  = 8,299 us
+
+===============================
+
+LL
+SIZE = 100,000,000 (sorted)
+
+sort            = 1,470,903 us
+sort_par        = 403,182 us
+stable_sort     = 2,597,487 us
+stable_sort_par = 716,989 us
+radix_sort      = 94,101 us
+radix_sort_par  = 93,955 us
+
+===============================
+
+ULL
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 13 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1,000 (sorted)
+
+sort            = 8 us
+sort_par        = 23 us
+stable_sort     = 6 us
+stable_sort_par = 12 us
+radix_sort      = 2 us
+radix_sort_par  = 2 us
+
+===============================
+
+ULL
+SIZE = 10,000 (sorted)
+
+sort            = 127 us
+sort_par        = 77 us
+stable_sort     = 95 us
+stable_sort_par = 61 us
+radix_sort      = 9 us
+radix_sort_par  = 9 us
+
+===============================
+
+ULL
+SIZE = 100,000 (sorted)
+
+sort            = 778 us
+sort_par        = 418 us
+stable_sort     = 672 us
+stable_sort_par = 336 us
+radix_sort      = 178 us
+radix_sort_par  = 99 us
+
+===============================
+
+ULL
+SIZE = 1,000,000 (sorted)
+
+sort            = 9,907 us
+sort_par        = 3,225 us
+stable_sort     = 21,292 us
+stable_sort_par = 6,447 us
+radix_sort      = 1,121 us
+radix_sort_par  = 1,126 us
+
+===============================
+
+ULL
+SIZE = 10,000,000 (sorted)
+
+sort            = 122,958 us
+sort_par        = 35,393 us
+stable_sort     = 221,973 us
+stable_sort_par = 70,594 us
+radix_sort      = 10,426 us
+radix_sort_par  = 10,342 us
+
+===============================
+
+ULL
+SIZE = 100,000,000 (sorted)
+
+sort            = 1,448,916 us
+sort_par        = 403,743 us
+stable_sort     = 2,621,117 us
+stable_sort_par = 726,103 us
+radix_sort      = 109,105 us
+radix_sort_par  = 108,042 us
+
+===============================
+
+FLOAT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1,000 (sorted)
+
+sort            = 11 us
+sort_par        = 22 us
+stable_sort     = 7 us
+stable_sort_par = 12 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+FLOAT
+SIZE = 10,000 (sorted)
+
+sort            = 180 us
+sort_par        = 116 us
+stable_sort     = 103 us
+stable_sort_par = 104 us
+radix_sort      = 17 us
+radix_sort_par  = 17 us
+
+===============================
+
+FLOAT
+SIZE = 100,000 (sorted)
+
+sort            = 2,246 us
+sort_par        = 736 us
+stable_sort     = 1,280 us
+stable_sort_par = 636 us
+radix_sort      = 178 us
+radix_sort_par  = 173 us
+
+===============================
+
+FLOAT
+SIZE = 1,000,000 (sorted)
+
+sort            = 26,494 us
+sort_par        = 6,665 us
+stable_sort     = 15,701 us
+stable_sort_par = 4,973 us
+radix_sort      = 1,740 us
+radix_sort_par  = 1,744 us
+
+===============================
+
+FLOAT
+SIZE = 10,000,000 (sorted)
+
+sort            = 329,693 us
+sort_par        = 81,129 us
+stable_sort     = 218,399 us
+stable_sort_par = 52,379 us
+radix_sort      = 17,438 us
+radix_sort_par  = 17,443 us
+
+===============================
+
+FLOAT
+SIZE = 100,000,000 (sorted)
+
+sort            = 3,717,565 us
+sort_par        = 923,071 us
+stable_sort     = 2,473,571 us
+stable_sort_par = 568,073 us
+radix_sort      = 148,814 us
+radix_sort_par  = 149,370 us
+
+===============================
+
+DOUBLE
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 100 (sorted)
+
+sort            = 1 us
+sort_par        = 15 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000 (sorted)
+
+sort            = 24 us
+sort_par        = 36 us
+stable_sort     = 8 us
+stable_sort_par = 9 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000 (sorted)
+
+sort            = 203 us
+sort_par        = 113 us
+stable_sort     = 112 us
+stable_sort_par = 89 us
+radix_sort      = 17 us
+radix_sort_par  = 18 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000 (sorted)
+
+sort            = 2,421 us
+sort_par        = 1,059 us
+stable_sort     = 1,484 us
+stable_sort_par = 765 us
+radix_sort      = 173 us
+radix_sort_par  = 174 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000,000 (sorted)
+
+sort            = 28,941 us
+sort_par        = 7,391 us
+stable_sort     = 24,594 us
+stable_sort_par = 7,295 us
+radix_sort      = 1,816 us
+radix_sort_par  = 1,806 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000,000 (sorted)
+
+sort            = 357,939 us
+sort_par        = 90,320 us
+stable_sort     = 296,464 us
+stable_sort_par = 74,507 us
+radix_sort      = 17,750 us
+radix_sort_par  = 17,756 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000,000 (sorted)
+
+sort            = 4,202,540 us
+sort_par        = 1,033,483 us
+stable_sort     = 3,473,190 us
+stable_sort_par = 804,314 us
+radix_sort      = 189,207 us
+radix_sort_par  = 189,573 us
+
+===============================
+
+STRING
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 100 (sorted)
+
+sort            = 2 us
+sort_par        = 10 us
+stable_sort     = 2 us
+stable_sort_par = 2 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1,000 (sorted)
+
+sort            = 90 us
+sort_par        = 72 us
+stable_sort     = 38 us
+stable_sort_par = 40 us
+radix_sort      = 23 us
+radix_sort_par  = 21 us
+
+===============================
+
+STRING
+SIZE = 10,000 (sorted)
+
+sort            = 1,229 us
+sort_par        = 387 us
+stable_sort     = 565 us
+stable_sort_par = 394 us
+radix_sort      = 449 us
+radix_sort_par  = 226 us
+
+===============================
+
+STRING
+SIZE = 100,000 (sorted)
+
+sort            = 14,844 us
+sort_par        = 3,801 us
+stable_sort     = 8,380 us
+stable_sort_par = 3,642 us
+radix_sort      = 4,307 us
+radix_sort_par  = 4,316 us
+
+===============================
+
+STRING
+SIZE = 1,000,000 (sorted)
+
+sort            = 172,569 us
+sort_par        = 35,646 us
+stable_sort     = 116,352 us
+stable_sort_par = 42,961 us
+radix_sort      = 46,504 us
+radix_sort_par  = 46,391 us
+
+===============================
+
+STRING
+SIZE = 10,000,000 (sorted)
+
+sort            = 1,869,989 us
+sort_par        = 391,887 us
+stable_sort     = 1,444,538 us
+stable_sort_par = 519,615 us
+radix_sort      = 500,309 us
+radix_sort_par  = 425,006 us
+
+===============================
+
+STRING
+SIZE = 50,000,000 (sorted)
+
+sort            = 11,381,355 us
+sort_par        = 2,621,756 us
+stable_sort     = 8,315,458 us
+stable_sort_par = 2,709,531 us
+radix_sort      = 3,689,019 us
+radix_sort_par  = 2,525,747 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100 (sorted)
+
+sort            = 1 us
+sort_par        = 15 us
+stable_sort     = 1 us
+stable_sort_par = 2 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000 (sorted)
+
+sort            = 10 us
+sort_par        = 23 us
+stable_sort     = 24 us
+stable_sort_par = 33 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000 (sorted)
+
+sort            = 196 us
+sort_par        = 167 us
+stable_sort     = 418 us
+stable_sort_par = 393 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100,000 (sorted)
+
+sort            = 2,485 us
+sort_par        = 1,475 us
+stable_sort     = 16,485 us
+stable_sort_par = 7,043 us
+radix_sort      = 459 us
+radix_sort_par  = 461 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000,000 (sorted)
+
+sort            = 35,053 us
+sort_par        = 16,094 us
+stable_sort     = 180,517 us
+stable_sort_par = 94,148 us
+radix_sort      = 2,891 us
+radix_sort_par  = 2,887 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000,000 (sorted)
+
+sort            = 423,084 us
+sort_par        = 212,724 us
+stable_sort     = 2,307,722 us
+stable_sort_par = 997,215 us
+radix_sort      = 28,346 us
+radix_sort_par  = 28,459 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100 (sorted)
+
+sort            = 0 us
+sort_par        = 8 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000 (sorted)
+
+sort            = 11 us
+sort_par        = 23 us
+stable_sort     = 24 us
+stable_sort_par = 40 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000 (sorted)
+
+sort            = 194 us
+sort_par        = 178 us
+stable_sort     = 419 us
+stable_sort_par = 389 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100,000 (sorted)
+
+sort            = 2,430 us
+sort_par        = 1,488 us
+stable_sort     = 15,150 us
+stable_sort_par = 6,510 us
+radix_sort      = 403 us
+radix_sort_par  = 385 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000,000 (sorted)
+
+sort            = 32,424 us
+sort_par        = 15,760 us
+stable_sort     = 180,117 us
+stable_sort_par = 94,011 us
+radix_sort      = 2,727 us
+radix_sort_par  = 2,760 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000,000 (sorted)
+
+sort            = 430,920 us
+sort_par        = 215,359 us
+stable_sort     = 2,287,038 us
+stable_sort_par = 989,649 us
+radix_sort      = 26,373 us
+radix_sort_par  = 26,311 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100 (sorted)
+
+sort            = 2 us
+sort_par        = 13 us
+stable_sort     = 3 us
+stable_sort_par = 3 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000 (sorted)
+
+sort            = 30 us
+sort_par        = 34 us
+stable_sort     = 25 us
+stable_sort_par = 38 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000 (sorted)
+
+sort            = 293 us
+sort_par        = 205 us
+stable_sort     = 571 us
+stable_sort_par = 403 us
+radix_sort      = 13 us
+radix_sort_par  = 13 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100,000 (sorted)
+
+sort            = 3,572 us
+sort_par        = 1,735 us
+stable_sort     = 15,280 us
+stable_sort_par = 6,380 us
+radix_sort      = 501 us
+radix_sort_par  = 497 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000,000 (sorted)
+
+sort            = 44,160 us
+sort_par        = 17,391 us
+stable_sort     = 182,612 us
+stable_sort_par = 94,124 us
+radix_sort      = 3,681 us
+radix_sort_par  = 3,706 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000,000 (sorted)
+
+sort            = 575,280 us
+sort_par        = 223,282 us
+stable_sort     = 2,317,238 us
+stable_sort_par = 985,307 us
+radix_sort      = 35,244 us
+radix_sort_par  = 35,394 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100 (sorted)
+
+sort            = 1 us
+sort_par        = 9 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000 (sorted)
+
+sort            = 16 us
+sort_par        = 27 us
+stable_sort     = 25 us
+stable_sort_par = 35 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000 (sorted)
+
+sort            = 307 us
+sort_par        = 210 us
+stable_sort     = 465 us
+stable_sort_par = 382 us
+radix_sort      = 18 us
+radix_sort_par  = 14 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100,000 (sorted)
+
+sort            = 3,737 us
+sort_par        = 1,832 us
+stable_sort     = 15,060 us
+stable_sort_par = 6,215 us
+radix_sort      = 512 us
+radix_sort_par  = 496 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000,000 (sorted)
+
+sort            = 46,837 us
+sort_par        = 18,068 us
+stable_sort     = 181,217 us
+stable_sort_par = 93,267 us
+radix_sort      = 3,708 us
+radix_sort_par  = 3,721 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000,000 (sorted)
+
+sort            = 603,586 us
+sort_par        = 222,996 us
+stable_sort     = 2,301,763 us
+stable_sort_par = 992,126 us
+radix_sort      = 36,001 us
+radix_sort_par  = 35,988 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 0 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10 (sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100 (sorted)
+
+sort            = 2 us
+sort_par        = 14 us
+stable_sort     = 2 us
+stable_sort_par = 2 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000 (sorted)
+
+sort            = 117 us
+sort_par        = 77 us
+stable_sort     = 41 us
+stable_sort_par = 43 us
+radix_sort      = 23 us
+radix_sort_par  = 20 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000 (sorted)
+
+sort            = 1,556 us
+sort_par        = 565 us
+stable_sort     = 635 us
+stable_sort_par = 467 us
+radix_sort      = 201 us
+radix_sort_par  = 192 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100,000 (sorted)
+
+sort            = 20,274 us
+sort_par        = 5,411 us
+stable_sort     = 16,811 us
+stable_sort_par = 6,586 us
+radix_sort      = 5,166 us
+radix_sort_par  = 5,170 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000,000 (sorted)
+
+sort            = 233,144 us
+sort_par        = 54,909 us
+stable_sort     = 202,162 us
+stable_sort_par = 92,877 us
+radix_sort      = 56,632 us
+radix_sort_par  = 56,607 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000,000 (sorted)
+
+sort            = 2,487,533 us
+sort_par        = 561,403 us
+stable_sort     = 2,450,021 us
+stable_sort_par = 1,000,829 us
+radix_sort      = 579,762 us
+radix_sort_par  = 560,264 us
+
+===============================
+
+CHAR
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 100 (reverse sorted)
+
+sort            = 1 us
+sort_par        = 21 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1,000 (reverse sorted)
+
+sort            = 8 us
+sort_par        = 23 us
+stable_sort     = 8 us
+stable_sort_par = 18 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10,000 (reverse sorted)
+
+sort            = 70 us
+sort_par        = 62 us
+stable_sort     = 68 us
+stable_sort_par = 123 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+CHAR
+SIZE = 100,000 (reverse sorted)
+
+sort            = 595 us
+sort_par        = 308 us
+stable_sort     = 709 us
+stable_sort_par = 371 us
+radix_sort      = 76 us
+radix_sort_par  = 78 us
+
+===============================
+
+CHAR
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 5,725 us
+sort_par        = 2,055 us
+stable_sort     = 8,181 us
+stable_sort_par = 2,278 us
+radix_sort      = 766 us
+radix_sort_par  = 773 us
+
+===============================
+
+CHAR
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 57,162 us
+sort_par        = 18,669 us
+stable_sort     = 81,960 us
+stable_sort_par = 23,022 us
+radix_sort      = 8,067 us
+radix_sort_par  = 8,067 us
+
+===============================
+
+CHAR
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 567,892 us
+sort_par        = 201,815 us
+stable_sort     = 927,814 us
+stable_sort_par = 223,641 us
+radix_sort      = 82,304 us
+radix_sort_par  = 82,508 us
+
+===============================
+
+UCHAR
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 100 (reverse sorted)
+
+sort            = 1 us
+sort_par        = 14 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1,000 (reverse sorted)
+
+sort            = 7 us
+sort_par        = 21 us
+stable_sort     = 10 us
+stable_sort_par = 22 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10,000 (reverse sorted)
+
+sort            = 53 us
+sort_par        = 54 us
+stable_sort     = 71 us
+stable_sort_par = 95 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+UCHAR
+SIZE = 100,000 (reverse sorted)
+
+sort            = 438 us
+sort_par        = 357 us
+stable_sort     = 551 us
+stable_sort_par = 369 us
+radix_sort      = 76 us
+radix_sort_par  = 76 us
+
+===============================
+
+UCHAR
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 4,267 us
+sort_par        = 1,784 us
+stable_sort     = 6,062 us
+stable_sort_par = 2,256 us
+radix_sort      = 762 us
+radix_sort_par  = 763 us
+
+===============================
+
+UCHAR
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 38,616 us
+sort_par        = 15,645 us
+stable_sort     = 75,872 us
+stable_sort_par = 21,421 us
+radix_sort      = 8,018 us
+radix_sort_par  = 8,020 us
+
+===============================
+
+UCHAR
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 371,840 us
+sort_par        = 156,971 us
+stable_sort     = 843,645 us
+stable_sort_par = 203,929 us
+radix_sort      = 82,097 us
+radix_sort_par  = 82,227 us
+
+===============================
+
+SHORT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 100 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 10 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 7 us
+sort_par        = 18 us
+stable_sort     = 7 us
+stable_sort_par = 20 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 94 us
+sort_par        = 77 us
+stable_sort     = 122 us
+stable_sort_par = 152 us
+radix_sort      = 7 us
+radix_sort_par  = 7 us
+
+===============================
+
+SHORT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 1,120 us
+sort_par        = 533 us
+stable_sort     = 871 us
+stable_sort_par = 682 us
+radix_sort      = 78 us
+radix_sort_par  = 79 us
+
+===============================
+
+SHORT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 12,458 us
+sort_par        = 3,372 us
+stable_sort     = 9,240 us
+stable_sort_par = 4,418 us
+radix_sort      = 792 us
+radix_sort_par  = 792 us
+
+===============================
+
+SHORT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 110,524 us
+sort_par        = 29,270 us
+stable_sort     = 100,191 us
+stable_sort_par = 35,859 us
+radix_sort      = 8,861 us
+radix_sort_par  = 8,893 us
+
+===============================
+
+SHORT
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 1,048,649 us
+sort_par        = 286,588 us
+stable_sort     = 1,080,451 us
+stable_sort_par = 327,758 us
+radix_sort      = 90,357 us
+radix_sort_par  = 90,353 us
+
+===============================
+
+USHORT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 100 (reverse sorted)
+
+sort            = 1 us
+sort_par        = 25 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 8 us
+sort_par        = 21 us
+stable_sort     = 8 us
+stable_sort_par = 21 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 92 us
+sort_par        = 88 us
+stable_sort     = 178 us
+stable_sort_par = 148 us
+radix_sort      = 7 us
+radix_sort_par  = 8 us
+
+===============================
+
+USHORT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 955 us
+sort_par        = 585 us
+stable_sort     = 884 us
+stable_sort_par = 512 us
+radix_sort      = 77 us
+radix_sort_par  = 77 us
+
+===============================
+
+USHORT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 9,889 us
+sort_par        = 3,301 us
+stable_sort     = 9,108 us
+stable_sort_par = 4,166 us
+radix_sort      = 791 us
+radix_sort_par  = 789 us
+
+===============================
+
+USHORT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 95,474 us
+sort_par        = 28,842 us
+stable_sort     = 95,898 us
+stable_sort_par = 33,851 us
+radix_sort      = 8,798 us
+radix_sort_par  = 8,802 us
+
+===============================
+
+USHORT
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 835,659 us
+sort_par        = 275,235 us
+stable_sort     = 1,012,756 us
+stable_sort_par = 309,481 us
+radix_sort      = 90,424 us
+radix_sort_par  = 90,335 us
+
+===============================
+
+INT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 100 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 15 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 8 us
+sort_par        = 22 us
+stable_sort     = 8 us
+stable_sort_par = 19 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 99 us
+sort_par        = 82 us
+stable_sort     = 92 us
+stable_sort_par = 111 us
+radix_sort      = 8 us
+radix_sort_par  = 8 us
+
+===============================
+
+INT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 1,224 us
+sort_par        = 630 us
+stable_sort     = 1,077 us
+stable_sort_par = 700 us
+radix_sort      = 82 us
+radix_sort_par  = 80 us
+
+===============================
+
+INT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 13,596 us
+sort_par        = 4,086 us
+stable_sort     = 12,904 us
+stable_sort_par = 4,665 us
+radix_sort      = 1,034 us
+radix_sort_par  = 877 us
+
+===============================
+
+INT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 155,953 us
+sort_par        = 40,026 us
+stable_sort     = 190,259 us
+stable_sort_par = 55,036 us
+radix_sort      = 10,685 us
+radix_sort_par  = 10,718 us
+
+===============================
+
+INT
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 1,787,762 us
+sort_par        = 451,299 us
+stable_sort     = 2,148,787 us
+stable_sort_par = 623,474 us
+radix_sort      = 111,641 us
+radix_sort_par  = 111,726 us
+
+===============================
+
+UINT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 100 (reverse sorted)
+
+sort            = 1 us
+sort_par        = 14 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 16 us
+sort_par        = 31 us
+stable_sort     = 16 us
+stable_sort_par = 23 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 196 us
+sort_par        = 110 us
+stable_sort     = 185 us
+stable_sort_par = 115 us
+radix_sort      = 8 us
+radix_sort_par  = 8 us
+
+===============================
+
+UINT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 1,154 us
+sort_par        = 563 us
+stable_sort     = 1,435 us
+stable_sort_par = 601 us
+radix_sort      = 80 us
+radix_sort_par  = 80 us
+
+===============================
+
+UINT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 13,656 us
+sort_par        = 3,951 us
+stable_sort     = 13,096 us
+stable_sort_par = 4,462 us
+radix_sort      = 883 us
+radix_sort_par  = 872 us
+
+===============================
+
+UINT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 155,119 us
+sort_par        = 39,989 us
+stable_sort     = 190,863 us
+stable_sort_par = 54,804 us
+radix_sort      = 10,722 us
+radix_sort_par  = 10,654 us
+
+===============================
+
+UINT
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 1,791,576 us
+sort_par        = 450,967 us
+stable_sort     = 2,147,041 us
+stable_sort_par = 624,544 us
+radix_sort      = 110,674 us
+radix_sort_par  = 109,557 us
+
+===============================
+
+LL
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 100 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 9 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1,000 (reverse sorted)
+
+sort            = 8 us
+sort_par        = 20 us
+stable_sort     = 9 us
+stable_sort_par = 22 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10,000 (reverse sorted)
+
+sort            = 91 us
+sort_par        = 80 us
+stable_sort     = 107 us
+stable_sort_par = 128 us
+radix_sort      = 8 us
+radix_sort_par  = 8 us
+
+===============================
+
+LL
+SIZE = 100,000 (reverse sorted)
+
+sort            = 1,031 us
+sort_par        = 583 us
+stable_sort     = 1,249 us
+stable_sort_par = 902 us
+radix_sort      = 88 us
+radix_sort_par  = 87 us
+
+===============================
+
+LL
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 13,020 us
+sort_par        = 4,086 us
+stable_sort     = 25,324 us
+stable_sort_par = 6,723 us
+radix_sort      = 1,267 us
+radix_sort_par  = 1,249 us
+
+===============================
+
+LL
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 147,698 us
+sort_par        = 39,899 us
+stable_sort     = 288,528 us
+stable_sort_par = 84,780 us
+radix_sort      = 14,393 us
+radix_sort_par  = 14,323 us
+
+===============================
+
+LL
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 1,664,182 us
+sort_par        = 469,246 us
+stable_sort     = 3,343,625 us
+stable_sort_par = 1,107,414 us
+radix_sort      = 157,601 us
+radix_sort_par  = 155,506 us
+
+===============================
+
+ULL
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 100 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 10 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1,000 (reverse sorted)
+
+sort            = 7 us
+sort_par        = 15 us
+stable_sort     = 9 us
+stable_sort_par = 19 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 10,000 (reverse sorted)
+
+sort            = 85 us
+sort_par        = 89 us
+stable_sort     = 107 us
+stable_sort_par = 132 us
+radix_sort      = 8 us
+radix_sort_par  = 8 us
+
+===============================
+
+ULL
+SIZE = 100,000 (reverse sorted)
+
+sort            = 934 us
+sort_par        = 462 us
+stable_sort     = 1,267 us
+stable_sort_par = 678 us
+radix_sort      = 87 us
+radix_sort_par  = 86 us
+
+===============================
+
+ULL
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 12,281 us
+sort_par        = 3,947 us
+stable_sort     = 25,359 us
+stable_sort_par = 6,767 us
+radix_sort      = 1,267 us
+radix_sort_par  = 1,236 us
+
+===============================
+
+ULL
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 138,559 us
+sort_par        = 40,113 us
+stable_sort     = 289,119 us
+stable_sort_par = 87,433 us
+radix_sort      = 14,205 us
+radix_sort_par  = 14,245 us
+
+===============================
+
+ULL
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 1,593,084 us
+sort_par        = 450,448 us
+stable_sort     = 3,336,018 us
+stable_sort_par = 1,130,162 us
+radix_sort      = 159,877 us
+radix_sort_par  = 156,196 us
+
+===============================
+
+FLOAT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 100 (reverse sorted)
+
+sort            = 2 us
+sort_par        = 18 us
+stable_sort     = 1 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 22 us
+sort_par        = 32 us
+stable_sort     = 10 us
+stable_sort_par = 22 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+FLOAT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 217 us
+sort_par        = 112 us
+stable_sort     = 133 us
+stable_sort_par = 129 us
+radix_sort      = 18 us
+radix_sort_par  = 18 us
+
+===============================
+
+FLOAT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 2,636 us
+sort_par        = 916 us
+stable_sort     = 1,667 us
+stable_sort_par = 796 us
+radix_sort      = 180 us
+radix_sort_par  = 179 us
+
+===============================
+
+FLOAT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 34,157 us
+sort_par        = 9,451 us
+stable_sort     = 20,879 us
+stable_sort_par = 6,581 us
+radix_sort      = 2,012 us
+radix_sort_par  = 1,835 us
+
+===============================
+
+FLOAT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 365,723 us
+sort_par        = 99,602 us
+stable_sort     = 271,069 us
+stable_sort_par = 80,209 us
+radix_sort      = 20,341 us
+radix_sort_par  = 20,321 us
+
+===============================
+
+FLOAT
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 4,094,251 us
+sort_par        = 1,119,410 us
+stable_sort     = 3,676,270 us
+stable_sort_par = 942,933 us
+radix_sort      = 184,310 us
+radix_sort_par  = 182,261 us
+
+===============================
+
+DOUBLE
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 100 (reverse sorted)
+
+sort            = 2 us
+sort_par        = 24 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000 (reverse sorted)
+
+sort            = 35 us
+sort_par        = 46 us
+stable_sort     = 23 us
+stable_sort_par = 42 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000 (reverse sorted)
+
+sort            = 256 us
+sort_par        = 144 us
+stable_sort     = 279 us
+stable_sort_par = 149 us
+radix_sort      = 18 us
+radix_sort_par  = 18 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000 (reverse sorted)
+
+sort            = 2,756 us
+sort_par        = 1,109 us
+stable_sort     = 1,848 us
+stable_sort_par = 1,060 us
+radix_sort      = 186 us
+radix_sort_par  = 185 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 33,534 us
+sort_par        = 9,216 us
+stable_sort     = 30,795 us
+stable_sort_par = 8,741 us
+radix_sort      = 2,207 us
+radix_sort_par  = 2,200 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 388,417 us
+sort_par        = 105,143 us
+stable_sort     = 348,457 us
+stable_sort_par = 104,554 us
+radix_sort      = 23,631 us
+radix_sort_par  = 23,669 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000,000 (reverse sorted)
+
+sort            = 4,463,622 us
+sort_par        = 1,192,687 us
+stable_sort     = 4,091,911 us
+stable_sort_par = 1,268,133 us
+radix_sort      = 256,825 us
+radix_sort_par  = 257,663 us
+
+===============================
+
+STRING
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 100 (reverse sorted)
+
+sort            = 3 us
+sort_par        = 18 us
+stable_sort     = 7 us
+stable_sort_par = 6 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1,000 (reverse sorted)
+
+sort            = 89 us
+sort_par        = 76 us
+stable_sort     = 81 us
+stable_sort_par = 79 us
+radix_sort      = 25 us
+radix_sort_par  = 24 us
+
+===============================
+
+STRING
+SIZE = 10,000 (reverse sorted)
+
+sort            = 1,153 us
+sort_par        = 352 us
+stable_sort     = 1,001 us
+stable_sort_par = 599 us
+radix_sort      = 281 us
+radix_sort_par  = 273 us
+
+===============================
+
+STRING
+SIZE = 100,000 (reverse sorted)
+
+sort            = 14,007 us
+sort_par        = 3,526 us
+stable_sort     = 12,801 us
+stable_sort_par = 4,205 us
+radix_sort      = 4,267 us
+radix_sort_par  = 4,126 us
+
+===============================
+
+STRING
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 174,847 us
+sort_par        = 39,794 us
+stable_sort     = 169,838 us
+stable_sort_par = 47,996 us
+radix_sort      = 52,928 us
+radix_sort_par  = 53,347 us
+
+===============================
+
+STRING
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 1,901,528 us
+sort_par        = 440,784 us
+stable_sort     = 1,988,482 us
+stable_sort_par = 596,186 us
+radix_sort      = 565,929 us
+radix_sort_par  = 477,560 us
+
+===============================
+
+STRING
+SIZE = 50,000,000 (reverse sorted)
+
+sort            = 11,069,654 us
+sort_par        = 2,480,330 us
+stable_sort     = 10,875,513 us
+stable_sort_par = 5,926,106 us
+radix_sort      = 4,339,582 us
+radix_sort_par  = 2,717,941 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100 (reverse sorted)
+
+sort            = 5 us
+sort_par        = 15 us
+stable_sort     = 14 us
+stable_sort_par = 15 us
+radix_sort      = 40 us
+radix_sort_par  = 40 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 47 us
+sort_par        = 34 us
+stable_sort     = 91 us
+stable_sort_par = 95 us
+radix_sort      = 26 us
+radix_sort_par  = 21 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 271 us
+sort_par        = 210 us
+stable_sort     = 1,105 us
+stable_sort_par = 547 us
+radix_sort      = 224 us
+radix_sort_par  = 215 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 3,404 us
+sort_par        = 2,120 us
+stable_sort     = 24,337 us
+stable_sort_par = 10,082 us
+radix_sort      = 5,058 us
+radix_sort_par  = 5,030 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 49,667 us
+sort_par        = 22,023 us
+stable_sort     = 260,636 us
+stable_sort_par = 139,404 us
+radix_sort      = 48,248 us
+radix_sort_par  = 48,577 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 541,527 us
+sort_par        = 274,415 us
+stable_sort     = 3,131,203 us
+stable_sort_par = 2,232,610 us
+radix_sort      = 512,769 us
+radix_sort_par  = 497,376 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100 (reverse sorted)
+
+sort            = 2 us
+sort_par        = 13 us
+stable_sort     = 7 us
+stable_sort_par = 8 us
+radix_sort      = 20 us
+radix_sort_par  = 20 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000 (reverse sorted)
+
+sort            = 51 us
+sort_par        = 49 us
+stable_sort     = 181 us
+stable_sort_par = 115 us
+radix_sort      = 39 us
+radix_sort_par  = 35 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000 (reverse sorted)
+
+sort            = 305 us
+sort_par        = 255 us
+stable_sort     = 1,111 us
+stable_sort_par = 612 us
+radix_sort      = 442 us
+radix_sort_par  = 426 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100,000 (reverse sorted)
+
+sort            = 3,629 us
+sort_par        = 2,617 us
+stable_sort     = 21,736 us
+stable_sort_par = 8,175 us
+radix_sort      = 4,402 us
+radix_sort_par  = 4,385 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 45,329 us
+sort_par        = 22,013 us
+stable_sort     = 260,395 us
+stable_sort_par = 138,753 us
+radix_sort      = 56,787 us
+radix_sort_par  = 56,821 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 552,494 us
+sort_par        = 272,532 us
+stable_sort     = 3,118,258 us
+stable_sort_par = 2,259,495 us
+radix_sort      = 559,657 us
+radix_sort_par  = 523,883 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100 (reverse sorted)
+
+sort            = 3 us
+sort_par        = 13 us
+stable_sort     = 7 us
+stable_sort_par = 9 us
+radix_sort      = 20 us
+radix_sort_par  = 20 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000 (reverse sorted)
+
+sort            = 47 us
+sort_par        = 46 us
+stable_sort     = 92 us
+stable_sort_par = 82 us
+radix_sort      = 24 us
+radix_sort_par  = 22 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000 (reverse sorted)
+
+sort            = 356 us
+sort_par        = 293 us
+stable_sort     = 1,103 us
+stable_sort_par = 568 us
+radix_sort      = 223 us
+radix_sort_par  = 216 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100,000 (reverse sorted)
+
+sort            = 4,690 us
+sort_par        = 2,428 us
+stable_sort     = 23,985 us
+stable_sort_par = 8,538 us
+radix_sort      = 4,973 us
+radix_sort_par  = 4,829 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 58,482 us
+sort_par        = 24,076 us
+stable_sort     = 263,447 us
+stable_sort_par = 138,184 us
+radix_sort      = 48,376 us
+radix_sort_par  = 48,469 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 705,253 us
+sort_par        = 288,745 us
+stable_sort     = 3,132,137 us
+stable_sort_par = 2,288,106 us
+radix_sort      = 510,765 us
+radix_sort_par  = 563,420 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100 (reverse sorted)
+
+sort            = 7 us
+sort_par        = 25 us
+stable_sort     = 15 us
+stable_sort_par = 15 us
+radix_sort      = 40 us
+radix_sort_par  = 21 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000 (reverse sorted)
+
+sort            = 32 us
+sort_par        = 44 us
+stable_sort     = 91 us
+stable_sort_par = 73 us
+radix_sort      = 29 us
+radix_sort_par  = 43 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000 (reverse sorted)
+
+sort            = 375 us
+sort_par        = 288 us
+stable_sort     = 1,104 us
+stable_sort_par = 576 us
+radix_sort      = 428 us
+radix_sort_par  = 418 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100,000 (reverse sorted)
+
+sort            = 4,897 us
+sort_par        = 2,518 us
+stable_sort     = 24,039 us
+stable_sort_par = 8,929 us
+radix_sort      = 5,689 us
+radix_sort_par  = 5,379 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 60,900 us
+sort_par        = 24,319 us
+stable_sort     = 264,550 us
+stable_sort_par = 138,042 us
+radix_sort      = 84,744 us
+radix_sort_par  = 84,530 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 727,836 us
+sort_par        = 286,121 us
+stable_sort     = 3,133,665 us
+stable_sort_par = 2,309,469 us
+radix_sort      = 648,472 us
+radix_sort_par  = 563,666 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 0 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10 (reverse sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100 (reverse sorted)
+
+sort            = 8 us
+sort_par        = 33 us
+stable_sort     = 15 us
+stable_sort_par = 16 us
+radix_sort      = 6 us
+radix_sort_par  = 5 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000 (reverse sorted)
+
+sort            = 140 us
+sort_par        = 82 us
+stable_sort     = 99 us
+stable_sort_par = 115 us
+radix_sort      = 20 us
+radix_sort_par  = 18 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000 (reverse sorted)
+
+sort            = 1,526 us
+sort_par        = 554 us
+stable_sort     = 1,250 us
+stable_sort_par = 737 us
+radix_sort      = 198 us
+radix_sort_par  = 192 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100,000 (reverse sorted)
+
+sort            = 18,893 us
+sort_par        = 5,230 us
+stable_sort     = 23,051 us
+stable_sort_par = 8,921 us
+radix_sort      = 5,143 us
+radix_sort_par  = 5,168 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000,000 (reverse sorted)
+
+sort            = 237,204 us
+sort_par        = 63,725 us
+stable_sort     = 272,731 us
+stable_sort_par = 141,910 us
+radix_sort      = 58,157 us
+radix_sort_par  = 58,054 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000,000 (reverse sorted)
+
+sort            = 2,547,326 us
+sort_par        = 665,122 us
+stable_sort     = 3,260,440 us
+stable_sort_par = 2,349,070 us
+radix_sort      = 599,666 us
+radix_sort_par  = 551,091 us
+
+===============================
+
+CHAR
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 100 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 10 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1,000 (nearly sorted)
+
+sort            = 9 us
+sort_par        = 22 us
+stable_sort     = 8 us
+stable_sort_par = 14 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+CHAR
+SIZE = 10,000 (nearly sorted)
+
+sort            = 98 us
+sort_par        = 76 us
+stable_sort     = 204 us
+stable_sort_par = 136 us
+radix_sort      = 51 us
+radix_sort_par  = 34 us
+
+===============================
+
+CHAR
+SIZE = 100,000 (nearly sorted)
+
+sort            = 904 us
+sort_par        = 426 us
+stable_sort     = 1,331 us
+stable_sort_par = 819 us
+radix_sort      = 386 us
+radix_sort_par  = 382 us
+
+===============================
+
+CHAR
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 8,128 us
+sort_par        = 3,037 us
+stable_sort     = 16,822 us
+stable_sort_par = 4,950 us
+radix_sort      = 4,116 us
+radix_sort_par  = 3,993 us
+
+===============================
+
+CHAR
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 77,444 us
+sort_par        = 26,215 us
+stable_sort     = 192,263 us
+stable_sort_par = 56,767 us
+radix_sort      = 41,665 us
+radix_sort_par  = 30,089 us
+
+===============================
+
+CHAR
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 796,933 us
+sort_par        = 279,517 us
+stable_sort     = 2,067,398 us
+stable_sort_par = 625,839 us
+radix_sort      = 408,642 us
+radix_sort_par  = 268,435 us
+
+===============================
+
+UCHAR
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 100 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 13 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1,000 (nearly sorted)
+
+sort            = 9 us
+sort_par        = 32 us
+stable_sort     = 15 us
+stable_sort_par = 23 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+UCHAR
+SIZE = 10,000 (nearly sorted)
+
+sort            = 87 us
+sort_par        = 61 us
+stable_sort     = 110 us
+stable_sort_par = 105 us
+radix_sort      = 33 us
+radix_sort_par  = 33 us
+
+===============================
+
+UCHAR
+SIZE = 100,000 (nearly sorted)
+
+sort            = 844 us
+sort_par        = 486 us
+stable_sort     = 1,322 us
+stable_sort_par = 697 us
+radix_sort      = 693 us
+radix_sort_par  = 387 us
+
+===============================
+
+UCHAR
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 7,131 us
+sort_par        = 2,415 us
+stable_sort     = 14,511 us
+stable_sort_par = 5,056 us
+radix_sort      = 4,248 us
+radix_sort_par  = 4,079 us
+
+===============================
+
+UCHAR
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 68,710 us
+sort_par        = 22,237 us
+stable_sort     = 169,557 us
+stable_sort_par = 55,999 us
+radix_sort      = 41,168 us
+radix_sort_par  = 30,388 us
+
+===============================
+
+UCHAR
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 722,779 us
+sort_par        = 267,425 us
+stable_sort     = 1,849,791 us
+stable_sort_par = 605,661 us
+radix_sort      = 407,401 us
+radix_sort_par  = 266,998 us
+
+===============================
+
+SHORT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 100 (nearly sorted)
+
+sort            = 1 us
+sort_par        = 16 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 10 us
+sort_par        = 24 us
+stable_sort     = 7 us
+stable_sort_par = 18 us
+radix_sort      = 5 us
+radix_sort_par  = 4 us
+
+===============================
+
+SHORT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 160 us
+sort_par        = 110 us
+stable_sort     = 244 us
+stable_sort_par = 108 us
+radix_sort      = 33 us
+radix_sort_par  = 33 us
+
+===============================
+
+SHORT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 2,142 us
+sort_par        = 642 us
+stable_sort     = 1,534 us
+stable_sort_par = 746 us
+radix_sort      = 517 us
+radix_sort_par  = 516 us
+
+===============================
+
+SHORT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 20,932 us
+sort_par        = 4,485 us
+stable_sort     = 18,647 us
+stable_sort_par = 5,948 us
+radix_sort      = 7,284 us
+radix_sort_par  = 7,312 us
+
+===============================
+
+SHORT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 176,103 us
+sort_par        = 39,311 us
+stable_sort     = 222,194 us
+stable_sort_par = 66,705 us
+radix_sort      = 82,956 us
+radix_sort_par  = 56,964 us
+
+===============================
+
+SHORT
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 1,711,304 us
+sort_par        = 411,151 us
+stable_sort     = 2,440,052 us
+stable_sort_par = 779,312 us
+radix_sort      = 817,798 us
+radix_sort_par  = 362,223 us
+
+===============================
+
+USHORT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 100 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 13 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 9 us
+sort_par        = 35 us
+stable_sort     = 15 us
+stable_sort_par = 23 us
+radix_sort      = 4 us
+radix_sort_par  = 4 us
+
+===============================
+
+USHORT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 158 us
+sort_par        = 90 us
+stable_sort     = 109 us
+stable_sort_par = 82 us
+radix_sort      = 34 us
+radix_sort_par  = 32 us
+
+===============================
+
+USHORT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 2,227 us
+sort_par        = 879 us
+stable_sort     = 1,442 us
+stable_sort_par = 739 us
+radix_sort      = 511 us
+radix_sort_par  = 509 us
+
+===============================
+
+USHORT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 19,704 us
+sort_par        = 4,278 us
+stable_sort     = 16,686 us
+stable_sort_par = 6,005 us
+radix_sort      = 7,454 us
+radix_sort_par  = 7,304 us
+
+===============================
+
+USHORT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 175,804 us
+sort_par        = 37,521 us
+stable_sort     = 195,719 us
+stable_sort_par = 62,868 us
+radix_sort      = 83,349 us
+radix_sort_par  = 57,560 us
+
+===============================
+
+USHORT
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 1,687,894 us
+sort_par        = 387,753 us
+stable_sort     = 2,138,976 us
+stable_sort_par = 718,501 us
+radix_sort      = 819,139 us
+radix_sort_par  = 358,702 us
+
+===============================
+
+INT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 100 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 15 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 10 us
+sort_par        = 29 us
+stable_sort     = 7 us
+stable_sort_par = 18 us
+radix_sort      = 9 us
+radix_sort_par  = 8 us
+
+===============================
+
+INT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 165 us
+sort_par        = 84 us
+stable_sort     = 220 us
+stable_sort_par = 108 us
+radix_sort      = 63 us
+radix_sort_par  = 61 us
+
+===============================
+
+INT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 2,182 us
+sort_par        = 685 us
+stable_sort     = 1,540 us
+stable_sort_par = 602 us
+radix_sort      = 894 us
+radix_sort_par  = 708 us
+
+===============================
+
+INT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 24,748 us
+sort_par        = 5,270 us
+stable_sort     = 19,007 us
+stable_sort_par = 6,276 us
+radix_sort      = 9,503 us
+radix_sort_par  = 9,256 us
+
+===============================
+
+INT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 282,942 us
+sort_par        = 57,619 us
+stable_sort     = 228,904 us
+stable_sort_par = 72,235 us
+radix_sort      = 102,333 us
+radix_sort_par  = 73,525 us
+
+===============================
+
+INT
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 3,403,507 us
+sort_par        = 678,264 us
+stable_sort     = 2,627,128 us
+stable_sort_par = 882,384 us
+radix_sort      = 1,091,283 us
+radix_sort_par  = 519,894 us
+
+===============================
+
+UINT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 100 (nearly sorted)
+
+sort            = 1 us
+sort_par        = 12 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 10 us
+sort_par        = 22 us
+stable_sort     = 8 us
+stable_sort_par = 16 us
+radix_sort      = 16 us
+radix_sort_par  = 15 us
+
+===============================
+
+UINT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 325 us
+sort_par        = 122 us
+stable_sort     = 126 us
+stable_sort_par = 113 us
+radix_sort      = 113 us
+radix_sort_par  = 112 us
+
+===============================
+
+UINT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 2,152 us
+sort_par        = 767 us
+stable_sort     = 1,649 us
+stable_sort_par = 719 us
+radix_sort      = 755 us
+radix_sort_par  = 792 us
+
+===============================
+
+UINT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 24,307 us
+sort_par        = 5,257 us
+stable_sort     = 20,041 us
+stable_sort_par = 6,069 us
+radix_sort      = 9,643 us
+radix_sort_par  = 9,630 us
+
+===============================
+
+UINT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 277,585 us
+sort_par        = 57,153 us
+stable_sort     = 245,096 us
+stable_sort_par = 70,679 us
+radix_sort      = 97,398 us
+radix_sort_par  = 70,961 us
+
+===============================
+
+UINT
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 3,348,063 us
+sort_par        = 671,117 us
+stable_sort     = 2,853,780 us
+stable_sort_par = 860,725 us
+radix_sort      = 1,074,472 us
+radix_sort_par  = 512,418 us
+
+===============================
+
+LL
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 100 (nearly sorted)
+
+sort            = 1 us
+sort_par        = 16 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1,000 (nearly sorted)
+
+sort            = 19 us
+sort_par        = 44 us
+stable_sort     = 17 us
+stable_sort_par = 23 us
+radix_sort      = 11 us
+radix_sort_par  = 6 us
+
+===============================
+
+LL
+SIZE = 10,000 (nearly sorted)
+
+sort            = 229 us
+sort_par        = 96 us
+stable_sort     = 150 us
+stable_sort_par = 127 us
+radix_sort      = 71 us
+radix_sort_par  = 63 us
+
+===============================
+
+LL
+SIZE = 100,000 (nearly sorted)
+
+sort            = 2,087 us
+sort_par        = 663 us
+stable_sort     = 1,569 us
+stable_sort_par = 733 us
+radix_sort      = 1,060 us
+radix_sort_par  = 1,033 us
+
+===============================
+
+LL
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 23,752 us
+sort_par        = 4,924 us
+stable_sort     = 24,808 us
+stable_sort_par = 7,749 us
+radix_sort      = 12,818 us
+radix_sort_par  = 12,795 us
+
+===============================
+
+LL
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 268,512 us
+sort_par        = 59,811 us
+stable_sort     = 300,318 us
+stable_sort_par = 96,317 us
+radix_sort      = 157,362 us
+radix_sort_par  = 81,216 us
+
+===============================
+
+LL
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 3,253,563 us
+sort_par        = 705,811 us
+stable_sort     = 3,571,654 us
+stable_sort_par = 1,286,574 us
+radix_sort      = 1,671,773 us
+radix_sort_par  = 754,853 us
+
+===============================
+
+ULL
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 100 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 10 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1,000 (nearly sorted)
+
+sort            = 19 us
+sort_par        = 35 us
+stable_sort     = 8 us
+stable_sort_par = 21 us
+radix_sort      = 11 us
+radix_sort_par  = 6 us
+
+===============================
+
+ULL
+SIZE = 10,000 (nearly sorted)
+
+sort            = 155 us
+sort_par        = 100 us
+stable_sort     = 260 us
+stable_sort_par = 143 us
+radix_sort      = 71 us
+radix_sort_par  = 63 us
+
+===============================
+
+ULL
+SIZE = 100,000 (nearly sorted)
+
+sort            = 2,083 us
+sort_par        = 683 us
+stable_sort     = 1,662 us
+stable_sort_par = 800 us
+radix_sort      = 1,047 us
+radix_sort_par  = 1,028 us
+
+===============================
+
+ULL
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 23,599 us
+sort_par        = 5,078 us
+stable_sort     = 27,653 us
+stable_sort_par = 8,212 us
+radix_sort      = 13,460 us
+radix_sort_par  = 13,510 us
+
+===============================
+
+ULL
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 270,873 us
+sort_par        = 59,691 us
+stable_sort     = 305,022 us
+stable_sort_par = 98,262 us
+radix_sort      = 158,906 us
+radix_sort_par  = 78,956 us
+
+===============================
+
+ULL
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 3,267,490 us
+sort_par        = 710,201 us
+stable_sort     = 3,614,474 us
+stable_sort_par = 1,317,389 us
+radix_sort      = 1,670,892 us
+radix_sort_par  = 757,905 us
+
+===============================
+
+FLOAT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 100 (nearly sorted)
+
+sort            = 1 us
+sort_par        = 13 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 19 us
+sort_par        = 33 us
+stable_sort     = 15 us
+stable_sort_par = 23 us
+radix_sort      = 14 us
+radix_sort_par  = 13 us
+
+===============================
+
+FLOAT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 461 us
+sort_par        = 181 us
+stable_sort     = 220 us
+stable_sort_par = 196 us
+radix_sort      = 98 us
+radix_sort_par  = 95 us
+
+===============================
+
+FLOAT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 3,892 us
+sort_par        = 1,167 us
+stable_sort     = 2,887 us
+stable_sort_par = 1,110 us
+radix_sort      = 1,014 us
+radix_sort_par  = 1,002 us
+
+===============================
+
+FLOAT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 44,930 us
+sort_par        = 9,635 us
+stable_sort     = 35,656 us
+stable_sort_par = 10,917 us
+radix_sort      = 13,690 us
+radix_sort_par  = 14,017 us
+
+===============================
+
+FLOAT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 517,922 us
+sort_par        = 111,657 us
+stable_sort     = 432,703 us
+stable_sort_par = 117,392 us
+radix_sort      = 135,956 us
+radix_sort_par  = 93,510 us
+
+===============================
+
+FLOAT
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 6,301,160 us
+sort_par        = 1,324,183 us
+stable_sort     = 4,987,084 us
+stable_sort_par = 1,409,470 us
+radix_sort      = 1,528,875 us
+radix_sort_par  = 781,192 us
+
+===============================
+
+DOUBLE
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 100 (nearly sorted)
+
+sort            = 2 us
+sort_par        = 16 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000 (nearly sorted)
+
+sort            = 40 us
+sort_par        = 46 us
+stable_sort     = 15 us
+stable_sort_par = 26 us
+radix_sort      = 18 us
+radix_sort_par  = 15 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000 (nearly sorted)
+
+sort            = 303 us
+sort_par        = 155 us
+stable_sort     = 235 us
+stable_sort_par = 162 us
+radix_sort      = 156 us
+radix_sort_par  = 146 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000 (nearly sorted)
+
+sort            = 4,173 us
+sort_par        = 1,066 us
+stable_sort     = 3,096 us
+stable_sort_par = 1,357 us
+radix_sort      = 1,705 us
+radix_sort_par  = 1,685 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 47,080 us
+sort_par        = 10,272 us
+stable_sort     = 39,196 us
+stable_sort_par = 11,311 us
+radix_sort      = 21,897 us
+radix_sort_par  = 21,864 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 540,749 us
+sort_par        = 118,214 us
+stable_sort     = 470,505 us
+stable_sort_par = 137,101 us
+radix_sort      = 236,306 us
+radix_sort_par  = 142,080 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000,000 (nearly sorted)
+
+sort            = 6,441,090 us
+sort_par        = 1,390,113 us
+stable_sort     = 5,482,438 us
+stable_sort_par = 1,698,425 us
+radix_sort      = 2,590,935 us
+radix_sort_par  = 1,324,216 us
+
+===============================
+
+STRING
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 100 (nearly sorted)
+
+sort            = 5 us
+sort_par        = 13 us
+stable_sort     = 3 us
+stable_sort_par = 2 us
+radix_sort      = 3 us
+radix_sort_par  = 1 us
+
+===============================
+
+STRING
+SIZE = 1,000 (nearly sorted)
+
+sort            = 98 us
+sort_par        = 71 us
+stable_sort     = 57 us
+stable_sort_par = 53 us
+radix_sort      = 20 us
+radix_sort_par  = 20 us
+
+===============================
+
+STRING
+SIZE = 10,000 (nearly sorted)
+
+sort            = 1,342 us
+sort_par        = 418 us
+stable_sort     = 831 us
+stable_sort_par = 608 us
+radix_sort      = 291 us
+radix_sort_par  = 223 us
+
+===============================
+
+STRING
+SIZE = 100,000 (nearly sorted)
+
+sort            = 16,387 us
+sort_par        = 3,909 us
+stable_sort     = 11,625 us
+stable_sort_par = 4,195 us
+radix_sort      = 4,549 us
+radix_sort_par  = 4,524 us
+
+===============================
+
+STRING
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 195,480 us
+sort_par        = 39,019 us
+stable_sort     = 151,777 us
+stable_sort_par = 46,896 us
+radix_sort      = 48,670 us
+radix_sort_par  = 48,720 us
+
+===============================
+
+STRING
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 2,156,102 us
+sort_par        = 440,199 us
+stable_sort     = 1,823,700 us
+stable_sort_par = 599,412 us
+radix_sort      = 533,058 us
+radix_sort_par  = 450,491 us
+
+===============================
+
+STRING
+SIZE = 50,000,000 (nearly sorted)
+
+sort            = 12,965,443 us
+sort_par        = 2,855,398 us
+stable_sort     = 10,558,869 us
+stable_sort_par = 4,399,811 us
+radix_sort      = 5,167,974 us
+radix_sort_par  = 2,731,483 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100 (nearly sorted)
+
+sort            = 1 us
+sort_par        = 9 us
+stable_sort     = 2 us
+stable_sort_par = 2 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 28 us
+sort_par        = 42 us
+stable_sort     = 37 us
+stable_sort_par = 63 us
+radix_sort      = 23 us
+radix_sort_par  = 22 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 517 us
+sort_par        = 256 us
+stable_sort     = 720 us
+stable_sort_par = 523 us
+radix_sort      = 229 us
+radix_sort_par  = 220 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 6,027 us
+sort_par        = 2,708 us
+stable_sort     = 18,452 us
+stable_sort_par = 6,924 us
+radix_sort      = 5,600 us
+radix_sort_par  = 5,568 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 70,113 us
+sort_par        = 21,824 us
+stable_sort     = 204,755 us
+stable_sort_par = 101,278 us
+radix_sort      = 57,301 us
+radix_sort_par  = 57,153 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 800,932 us
+sort_par        = 281,328 us
+stable_sort     = 2,576,831 us
+stable_sort_par = 1,646,065 us
+radix_sort      = 652,037 us
+radix_sort_par  = 516,082 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100 (nearly sorted)
+
+sort            = 1 us
+sort_par        = 11 us
+stable_sort     = 2 us
+stable_sort_par = 2 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000 (nearly sorted)
+
+sort            = 26 us
+sort_par        = 53 us
+stable_sort     = 37 us
+stable_sort_par = 51 us
+radix_sort      = 21 us
+radix_sort_par  = 15 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000 (nearly sorted)
+
+sort            = 522 us
+sort_par        = 275 us
+stable_sort     = 705 us
+stable_sort_par = 470 us
+radix_sort      = 213 us
+radix_sort_par  = 175 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100,000 (nearly sorted)
+
+sort            = 6,155 us
+sort_par        = 2,777 us
+stable_sort     = 18,780 us
+stable_sort_par = 7,012 us
+radix_sort      = 5,574 us
+radix_sort_par  = 5,388 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 69,398 us
+sort_par        = 22,353 us
+stable_sort     = 206,729 us
+stable_sort_par = 99,905 us
+radix_sort      = 57,586 us
+radix_sort_par  = 57,650 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 818,344 us
+sort_par        = 282,618 us
+stable_sort     = 2,585,975 us
+stable_sort_par = 1,641,085 us
+radix_sort      = 689,930 us
+radix_sort_par  = 544,420 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100 (nearly sorted)
+
+sort            = 3 us
+sort_par        = 29 us
+stable_sort     = 5 us
+stable_sort_par = 5 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000 (nearly sorted)
+
+sort            = 67 us
+sort_par        = 53 us
+stable_sort     = 78 us
+stable_sort_par = 61 us
+radix_sort      = 47 us
+radix_sort_par  = 38 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000 (nearly sorted)
+
+sort            = 483 us
+sort_par        = 266 us
+stable_sort     = 628 us
+stable_sort_par = 518 us
+radix_sort      = 242 us
+radix_sort_par  = 225 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100,000 (nearly sorted)
+
+sort            = 8,345 us
+sort_par        = 2,869 us
+stable_sort     = 18,882 us
+stable_sort_par = 6,899 us
+radix_sort      = 5,644 us
+radix_sort_par  = 5,405 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 84,086 us
+sort_par        = 24,693 us
+stable_sort     = 207,290 us
+stable_sort_par = 102,563 us
+radix_sort      = 57,075 us
+radix_sort_par  = 57,011 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 982,273 us
+sort_par        = 301,508 us
+stable_sort     = 2,599,366 us
+stable_sort_par = 1,651,439 us
+radix_sort      = 640,435 us
+radix_sort_par  = 531,726 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100 (nearly sorted)
+
+sort            = 3 us
+sort_par        = 28 us
+stable_sort     = 7 us
+stable_sort_par = 4 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000 (nearly sorted)
+
+sort            = 33 us
+sort_par        = 44 us
+stable_sort     = 39 us
+stable_sort_par = 49 us
+radix_sort      = 25 us
+radix_sort_par  = 22 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000 (nearly sorted)
+
+sort            = 498 us
+sort_par        = 321 us
+stable_sort     = 709 us
+stable_sort_par = 464 us
+radix_sort      = 260 us
+radix_sort_par  = 244 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100,000 (nearly sorted)
+
+sort            = 7,631 us
+sort_par        = 3,071 us
+stable_sort     = 19,083 us
+stable_sort_par = 7,157 us
+radix_sort      = 5,952 us
+radix_sort_par  = 5,843 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 86,044 us
+sort_par        = 25,259 us
+stable_sort     = 208,819 us
+stable_sort_par = 100,423 us
+radix_sort      = 65,659 us
+radix_sort_par  = 65,708 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 1,004,412 us
+sort_par        = 306,776 us
+stable_sort     = 2,606,931 us
+stable_sort_par = 1,658,169 us
+radix_sort      = 738,443 us
+radix_sort_par  = 582,263 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 0 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10 (nearly sorted)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100 (nearly sorted)
+
+sort            = 2 us
+sort_par        = 21 us
+stable_sort     = 3 us
+stable_sort_par = 3 us
+radix_sort      = 3 us
+radix_sort_par  = 2 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000 (nearly sorted)
+
+sort            = 170 us
+sort_par        = 99 us
+stable_sort     = 60 us
+stable_sort_par = 76 us
+radix_sort      = 19 us
+radix_sort_par  = 17 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000 (nearly sorted)
+
+sort            = 1,558 us
+sort_par        = 594 us
+stable_sort     = 893 us
+stable_sort_par = 593 us
+radix_sort      = 204 us
+radix_sort_par  = 196 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100,000 (nearly sorted)
+
+sort            = 21,938 us
+sort_par        = 5,742 us
+stable_sort     = 19,826 us
+stable_sort_par = 7,091 us
+radix_sort      = 5,705 us
+radix_sort_par  = 5,709 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000,000 (nearly sorted)
+
+sort            = 261,598 us
+sort_par        = 60,363 us
+stable_sort     = 232,048 us
+stable_sort_par = 108,271 us
+radix_sort      = 75,493 us
+radix_sort_par  = 75,302 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000,000 (nearly sorted)
+
+sort            = 2,861,468 us
+sort_par        = 645,979 us
+stable_sort     = 2,847,149 us
+stable_sort_par = 1,713,166 us
+radix_sort      = 905,451 us
+radix_sort_par  = 599,546 us
+
+===============================
+
+CHAR
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+CHAR
+SIZE = 100 (duplicates)
+
+sort            = 3 us
+sort_par        = 14 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 2 us
+radix_sort_par  = 2 us
+
+===============================
+
+CHAR
+SIZE = 1,000 (duplicates)
+
+sort            = 48 us
+sort_par        = 45 us
+stable_sort     = 23 us
+stable_sort_par = 39 us
+radix_sort      = 2 us
+radix_sort_par  = 2 us
+
+===============================
+
+CHAR
+SIZE = 10,000 (duplicates)
+
+sort            = 259 us
+sort_par        = 168 us
+stable_sort     = 313 us
+stable_sort_par = 178 us
+radix_sort      = 22 us
+radix_sort_par  = 24 us
+
+===============================
+
+CHAR
+SIZE = 100,000 (duplicates)
+
+sort            = 2,523 us
+sort_par        = 1,072 us
+stable_sort     = 3,417 us
+stable_sort_par = 1,467 us
+radix_sort      = 259 us
+radix_sort_par  = 231 us
+
+===============================
+
+CHAR
+SIZE = 1,000,000 (duplicates)
+
+sort            = 24,292 us
+sort_par        = 9,739 us
+stable_sort     = 37,779 us
+stable_sort_par = 16,215 us
+radix_sort      = 2,925 us
+radix_sort_par  = 2,542 us
+
+===============================
+
+CHAR
+SIZE = 10,000,000 (duplicates)
+
+sort            = 234,824 us
+sort_par        = 94,464 us
+stable_sort     = 396,022 us
+stable_sort_par = 187,459 us
+radix_sort      = 27,279 us
+radix_sort_par  = 24,910 us
+
+===============================
+
+CHAR
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,365,224 us
+sort_par        = 919,812 us
+stable_sort     = 3,995,017 us
+stable_sort_par = 1,911,075 us
+radix_sort      = 267,169 us
+radix_sort_par  = 217,936 us
+
+===============================
+
+UCHAR
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UCHAR
+SIZE = 100 (duplicates)
+
+sort            = 2 us
+sort_par        = 16 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 3 us
+radix_sort_par  = 3 us
+
+===============================
+
+UCHAR
+SIZE = 1,000 (duplicates)
+
+sort            = 47 us
+sort_par        = 46 us
+stable_sort     = 24 us
+stable_sort_par = 49 us
+radix_sort      = 2 us
+radix_sort_par  = 2 us
+
+===============================
+
+UCHAR
+SIZE = 10,000 (duplicates)
+
+sort            = 323 us
+sort_par        = 165 us
+stable_sort     = 324 us
+stable_sort_par = 207 us
+radix_sort      = 19 us
+radix_sort_par  = 22 us
+
+===============================
+
+UCHAR
+SIZE = 100,000 (duplicates)
+
+sort            = 2,484 us
+sort_par        = 1,038 us
+stable_sort     = 3,479 us
+stable_sort_par = 1,331 us
+radix_sort      = 229 us
+radix_sort_par  = 224 us
+
+===============================
+
+UCHAR
+SIZE = 1,000,000 (duplicates)
+
+sort            = 23,980 us
+sort_par        = 9,463 us
+stable_sort     = 36,354 us
+stable_sort_par = 16,078 us
+radix_sort      = 2,473 us
+radix_sort_par  = 2,356 us
+
+===============================
+
+UCHAR
+SIZE = 10,000,000 (duplicates)
+
+sort            = 234,036 us
+sort_par        = 96,223 us
+stable_sort     = 382,714 us
+stable_sort_par = 188,671 us
+radix_sort      = 25,941 us
+radix_sort_par  = 25,212 us
+
+===============================
+
+UCHAR
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,387,778 us
+sort_par        = 924,622 us
+stable_sort     = 3,995,487 us
+stable_sort_par = 1,930,194 us
+radix_sort      = 252,119 us
+radix_sort_par  = 215,062 us
+
+===============================
+
+SHORT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+SHORT
+SIZE = 100 (duplicates)
+
+sort            = 1 us
+sort_par        = 10 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+SHORT
+SIZE = 1,000 (duplicates)
+
+sort            = 25 us
+sort_par        = 36 us
+stable_sort     = 26 us
+stable_sort_par = 42 us
+radix_sort      = 6 us
+radix_sort_par  = 5 us
+
+===============================
+
+SHORT
+SIZE = 10,000 (duplicates)
+
+sort            = 302 us
+sort_par        = 148 us
+stable_sort     = 343 us
+stable_sort_par = 194 us
+radix_sort      = 53 us
+radix_sort_par  = 55 us
+
+===============================
+
+SHORT
+SIZE = 100,000 (duplicates)
+
+sort            = 2,781 us
+sort_par        = 1,227 us
+stable_sort     = 3,702 us
+stable_sort_par = 1,436 us
+radix_sort      = 564 us
+radix_sort_par  = 577 us
+
+===============================
+
+SHORT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 27,028 us
+sort_par        = 8,921 us
+stable_sort     = 38,967 us
+stable_sort_par = 17,449 us
+radix_sort      = 6,348 us
+radix_sort_par  = 6,365 us
+
+===============================
+
+SHORT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 262,957 us
+sort_par        = 96,428 us
+stable_sort     = 417,106 us
+stable_sort_par = 205,768 us
+radix_sort      = 64,644 us
+radix_sort_par  = 59,225 us
+
+===============================
+
+SHORT
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,623,758 us
+sort_par        = 973,201 us
+stable_sort     = 4,383,097 us
+stable_sort_par = 2,156,112 us
+radix_sort      = 645,559 us
+radix_sort_par  = 339,507 us
+
+===============================
+
+USHORT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+USHORT
+SIZE = 100 (duplicates)
+
+sort            = 3 us
+sort_par        = 18 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 2 us
+radix_sort_par  = 3 us
+
+===============================
+
+USHORT
+SIZE = 1,000 (duplicates)
+
+sort            = 52 us
+sort_par        = 47 us
+stable_sort     = 23 us
+stable_sort_par = 32 us
+radix_sort      = 6 us
+radix_sort_par  = 5 us
+
+===============================
+
+USHORT
+SIZE = 10,000 (duplicates)
+
+sort            = 306 us
+sort_par        = 142 us
+stable_sort     = 331 us
+stable_sort_par = 156 us
+radix_sort      = 55 us
+radix_sort_par  = 54 us
+
+===============================
+
+USHORT
+SIZE = 100,000 (duplicates)
+
+sort            = 2,887 us
+sort_par        = 1,208 us
+stable_sort     = 3,582 us
+stable_sort_par = 1,342 us
+radix_sort      = 603 us
+radix_sort_par  = 580 us
+
+===============================
+
+USHORT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 27,854 us
+sort_par        = 10,045 us
+stable_sort     = 37,674 us
+stable_sort_par = 17,484 us
+radix_sort      = 6,466 us
+radix_sort_par  = 6,429 us
+
+===============================
+
+USHORT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 272,686 us
+sort_par        = 103,123 us
+stable_sort     = 401,713 us
+stable_sort_par = 207,728 us
+radix_sort      = 64,212 us
+radix_sort_par  = 57,441 us
+
+===============================
+
+USHORT
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,693,306 us
+sort_par        = 1,014,271 us
+stable_sort     = 4,159,811 us
+stable_sort_par = 2,147,624 us
+radix_sort      = 647,899 us
+radix_sort_par  = 341,641 us
+
+===============================
+
+INT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+INT
+SIZE = 100 (duplicates)
+
+sort            = 3 us
+sort_par        = 16 us
+stable_sort     = 2 us
+stable_sort_par = 1 us
+radix_sort      = 3 us
+radix_sort_par  = 2 us
+
+===============================
+
+INT
+SIZE = 1,000 (duplicates)
+
+sort            = 50 us
+sort_par        = 46 us
+stable_sort     = 24 us
+stable_sort_par = 33 us
+radix_sort      = 13 us
+radix_sort_par  = 12 us
+
+===============================
+
+INT
+SIZE = 10,000 (duplicates)
+
+sort            = 352 us
+sort_par        = 212 us
+stable_sort     = 338 us
+stable_sort_par = 144 us
+radix_sort      = 116 us
+radix_sort_par  = 112 us
+
+===============================
+
+INT
+SIZE = 100,000 (duplicates)
+
+sort            = 2,694 us
+sort_par        = 1,214 us
+stable_sort     = 3,684 us
+stable_sort_par = 1,501 us
+radix_sort      = 1,313 us
+radix_sort_par  = 1,332 us
+
+===============================
+
+INT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 26,683 us
+sort_par        = 9,418 us
+stable_sort     = 38,555 us
+stable_sort_par = 16,630 us
+radix_sort      = 14,752 us
+radix_sort_par  = 14,729 us
+
+===============================
+
+INT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 262,129 us
+sort_par        = 93,707 us
+stable_sort     = 422,215 us
+stable_sort_par = 202,237 us
+radix_sort      = 143,656 us
+radix_sort_par  = 72,067 us
+
+===============================
+
+INT
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,618,224 us
+sort_par        = 970,765 us
+stable_sort     = 4,467,597 us
+stable_sort_par = 2,133,162 us
+radix_sort      = 1,453,719 us
+radix_sort_par  = 624,341 us
+
+===============================
+
+UINT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+UINT
+SIZE = 100 (duplicates)
+
+sort            = 1 us
+sort_par        = 17 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+UINT
+SIZE = 1,000 (duplicates)
+
+sort            = 24 us
+sort_par        = 40 us
+stable_sort     = 24 us
+stable_sort_par = 40 us
+radix_sort      = 14 us
+radix_sort_par  = 12 us
+
+===============================
+
+UINT
+SIZE = 10,000 (duplicates)
+
+sort            = 416 us
+sort_par        = 158 us
+stable_sort     = 343 us
+stable_sort_par = 149 us
+radix_sort      = 117 us
+radix_sort_par  = 117 us
+
+===============================
+
+UINT
+SIZE = 100,000 (duplicates)
+
+sort            = 2,697 us
+sort_par        = 1,260 us
+stable_sort     = 3,735 us
+stable_sort_par = 1,376 us
+radix_sort      = 1,314 us
+radix_sort_par  = 1,382 us
+
+===============================
+
+UINT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 26,676 us
+sort_par        = 9,464 us
+stable_sort     = 40,024 us
+stable_sort_par = 16,188 us
+radix_sort      = 14,801 us
+radix_sort_par  = 15,052 us
+
+===============================
+
+UINT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 261,823 us
+sort_par        = 93,885 us
+stable_sort     = 438,529 us
+stable_sort_par = 197,794 us
+radix_sort      = 143,278 us
+radix_sort_par  = 74,058 us
+
+===============================
+
+UINT
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,618,350 us
+sort_par        = 974,110 us
+stable_sort     = 4,695,109 us
+stable_sort_par = 2,095,183 us
+radix_sort      = 1,454,101 us
+radix_sort_par  = 633,864 us
+
+===============================
+
+LL
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+LL
+SIZE = 100 (duplicates)
+
+sort            = 3 us
+sort_par        = 37 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+LL
+SIZE = 1,000 (duplicates)
+
+sort            = 26 us
+sort_par        = 34 us
+stable_sort     = 26 us
+stable_sort_par = 35 us
+radix_sort      = 12 us
+radix_sort_par  = 6 us
+
+===============================
+
+LL
+SIZE = 10,000 (duplicates)
+
+sort            = 466 us
+sort_par        = 155 us
+stable_sort     = 341 us
+stable_sort_par = 188 us
+radix_sort      = 89 us
+radix_sort_par  = 84 us
+
+===============================
+
+LL
+SIZE = 100,000 (duplicates)
+
+sort            = 2,761 us
+sort_par        = 1,123 us
+stable_sort     = 3,689 us
+stable_sort_par = 1,536 us
+radix_sort      = 4,099 us
+radix_sort_par  = 4,081 us
+
+===============================
+
+LL
+SIZE = 1,000,000 (duplicates)
+
+sort            = 26,672 us
+sort_par        = 8,901 us
+stable_sort     = 43,360 us
+stable_sort_par = 17,551 us
+radix_sort      = 33,963 us
+radix_sort_par  = 34,216 us
+
+===============================
+
+LL
+SIZE = 10,000,000 (duplicates)
+
+sort            = 261,858 us
+sort_par        = 100,767 us
+stable_sort     = 479,520 us
+stable_sort_par = 219,430 us
+radix_sort      = 325,163 us
+radix_sort_par  = 114,192 us
+
+===============================
+
+LL
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,644,381 us
+sort_par        = 1,053,729 us
+stable_sort     = 5,245,792 us
+stable_sort_par = 2,435,441 us
+radix_sort      = 3,648,612 us
+radix_sort_par  = 1,614,304 us
+
+===============================
+
+ULL
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+ULL
+SIZE = 100 (duplicates)
+
+sort            = 1 us
+sort_par        = 13 us
+stable_sort     = 1 us
+stable_sort_par = 0 us
+radix_sort      = 1 us
+radix_sort_par  = 1 us
+
+===============================
+
+ULL
+SIZE = 1,000 (duplicates)
+
+sort            = 26 us
+sort_par        = 38 us
+stable_sort     = 28 us
+stable_sort_par = 47 us
+radix_sort      = 11 us
+radix_sort_par  = 5 us
+
+===============================
+
+ULL
+SIZE = 10,000 (duplicates)
+
+sort            = 464 us
+sort_par        = 139 us
+stable_sort     = 360 us
+stable_sort_par = 167 us
+radix_sort      = 97 us
+radix_sort_par  = 90 us
+
+===============================
+
+ULL
+SIZE = 100,000 (duplicates)
+
+sort            = 2,702 us
+sort_par        = 1,048 us
+stable_sort     = 3,898 us
+stable_sort_par = 1,622 us
+radix_sort      = 4,109 us
+radix_sort_par  = 4,107 us
+
+===============================
+
+ULL
+SIZE = 1,000,000 (duplicates)
+
+sort            = 26,133 us
+sort_par        = 9,298 us
+stable_sort     = 46,375 us
+stable_sort_par = 19,803 us
+radix_sort      = 34,451 us
+radix_sort_par  = 34,461 us
+
+===============================
+
+ULL
+SIZE = 10,000,000 (duplicates)
+
+sort            = 253,919 us
+sort_par        = 98,424 us
+stable_sort     = 501,066 us
+stable_sort_par = 243,102 us
+radix_sort      = 327,037 us
+radix_sort_par  = 115,363 us
+
+===============================
+
+ULL
+SIZE = 100,000,000 (duplicates)
+
+sort            = 2,568,633 us
+sort_par        = 1,037,844 us
+stable_sort     = 5,497,323 us
+stable_sort_par = 2,682,095 us
+radix_sort      = 3,665,834 us
+radix_sort_par  = 1,613,223 us
+
+===============================
+
+FLOAT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+FLOAT
+SIZE = 100 (duplicates)
+
+sort            = 5 us
+sort_par        = 26 us
+stable_sort     = 4 us
+stable_sort_par = 3 us
+radix_sort      = 9 us
+radix_sort_par  = 9 us
+
+===============================
+
+FLOAT
+SIZE = 1,000 (duplicates)
+
+sort            = 82 us
+sort_par        = 55 us
+stable_sort     = 37 us
+stable_sort_par = 61 us
+radix_sort      = 14 us
+radix_sort_par  = 13 us
+
+===============================
+
+FLOAT
+SIZE = 10,000 (duplicates)
+
+sort            = 470 us
+sort_par        = 240 us
+stable_sort     = 717 us
+stable_sort_par = 309 us
+radix_sort      = 272 us
+radix_sort_par  = 205 us
+
+===============================
+
+FLOAT
+SIZE = 100,000 (duplicates)
+
+sort            = 3,957 us
+sort_par        = 1,573 us
+stable_sort     = 5,262 us
+stable_sort_par = 1,844 us
+radix_sort      = 1,605 us
+radix_sort_par  = 1,591 us
+
+===============================
+
+FLOAT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 36,527 us
+sort_par        = 15,279 us
+stable_sort     = 57,217 us
+stable_sort_par = 23,339 us
+radix_sort      = 17,519 us
+radix_sort_par  = 17,369 us
+
+===============================
+
+FLOAT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 373,262 us
+sort_par        = 140,637 us
+stable_sort     = 624,977 us
+stable_sort_par = 279,725 us
+radix_sort      = 170,346 us
+radix_sort_par  = 100,871 us
+
+===============================
+
+FLOAT
+SIZE = 100,000,000 (duplicates)
+
+sort            = 3,706,859 us
+sort_par        = 1,563,598 us
+stable_sort     = 6,713,007 us
+stable_sort_par = 2,955,286 us
+radix_sort      = 1,739,644 us
+radix_sort_par  = 814,594 us
+
+===============================
+
+DOUBLE
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+DOUBLE
+SIZE = 100 (duplicates)
+
+sort            = 5 us
+sort_par        = 26 us
+stable_sort     = 4 us
+stable_sort_par = 2 us
+radix_sort      = 4 us
+radix_sort_par  = 4 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000 (duplicates)
+
+sort            = 43 us
+sort_par        = 54 us
+stable_sort     = 77 us
+stable_sort_par = 52 us
+radix_sort      = 18 us
+radix_sort_par  = 9 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000 (duplicates)
+
+sort            = 409 us
+sort_par        = 220 us
+stable_sort     = 494 us
+stable_sort_par = 270 us
+radix_sort      = 125 us
+radix_sort_par  = 142 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000 (duplicates)
+
+sort            = 3,858 us
+sort_par        = 1,735 us
+stable_sort     = 5,424 us
+stable_sort_par = 1,942 us
+radix_sort      = 4,477 us
+radix_sort_par  = 4,347 us
+
+===============================
+
+DOUBLE
+SIZE = 1,000,000 (duplicates)
+
+sort            = 38,051 us
+sort_par        = 14,795 us
+stable_sort     = 61,534 us
+stable_sort_par = 23,970 us
+radix_sort      = 38,496 us
+radix_sort_par  = 38,510 us
+
+===============================
+
+DOUBLE
+SIZE = 10,000,000 (duplicates)
+
+sort            = 382,879 us
+sort_par        = 145,808 us
+stable_sort     = 671,412 us
+stable_sort_par = 299,161 us
+radix_sort      = 365,153 us
+radix_sort_par  = 155,632 us
+
+===============================
+
+DOUBLE
+SIZE = 100,000,000 (duplicates)
+
+sort            = 3,830,987 us
+sort_par        = 1,578,657 us
+stable_sort     = 7,249,018 us
+stable_sort_par = 3,234,045 us
+radix_sort      = 4,065,540 us
+radix_sort_par  = 1,973,459 us
+
+===============================
+
+STRING
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+STRING
+SIZE = 100 (duplicates)
+
+sort            = 10 us
+sort_par        = 24 us
+stable_sort     = 10 us
+stable_sort_par = 7 us
+radix_sort      = 8 us
+radix_sort_par  = 3 us
+
+===============================
+
+STRING
+SIZE = 1,000 (duplicates)
+
+sort            = 141 us
+sort_par        = 85 us
+stable_sort     = 164 us
+stable_sort_par = 110 us
+radix_sort      = 54 us
+radix_sort_par  = 45 us
+
+===============================
+
+STRING
+SIZE = 10,000 (duplicates)
+
+sort            = 1,150 us
+sort_par        = 526 us
+stable_sort     = 2,006 us
+stable_sort_par = 802 us
+radix_sort      = 747 us
+radix_sort_par  = 739 us
+
+===============================
+
+STRING
+SIZE = 100,000 (duplicates)
+
+sort            = 11,653 us
+sort_par        = 4,311 us
+stable_sort     = 25,370 us
+stable_sort_par = 7,544 us
+radix_sort      = 8,781 us
+radix_sort_par  = 10,536 us
+
+===============================
+
+STRING
+SIZE = 1,000,000 (duplicates)
+
+sort            = 172,338 us
+sort_par        = 74,679 us
+stable_sort     = 352,169 us
+stable_sort_par = 104,351 us
+radix_sort      = 82,190 us
+radix_sort_par  = 81,994 us
+
+===============================
+
+STRING
+SIZE = 10,000,000 (duplicates)
+
+sort            = 2,059,158 us
+sort_par        = 766,986 us
+stable_sort     = 4,258,717 us
+stable_sort_par = 1,224,661 us
+radix_sort      = 1,208,793 us
+radix_sort_par  = 658,180 us
+
+===============================
+
+STRING
+SIZE = 50,000,000 (duplicates)
+
+sort            = 10,357,628 us
+sort_par        = 3,788,512 us
+stable_sort     = 23,408,356 us
+stable_sort_par = 6,640,184 us
+radix_sort      = 6,568,075 us
+radix_sort_par  = 3,343,455 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100 (duplicates)
+
+sort            = 4 us
+sort_par        = 19 us
+stable_sort     = 5 us
+stable_sort_par = 5 us
+radix_sort      = 9 us
+radix_sort_par  = 9 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000 (duplicates)
+
+sort            = 76 us
+sort_par        = 65 us
+stable_sort     = 69 us
+stable_sort_par = 101 us
+radix_sort      = 24 us
+radix_sort_par  = 22 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000 (duplicates)
+
+sort            = 721 us
+sort_par        = 531 us
+stable_sort     = 924 us
+stable_sort_par = 629 us
+radix_sort      = 249 us
+radix_sort_par  = 242 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 100,000 (duplicates)
+
+sort            = 7,226 us
+sort_par        = 4,103 us
+stable_sort     = 19,591 us
+stable_sort_par = 7,482 us
+radix_sort      = 6,912 us
+radix_sort_par  = 6,887 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 66,643 us
+sort_par        = 35,771 us
+stable_sort     = 230,488 us
+stable_sort_par = 128,083 us
+radix_sort      = 71,870 us
+radix_sort_par  = 72,003 us
+
+===============================
+
+COMPLEX_INT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 691,019 us
+sort_par        = 439,422 us
+stable_sort     = 2,840,031 us
+stable_sort_par = 1,914,999 us
+radix_sort      = 775,367 us
+radix_sort_par  = 591,075 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100 (duplicates)
+
+sort            = 11 us
+sort_par        = 24 us
+stable_sort     = 10 us
+stable_sort_par = 9 us
+radix_sort      = 20 us
+radix_sort_par  = 20 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000 (duplicates)
+
+sort            = 147 us
+sort_par        = 84 us
+stable_sort     = 71 us
+stable_sort_par = 103 us
+radix_sort      = 27 us
+radix_sort_par  = 15 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000 (duplicates)
+
+sort            = 696 us
+sort_par        = 415 us
+stable_sort     = 947 us
+stable_sort_par = 630 us
+radix_sort      = 273 us
+radix_sort_par  = 257 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 100,000 (duplicates)
+
+sort            = 6,511 us
+sort_par        = 3,013 us
+stable_sort     = 20,371 us
+stable_sort_par = 7,553 us
+radix_sort      = 10,095 us
+radix_sort_par  = 10,087 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 1,000,000 (duplicates)
+
+sort            = 69,371 us
+sort_par        = 36,473 us
+stable_sort     = 232,908 us
+stable_sort_par = 125,743 us
+radix_sort      = 96,425 us
+radix_sort_par  = 96,135 us
+
+===============================
+
+COMPLEX_LL
+SIZE = 10,000,000 (duplicates)
+
+sort            = 749,067 us
+sort_par        = 494,934 us
+stable_sort     = 2,861,087 us
+stable_sort_par = 1,910,858 us
+radix_sort      = 1,012,282 us
+radix_sort_par  = 693,232 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100 (duplicates)
+
+sort            = 6 us
+sort_par        = 20 us
+stable_sort     = 10 us
+stable_sort_par = 11 us
+radix_sort      = 24 us
+radix_sort_par  = 24 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000 (duplicates)
+
+sort            = 114 us
+sort_par        = 65 us
+stable_sort     = 79 us
+stable_sort_par = 117 us
+radix_sort      = 24 us
+radix_sort_par  = 22 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000 (duplicates)
+
+sort            = 797 us
+sort_par        = 416 us
+stable_sort     = 1,021 us
+stable_sort_par = 608 us
+radix_sort      = 328 us
+radix_sort_par  = 274 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 100,000 (duplicates)
+
+sort            = 7,969 us
+sort_par        = 3,486 us
+stable_sort     = 21,485 us
+stable_sort_par = 7,969 us
+radix_sort      = 6,956 us
+radix_sort_par  = 6,974 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 1,000,000 (duplicates)
+
+sort            = 85,864 us
+sort_par        = 44,124 us
+stable_sort     = 236,883 us
+stable_sort_par = 130,681 us
+radix_sort      = 72,443 us
+radix_sort_par  = 72,715 us
+
+===============================
+
+COMPLEX_FLOAT
+SIZE = 10,000,000 (duplicates)
+
+sort            = 817,889 us
+sort_par        = 471,139 us
+stable_sort     = 2,912,467 us
+stable_sort_par = 1,956,040 us
+radix_sort      = 771,958 us
+radix_sort_par  = 582,348 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100 (duplicates)
+
+sort            = 5 us
+sort_par        = 18 us
+stable_sort     = 5 us
+stable_sort_par = 5 us
+radix_sort      = 11 us
+radix_sort_par  = 11 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000 (duplicates)
+
+sort            = 90 us
+sort_par        = 81 us
+stable_sort     = 81 us
+stable_sort_par = 119 us
+radix_sort      = 26 us
+radix_sort_par  = 16 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000 (duplicates)
+
+sort            = 858 us
+sort_par        = 638 us
+stable_sort     = 1,030 us
+stable_sort_par = 598 us
+radix_sort      = 278 us
+radix_sort_par  = 261 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 100,000 (duplicates)
+
+sort            = 7,840 us
+sort_par        = 3,668 us
+stable_sort     = 20,596 us
+stable_sort_par = 7,792 us
+radix_sort      = 10,238 us
+radix_sort_par  = 10,245 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 1,000,000 (duplicates)
+
+sort            = 80,151 us
+sort_par        = 40,627 us
+stable_sort     = 236,930 us
+stable_sort_par = 128,869 us
+radix_sort      = 96,971 us
+radix_sort_par  = 96,914 us
+
+===============================
+
+COMPLEX_DOUBLE
+SIZE = 10,000,000 (duplicates)
+
+sort            = 798,478 us
+sort_par        = 472,113 us
+stable_sort     = 2,923,895 us
+stable_sort_par = 1,953,914 us
+radix_sort      = 1,003,521 us
+radix_sort_par  = 687,179 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 0 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10 (duplicates)
+
+sort            = 0 us
+sort_par        = 0 us
+stable_sort     = 0 us
+stable_sort_par = 0 us
+radix_sort      = 0 us
+radix_sort_par  = 0 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100 (duplicates)
+
+sort            = 12 us
+sort_par        = 22 us
+stable_sort     = 11 us
+stable_sort_par = 8 us
+radix_sort      = 6 us
+radix_sort_par  = 3 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000 (duplicates)
+
+sort            = 175 us
+sort_par        = 133 us
+stable_sort     = 173 us
+stable_sort_par = 166 us
+radix_sort      = 53 us
+radix_sort_par  = 43 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000 (duplicates)
+
+sort            = 1,457 us
+sort_par        = 671 us
+stable_sort     = 2,147 us
+stable_sort_par = 1,102 us
+radix_sort      = 786 us
+radix_sort_par  = 779 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 100,000 (duplicates)
+
+sort            = 15,724 us
+sort_par        = 6,615 us
+stable_sort     = 37,738 us
+stable_sort_par = 11,371 us
+radix_sort      = 13,891 us
+radix_sort_par  = 13,902 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 1,000,000 (duplicates)
+
+sort            = 226,363 us
+sort_par        = 105,468 us
+stable_sort     = 435,046 us
+stable_sort_par = 178,557 us
+radix_sort      = 182,693 us
+radix_sort_par  = 182,224 us
+
+===============================
+
+COMPLEX_STR
+SIZE = 10,000,000 (duplicates)
+
+sort            = 2,647,504 us
+sort_par        = 1,054,611 us
+stable_sort     = 5,318,817 us
+stable_sort_par = 2,497,018 us
+radix_sort      = 4,756,700 us
+radix_sort_par  = 1,234,479 us
+
+===============================
+
+===============================
+-------BENCHMARK STOPPED-------
+===============================
+
