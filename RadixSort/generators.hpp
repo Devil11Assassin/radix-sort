@@ -1,6 +1,7 @@
 #pragma once
 #include <bit>
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <random>
@@ -10,8 +11,8 @@
 
 struct Employee
 {
-	int32_t age = 0;
-	long long id = 0L;
+	std::int32_t age = 0;
+	std::int64_t id = 0L;
 	float salary_f = 0.f;
 	double salary = 0.0;
 	std::string name = "";
@@ -36,7 +37,7 @@ struct Employee
 
 namespace generators
 {
-	enum Shape 
+	enum Shape
 	{
 		RANDOMIZED,
 		SORTED,
@@ -55,7 +56,7 @@ namespace generators
 
 		inline constexpr int SEED = 69;
 
-		template <size_t S> struct fp2i_impl;
+		template <std::size_t S> struct fp2i_impl;
 		template <> struct fp2i_impl<2> { using type = std::uint16_t; static constexpr type mask = 0x7C00; };
 		template <> struct fp2i_impl<4> { using type = std::uint32_t; static constexpr type mask = 0x7F800000; };
 		template <> struct fp2i_impl<8> { using type = std::uint64_t; static constexpr type mask = 0x7FF0000000000000; };
@@ -63,7 +64,7 @@ namespace generators
 		template <typename T>
 		using fp2i = fp2i_impl<sizeof(T)>;
 
-		template <size_t S, typename T> struct gen_t_impl;
+		template <std::size_t S, typename T> struct gen_t_impl;
 		template <typename T> struct gen_t_impl<1, T> { using type = std::int32_t; };
 		template <typename T> struct gen_t_impl<2, T> { using type = std::int32_t; };
 		template <typename T> struct gen_t_impl<4, T> { using type = T; };
@@ -86,7 +87,7 @@ namespace generators
 				case Shape::RANDOMIZED:
 				{
 					while (n--)
-						v.emplace_back(dist(gen));
+						v.emplace_back(static_cast<T>(dist(gen)));
 
 					break;
 				}
@@ -97,7 +98,7 @@ namespace generators
 					unique.reserve(DUPLICATES_COUNT);
 
 					for (std::size_t i = 0; i < DUPLICATES_COUNT; i++)
-						unique.emplace_back(dist(gen));
+						unique.emplace_back(static_cast<T>(dist(gen)));
 
 					std::uniform_int_distribution<std::size_t> indexDist(0, DUPLICATES_COUNT - 1);
 					while (n--)
@@ -380,7 +381,7 @@ namespace generators
 			std::vector<decltype(Employee::salary)> salaries = generate_impl<decltype(Employee::salary)>(n, shape);
 			std::vector<decltype(Employee::name)> names = generate_impl<decltype(Employee::name)>(n, shape);
 
-			for (size_t i = 0; i < n; i++)
+			for (std::size_t i = 0; i < n; i++)
 				v.emplace_back(ages[i], ids[i], salaries_f[i], salaries[i], names[i]);
 
 			return v;

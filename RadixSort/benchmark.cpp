@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <concepts>
-#include <cstddef>
 #include <execution>
 #include <filesystem>
 #include <format>

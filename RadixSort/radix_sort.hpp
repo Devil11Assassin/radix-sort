@@ -91,7 +91,7 @@ namespace radix_sort
 				{ std::invoke(proj, t) } -> std::same_as<invoke_result<T, Proj>>;
 			} && supported<sort_key<T, Proj>>;
 
-			template <size_t S> struct t2u_impl;
+			template <std::size_t S> struct t2u_impl;
 			template <> struct t2u_impl<1> { using type = std::uint8_t; };
 			template <> struct t2u_impl<2> { using type = std::uint16_t; };
 			template <> struct t2u_impl<4> { using type = std::uint32_t; };
@@ -314,7 +314,7 @@ namespace radix_sort
 				{
 					return MAX_LEN;
 				}
-				if constexpr (std::signed_integral<T>)
+				else if constexpr (std::signed_integral<T>)
 				{
 					T maxNum = std::numeric_limits<T>::min();
 
@@ -394,8 +394,8 @@ namespace radix_sort
 			template <typename T, typename U>
 			inline void getUnsignedVectorThread(std::vector<T>& v, std::vector<U>& vu, bool reverse, Index l, Index r)
 			{
-				constexpr Index SIGN_SHIFT = (sizeof(T) * 8) - 1;
-				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
+				constexpr U SIGN_SHIFT = (sizeof(T) * 8) - 1;
+				constexpr U SIGN_MASK = static_cast<U>(1) << SIGN_SHIFT;
 
 				if (!reverse)
 				{
@@ -588,7 +588,7 @@ namespace radix_sort
 			template <typename T>
 			inline void sortMsdThread(std::vector<T>& v, std::vector<T>& tmp,
 				std::vector<Region>& regions, std::mutex& regionsLock,
-				Index& runningCounter, Index threadIndex)
+				Index& runningCounter)
 			{
 				std::unique_lock<std::mutex> lkRegions(regionsLock, std::defer_lock);
 
@@ -667,8 +667,8 @@ namespace radix_sort
 					
 					for (Index i = 0; i < numOfThreads; i++)
 					{
-						threads.emplace_back([&v, &tmp, &regions, &regionsLock, &runningCounter, i]() {
-							sortMsdThread(v, tmp, regions, regionsLock, runningCounter, i);
+						threads.emplace_back([&v, &tmp, &regions, &regionsLock, &runningCounter]() {
+							sortMsdThread(v, tmp, regions, regionsLock, runningCounter);
 						});
 					}
 
@@ -892,8 +892,8 @@ namespace radix_sort
 			template <typename T, typename Proj, typename U>
 			inline void getUnsignedVectorThread(std::vector<T>& v, Proj proj, std::vector<U>& vu, Index l, Index r)
 			{
-				constexpr Index SIGN_SHIFT = (sizeof(U) * 8) - 1;
-				constexpr U SIGN_MASK = 1LL << SIGN_SHIFT;
+				constexpr U SIGN_SHIFT = (sizeof(U) * 8) - 1;
+				constexpr U SIGN_MASK = static_cast<U>(1) << SIGN_SHIFT;
 
 				for (Index i = l; i < r; i++)
 				{
@@ -1324,7 +1324,7 @@ namespace radix_sort
 			template <typename T, typename Proj>
 			inline void sortMsdThread(std::vector<T>& v, Proj proj, std::vector<T>& tmp,
 				std::vector<Region>& regions, std::mutex& regionsLock,
-				Index& runningCounter, Index threadIndex)
+				Index& runningCounter)
 			{
 				std::unique_lock<std::mutex> lkRegions(regionsLock, std::defer_lock);
 
@@ -1379,7 +1379,7 @@ namespace radix_sort
 			inline void sortMsdThread(std::vector<T>& v, std::vector<Key>& k,
 				std::vector<T>& tmp, std::vector<Key>& tmpKey,
 				std::vector<Region>& regions, std::mutex& regionsLock,
-				Index& runningCounter, Index threadIndex)
+				Index& runningCounter)
 			{
 				std::unique_lock<std::mutex> lkRegions(regionsLock, std::defer_lock);
 
@@ -1460,8 +1460,8 @@ namespace radix_sort
 					
 					for (Index i = 0; i < numOfThreads; i++)
 					{
-						threads.emplace_back([&v, &proj, &tmp, &regions, &regionsLock, &runningCounter, i]() {
-							sortMsdThread(v, proj, tmp, regions, regionsLock, runningCounter, i);
+						threads.emplace_back([&v, &proj, &tmp, &regions, &regionsLock, &runningCounter]() {
+							sortMsdThread(v, proj, tmp, regions, regionsLock, runningCounter);
 						});
 					}
 
@@ -1499,8 +1499,8 @@ namespace radix_sort
 
 					for (Index i = 0; i < numOfThreads; i++)
 					{
-						threads.emplace_back([&v, &k, &tmp, &tmpKey, &regions, &regionsLock, &runningCounter, i]() {
-							sortMsdThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter, i);
+						threads.emplace_back([&v, &k, &tmp, &tmpKey, &regions, &regionsLock, &runningCounter]() {
+							sortMsdThread(v, k, tmp, tmpKey, regions, regionsLock, runningCounter);
 						});
 					}
 

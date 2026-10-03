@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <vector>
 
 namespace benchmark
@@ -15,9 +16,9 @@ namespace benchmark
 
 	struct Sizes
 	{
-		std::vector<size_t> RUN_SIZE = {};
-		std::vector<size_t> RUN_SIZE_STR = {};
-		std::vector<size_t> RUN_SIZE_CLX = {};
+		std::vector<std::size_t> RUN_SIZE = {};
+		std::vector<std::size_t> RUN_SIZE_STR = {};
+		std::vector<std::size_t> RUN_SIZE_CLX = {};
 	};
 
 	struct RunParams
@@ -35,9 +36,9 @@ namespace benchmark
 		const int NEARLY_SORTED  = 0;
 		const int DUPLICATES     = 0;
 
-		std::vector<size_t> RUN_SIZE     = { static_cast<size_t>(1e8) };
-		std::vector<size_t> RUN_SIZE_STR = { static_cast<size_t>(5e7) };
-		std::vector<size_t> RUN_SIZE_CLX = { static_cast<size_t>(1e7) };
+		std::vector<std::size_t> RUN_SIZE     = { static_cast<std::size_t>(1e8) };
+		std::vector<std::size_t> RUN_SIZE_STR = { static_cast<std::size_t>(5e7) };
+		std::vector<std::size_t> RUN_SIZE_CLX = { static_cast<std::size_t>(1e7) };
 
 		const int CHAR    = 0;
 		const int UCHAR   = 0;
