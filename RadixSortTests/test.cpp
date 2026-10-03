@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <compare>
 #include <concepts>
 #include <cstddef>
@@ -39,6 +40,7 @@ namespace
 
     constexpr bool kLoggingEnabled = true;
     const std::locale kLocale = std::locale("en_US.UTF-8");
+    constexpr std::size_t kMaxErrorPrints = 10;
 
     constexpr std::array<std::string_view, 5> kShapeToStr = {
         "randomized", "sorted", "reverse sorted",
@@ -49,6 +51,14 @@ namespace
     { 
         return std::strong_order(a, b) == 0; 
     };
+
+    template <std::size_t S> struct t2u_impl;
+    template <> struct t2u_impl<2> { using type = std::uint16_t; };
+    template <> struct t2u_impl<4> { using type = std::uint32_t; };
+    template <> struct t2u_impl<8> { using type = std::uint64_t; };
+
+    template <typename T>
+    using t2u = t2u_impl<sizeof(T)>::type;
 }
 
 // =========================
@@ -201,12 +211,50 @@ namespace
     }
 
     template <typename T>
-    void checkEquality(std::vector<T>& vRad, std::vector<T>& vStd)
+    void printDiff(const std::vector<T>& vRad, const std::vector<T>& vStd)
     {
         if constexpr (std::floating_point<T>)
-            CHECK(std::ranges::equal(vRad, vStd, kFpEqual));
+        {
+            std::cout << "index: (radix value, expected value) hex(radix value, expected value)\n";
+
+            using U = t2u<T>;
+            for (std::size_t i = 0, size = vRad.size(); i < size && i < kMaxErrorPrints; i++)
+            {
+                if (!kFpEqual(vRad[i], vStd[i]))
+                    std::cout << std::format("{}:\t({}, {})\thex({}, {})\n", i, vRad[i], vStd[i],
+                        std::bit_cast<U>(vRad[i]), std::bit_cast<U>(vStd[i]));
+            }
+        }
+        else if constexpr (!std::same_as<T, Employee>)
+        {
+            std::cout << "\nindex: (radix value, expected value)\n";
+
+            for (std::size_t i = 0, size = vRad.size(); i < size && i < kMaxErrorPrints; i++)
+            {
+                if (vRad[i] != vStd[i])
+                    std::cout << std::format("{}:\t({}, {})\n", i, vRad[i], vStd[i]);
+            }
+        }
+
+        std::cout << '\n';
+    }
+
+    template <typename T>
+    void checkEquality(const std::vector<T>& vRad, const std::vector<T>& vStd)
+    {
+        bool isEqual = false;
+        if constexpr (std::floating_point<T>)
+            isEqual = std::ranges::equal(vRad, vStd, kFpEqual);
         else
-            CHECK(std::ranges::equal(vRad, vStd));
+            isEqual = std::ranges::equal(vRad, vStd);
+
+        CHECK(isEqual);
+
+        if constexpr (kLoggingEnabled)
+        {
+            if (!isEqual)
+                printDiff(vRad, vStd);
+        }
     }
 
     template <typename T, typename U = T>
@@ -216,8 +264,10 @@ namespace
         auto [vStd, vRad] = ::generate<T>(n, shape);
         
         if constexpr (kLoggingEnabled)
+        {
             std::cout << std::format(kLocale, "{} ({}, {}, {:L})\n",
                 name, (testParallel) ? "par" : "seq", shape2str(shape), n);
+        }
 
         sortStd<T, U>(vStd);
         sortRad<T, U>(vRad, testParallel);
