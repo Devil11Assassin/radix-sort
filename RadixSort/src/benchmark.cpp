@@ -1,6 +1,7 @@
 #include "benchmark.hpp"
 
 #include <chrono>
+#include <compare>
 #include <concepts>
 #include <execution>
 #include <filesystem>

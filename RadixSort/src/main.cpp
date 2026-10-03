@@ -2,8 +2,8 @@
 
 int main()
 {
-	//benchmark::testing
-	benchmark::benchmark
+	benchmark::testing
+	//benchmark::benchmark
 	({
 		.SORT            = 1,
 		.SORT_PAR        = 1,
