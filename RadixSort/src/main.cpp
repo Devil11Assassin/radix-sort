@@ -2,7 +2,6 @@
 
 int main()
 {
-	//benchmark::testing
 	benchmark::benchmark
 	({
 		.SORT            = 1,

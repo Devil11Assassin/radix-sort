@@ -1,5 +1,6 @@
 #pragma once
 #include <bit>
+#include <compare>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
