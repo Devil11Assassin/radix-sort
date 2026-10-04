@@ -61,5 +61,4 @@ namespace benchmark
 	};
 
 	void benchmark(RunParams params);
-	void testing(RunParams param);
 }
