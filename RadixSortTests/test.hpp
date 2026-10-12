@@ -3,15 +3,21 @@
 
 namespace test_params
 {
-    inline bool testParallel = true;
+    enum class ParConfig
+    {
+        SEQ,
+        PAR,
+        BOTH
+    };
+    inline ParConfig parConfig = ParConfig::PAR;
 
     enum class SizeConfig
     {
-        SMALL_TESTS,
-        LARGE_TESTS,
-        ALL_TESTS
+        SMALL,
+        LARGE,
+        BOTH
     };
-    inline SizeConfig sizeConfig = SizeConfig::SMALL_TESTS;
+    inline SizeConfig sizeConfig = SizeConfig::SMALL;
 
     inline bool testAllShapes = false;
     inline generators::Shape initShape = generators::Shape::RANDOMIZED;

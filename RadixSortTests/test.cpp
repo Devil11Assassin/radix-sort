@@ -63,67 +63,86 @@ namespace
         return kShapeToStr[static_cast<std::size_t>(shape)];
     }
 
-    auto getGenShape()
+    bool getParallelism()
+    {
+        switch (parConfig)
+        {
+            case ParConfig::SEQ:
+            {
+                return false;
+            }
+            case ParConfig::PAR:
+            {
+                return true;
+            }
+            default:
+            {
+                return GENERATE(false, true);
+            }
+        }
+    }
+
+    generators::Shape getGenShape()
     {
         using Shape = generators::Shape;
         
-        Shape shape = initShape;
         if (testAllShapes)
         {
-            shape = GENERATE(Shape::RANDOMIZED, Shape::SORTED, Shape::REVERSE_SORTED,
+            return GENERATE(Shape::RANDOMIZED, Shape::SORTED, Shape::REVERSE_SORTED,
                 Shape::NEARLY_SORTED, Shape::DUPLICATES);
         }
 
-        return shape;
+        return initShape;
     }
 
     template <typename T>
-    auto getGenSize()
+    std::size_t getGenSize()
     {
-        std::size_t n = 0;
-        if (sizeConfig == SizeConfig::SMALL_TESTS)
+        switch (sizeConfig)
         {
-            n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
-                100'000, 1'000'000);
-        }
-        else if (sizeConfig == SizeConfig::LARGE_TESTS)
-        {
-            if constexpr (std::same_as<T, Employee>)
-                n = GENERATE(static_cast<std::size_t>(10'000'000));
-            else if constexpr (std::same_as<T, std::string>)
-                n = GENERATE(static_cast<std::size_t>(10'000'000), 50'000'000);
-            else
-                n = GENERATE(static_cast<std::size_t>(10'000'000), 100'000'000);
-        }
-        else
-        {
-            if constexpr (std::same_as<T, Employee>)
+            case SizeConfig::SMALL:
             {
-                n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
-                    100'000, 1'000'000, 10'000'000);
+                return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                    100'000, 1'000'000);
             }
-            else if constexpr (std::same_as<T, std::string>)
+            case SizeConfig::LARGE:
             {
-                n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
-                    100'000, 1'000'000, 10'000'000, 50'000'000);
+                if constexpr (std::same_as<T, Employee>)
+                    return GENERATE(static_cast<std::size_t>(10'000'000));
+                else if constexpr (std::same_as<T, std::string>)
+                    return GENERATE(static_cast<std::size_t>(10'000'000), 50'000'000);
+                else
+                    return GENERATE(static_cast<std::size_t>(10'000'000), 100'000'000);
             }
-            else
+            default:
             {
-                n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000, 
-                    100'000, 1'000'000, 10'000'000, 100'000'000);
+                if constexpr (std::same_as<T, Employee>)
+                {
+                    return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                        100'000, 1'000'000, 10'000'000);
+                }
+                else if constexpr (std::same_as<T, std::string>)
+                {
+                    return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                        100'000, 1'000'000, 10'000'000, 50'000'000);
+                }
+                else
+                {
+                    return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                        100'000, 1'000'000, 10'000'000, 100'000'000);
+                }
             }
         }
-
-        return n;
     }
 
     template <typename T>
     auto getGenParams()
     {
+        bool isParallel = getParallelism();
         generators::Shape shape = getGenShape();
         std::size_t n = getGenSize<T>();
 
-        return std::tuple{ n, shape };
+        return std::tuple{ isParallel, n, shape };
     }
 
     template <typename T>
@@ -195,10 +214,10 @@ namespace
     }
 
     template <typename T, typename U = T>
-    void sortRad(std::vector<T>& v, bool testParallel)
+    void sortRad(std::vector<T>& v, bool isParallel)
     {
         constexpr auto kProj = getRadProj<T, U>();
-        radix_sort::sort(v, kProj, testParallel);
+        radix_sort::sort(v, kProj, isParallel);
     }
 
     template <typename T>
@@ -251,17 +270,17 @@ namespace
     template <typename T, typename U = T>
     void test(std::string_view name)
     {
-        auto [n, shape] = getGenParams<T>();
+        auto [isParallel, n, shape] = getGenParams<T>();
         auto [vStd, vRad] = ::generate<T>(n, shape);
         
         if (loggingEnabled)
         {
             std::cout << std::format(kLocale, "{} ({}, {}, {:L})\n",
-                name, (testParallel) ? "par" : "seq", shape2str(shape), n);
+                name, (isParallel) ? "par" : "seq", shape2str(shape), n);
         }
 
         sortStd<T, U>(vStd);
-        sortRad<T, U>(vRad, testParallel);
+        sortRad<T, U>(vRad, isParallel);
         
         checkEquality(vRad, vStd);
     }
