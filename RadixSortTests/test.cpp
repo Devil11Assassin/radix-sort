@@ -15,7 +15,6 @@
 #include <utility>
 #include <vector>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
 #include "generators.hpp"
@@ -38,7 +37,7 @@ namespace
     };
     constexpr SizeConfig kSizeConfig = SizeConfig::ALL_TESTS;
 
-    constexpr bool kLoggingEnabled = true;
+    constexpr bool kLoggingEnabled = false;
     const std::locale kLocale = std::locale("en_US.UTF-8");
     constexpr std::size_t kMaxErrorPrints = 10;
 

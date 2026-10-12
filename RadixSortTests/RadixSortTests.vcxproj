@@ -130,6 +130,7 @@
     <ClInclude Include="doctest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
