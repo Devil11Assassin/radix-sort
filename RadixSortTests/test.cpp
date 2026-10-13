@@ -35,7 +35,7 @@ namespace
 
     constexpr std::array<std::string_view, 5> kShapeToStr = {
         "randomized", "sorted", "reverse sorted",
-        "nearly sorted", "duplicates"
+        "nearly  sorted", "duplicates"
     };
 
     constexpr auto kFpEqual = [](const auto a, const auto b) 
@@ -279,7 +279,7 @@ namespace
         
         if (loggingEnabled)
         {
-            std::cout << std::format(kLocale, "{} ({}, {}, {:L})\n",
+            std::cout << std::format(kLocale, "{:<3} | {} | {:^14} | {:>11L}\n",
                 name, (isParallel) ? "par" : "seq", shape2str(shape), n);
         }
 
@@ -296,84 +296,84 @@ namespace
 
 TEST_SUITE("integrals_signed") 
 {
-    TEST_CASE("int8")
+    TEST_CASE("i8")
     {
-        test<std::int8_t>("int8");
+        test<std::int8_t>("i8");
     }
-    TEST_CASE("int16")
+    TEST_CASE("i16")
     {
-        test<std::int16_t>("int16");
+        test<std::int16_t>("i16");
     }
-    TEST_CASE("int32")
+    TEST_CASE("i32")
     {
-        test<std::int32_t>("int32");
+        test<std::int32_t>("i32");
     }
-    TEST_CASE("int64")
+    TEST_CASE("i64")
     {
-        test<std::int64_t>("int64");
+        test<std::int64_t>("i64");
     }
 }
 
 TEST_SUITE("integrals_unsigned") 
 {
-    TEST_CASE("uint8")
+    TEST_CASE("u8")
     {
-        test<std::uint8_t>("uint8");
+        test<std::uint8_t>("u8");
     }
-    TEST_CASE("uint16")
+    TEST_CASE("u16")
     {
-        test<std::uint16_t>("uint16");
+        test<std::uint16_t>("u16");
     }
-    TEST_CASE("uint32")
+    TEST_CASE("u32")
     {
-        test<std::uint32_t>("uint32");
+        test<std::uint32_t>("u32");
     }
-    TEST_CASE("uint64")
+    TEST_CASE("u64")
     {
-        test<std::uint64_t>("uint64");
+        test<std::uint64_t>("u64");
     }
 }
 
 TEST_SUITE("floating_point") 
 {
-    TEST_CASE("float")
+    TEST_CASE("f32")
     {
-        test<float>("float");
+        test<float>("f32");
     }
-    TEST_CASE("double")
+    TEST_CASE("f64")
     {
-        test<double>("double");
+        test<double>("f64");
     }
 }
 
 TEST_SUITE("strings")
 {
-    TEST_CASE("string")
+    TEST_CASE("str")
     {
-        test<std::string>("string");
+        test<std::string>("str");
     }
 }
 
 TEST_SUITE("complex")
 {
-    TEST_CASE("employee::int32")
+    TEST_CASE("emp::i32")
     {
-        test<Employee, decltype(Employee::age)>("employee::int32");
+        test<Employee, decltype(Employee::age)>("emp::i32");
     }
-    TEST_CASE("employee::int64")
+    TEST_CASE("emp::i64")
     {
-        test<Employee, decltype(Employee::id)>("employee::int64");
+        test<Employee, decltype(Employee::id)>("emp::i64");
     }
-    TEST_CASE("employee::float")
+    TEST_CASE("emp::f32")
     {
-        test<Employee, decltype(Employee::salary_f)>("employee::float");
+        test<Employee, decltype(Employee::salary_f)>("emp::f32");
     }
-    TEST_CASE("employee::double")
+    TEST_CASE("emp::f64")
     {
-        test<Employee, decltype(Employee::salary)>("employee::double");
+        test<Employee, decltype(Employee::salary)>("emp::f64");
     }
-    TEST_CASE("employee::string")
+    TEST_CASE("emp::str")
     {
-        test<Employee, decltype(Employee::name)>("employee::string");
+        test<Employee, decltype(Employee::name)>("emp::str");
     }
 }
