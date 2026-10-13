@@ -1,3 +1,5 @@
+#include "test.hpp"
+
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -15,7 +17,6 @@
 #include <utility>
 #include <vector>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
 #include "generators.hpp"
@@ -27,24 +28,14 @@
 
 namespace
 {
-    constexpr bool kTestAllShapes = true;
-    constexpr generators::Shape kShape = generators::Shape::RANDOMIZED;
+    using namespace test_params;
 
-    enum class SizeConfig
-    {
-        SMALL_TESTS,
-        LARGE_TESTS,
-        ALL_TESTS
-    };
-    constexpr SizeConfig kSizeConfig = SizeConfig::ALL_TESTS;
-
-    constexpr bool kLoggingEnabled = true;
     const std::locale kLocale = std::locale("en_US.UTF-8");
     constexpr std::size_t kMaxErrorPrints = 10;
 
     constexpr std::array<std::string_view, 5> kShapeToStr = {
         "randomized", "sorted", "reverse sorted",
-        "nearly sorted", "duplicates"
+        "nearly  sorted", "duplicates"
     };
 
     constexpr auto kFpEqual = [](const auto a, const auto b) 
@@ -72,67 +63,90 @@ namespace
         return kShapeToStr[static_cast<std::size_t>(shape)];
     }
 
-    auto getGenShape()
+    bool getParallelism()
+    {
+        switch (parConfig)
+        {
+            case ParConfig::SEQ:
+            {
+                return false;
+            }
+            case ParConfig::PAR:
+            {
+                return true;
+            }
+            default:
+            {
+                return GENERATE(false, true);
+            }
+        }
+    }
+
+    generators::Shape getGenShape()
     {
         using Shape = generators::Shape;
         
-        Shape shape = kShape;
-        if constexpr (kTestAllShapes)
+        if (testAllShapes)
         {
-            shape = GENERATE(Shape::RANDOMIZED, Shape::SORTED, Shape::REVERSE_SORTED,
+            return GENERATE(Shape::RANDOMIZED, Shape::SORTED, Shape::REVERSE_SORTED,
                 Shape::NEARLY_SORTED, Shape::DUPLICATES);
         }
 
-        return shape;
+        return initShape;
     }
 
     template <typename T>
-    auto getGenSize()
+    std::size_t getGenSize()
     {
-        std::size_t n = 0;
-        if constexpr (kSizeConfig == SizeConfig::SMALL_TESTS)
+        switch (sizeConfig)
         {
-            n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
-                100'000, 1'000'000);
-        }
-        else if constexpr (kSizeConfig == SizeConfig::LARGE_TESTS)
-        {
-            if constexpr (std::same_as<T, Employee>)
-                n = GENERATE(static_cast<std::size_t>(10'000'000));
-            else if constexpr (std::same_as<T, std::string>)
-                n = GENERATE(static_cast<std::size_t>(10'000'000), 50'000'000);
-            else
-                n = GENERATE(static_cast<std::size_t>(10'000'000), 100'000'000);
-        }
-        else
-        {
-            if constexpr (std::same_as<T, Employee>)
+            case SizeConfig::SPECIFIC:
             {
-                n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
-                    100'000, 1'000'000, 10'000'000);
+                return specificSize;
             }
-            else if constexpr (std::same_as<T, std::string>)
+            case SizeConfig::SMALL:
             {
-                n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
-                    100'000, 1'000'000, 10'000'000, 50'000'000);
+                return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                    100'000, 1'000'000);
             }
-            else
+            case SizeConfig::LARGE:
             {
-                n = GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000, 
-                    100'000, 1'000'000, 10'000'000, 100'000'000);
+                if constexpr (std::same_as<T, Employee>)
+                    return GENERATE(static_cast<std::size_t>(10'000'000));
+                else if constexpr (std::same_as<T, std::string>)
+                    return GENERATE(static_cast<std::size_t>(10'000'000), 50'000'000);
+                else
+                    return GENERATE(static_cast<std::size_t>(10'000'000), 100'000'000);
+            }
+            default:
+            {
+                if constexpr (std::same_as<T, Employee>)
+                {
+                    return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                        100'000, 1'000'000, 10'000'000);
+                }
+                else if constexpr (std::same_as<T, std::string>)
+                {
+                    return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                        100'000, 1'000'000, 10'000'000, 50'000'000);
+                }
+                else
+                {
+                    return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
+                        100'000, 1'000'000, 10'000'000, 100'000'000);
+                }
             }
         }
-
-        return n;
     }
 
     template <typename T>
     auto getGenParams()
     {
+        bool isParallel = getParallelism();
         generators::Shape shape = getGenShape();
         std::size_t n = getGenSize<T>();
 
-        return std::tuple{ n, shape };
+        return std::tuple{ isParallel, n, shape };
     }
 
     template <typename T>
@@ -204,10 +218,10 @@ namespace
     }
 
     template <typename T, typename U = T>
-    void sortRad(std::vector<T>& v, bool testParallel)
+    void sortRad(std::vector<T>& v, bool isParallel)
     {
         constexpr auto kProj = getRadProj<T, U>();
-        radix_sort::sort(v, kProj, testParallel);
+        radix_sort::sort(v, kProj, isParallel);
     }
 
     template <typename T>
@@ -250,7 +264,7 @@ namespace
 
         CHECK(isEqual);
 
-        if constexpr (kLoggingEnabled)
+        if (loggingEnabled)
         {
             if (!isEqual)
                 printDiff(vRad, vStd);
@@ -258,196 +272,108 @@ namespace
     }
 
     template <typename T, typename U = T>
-    void test(std::string_view name, bool testParallel = false)
+    void test(std::string_view name)
     {
-        auto [n, shape] = getGenParams<T>();
+        auto [isParallel, n, shape] = getGenParams<T>();
         auto [vStd, vRad] = ::generate<T>(n, shape);
         
-        if constexpr (kLoggingEnabled)
+        if (loggingEnabled)
         {
-            std::cout << std::format(kLocale, "{} ({}, {}, {:L})\n",
-                name, (testParallel) ? "par" : "seq", shape2str(shape), n);
+            std::cout << std::format(kLocale, "{:<3} | {} | {:^14} | {:>11L}\n",
+                name, (isParallel) ? "par" : "seq", shape2str(shape), n);
         }
 
         sortStd<T, U>(vStd);
-        sortRad<T, U>(vRad, testParallel);
+        sortRad<T, U>(vRad, isParallel);
         
         checkEquality(vRad, vStd);
     }
 }
 
-// ==========================
-// -----Sequential Tests-----
-// ==========================
+// ===============
+// -----Tests-----
+// ===============
 
-TEST_SUITE("sequential_integrals_signed") 
+TEST_SUITE("integrals_signed") 
 {
-    TEST_CASE("int8")
+    TEST_CASE("i8")
     {
-        test<std::int8_t>("int8");
+        test<std::int8_t>("i8");
     }
-    TEST_CASE("int16")
+    TEST_CASE("i16")
     {
-        test<std::int16_t>("int16");
+        test<std::int16_t>("i16");
     }
-    TEST_CASE("int32")
+    TEST_CASE("i32")
     {
-        test<std::int32_t>("int32");
+        test<std::int32_t>("i32");
     }
-    TEST_CASE("int64")
+    TEST_CASE("i64")
     {
-        test<std::int64_t>("int64");
+        test<std::int64_t>("i64");
     }
 }
 
-TEST_SUITE("sequential_integrals_unsigned") 
+TEST_SUITE("integrals_unsigned") 
 {
-    TEST_CASE("uint8")
+    TEST_CASE("u8")
     {
-        test<std::uint8_t>("uint8");
+        test<std::uint8_t>("u8");
     }
-    TEST_CASE("uint16")
+    TEST_CASE("u16")
     {
-        test<std::uint16_t>("uint16");
+        test<std::uint16_t>("u16");
     }
-    TEST_CASE("uint32")
+    TEST_CASE("u32")
     {
-        test<std::uint32_t>("uint32");
+        test<std::uint32_t>("u32");
     }
-    TEST_CASE("uint64")
+    TEST_CASE("u64")
     {
-        test<std::uint64_t>("uint64");
+        test<std::uint64_t>("u64");
     }
 }
 
-TEST_SUITE("sequential_floating_point") 
+TEST_SUITE("floating_point") 
 {
-    TEST_CASE("float")
+    TEST_CASE("f32")
     {
-        test<float>("float");
+        test<float>("f32");
     }
-    TEST_CASE("double")
+    TEST_CASE("f64")
     {
-        test<double>("double");
+        test<double>("f64");
     }
 }
 
-TEST_SUITE("sequential_strings")
+TEST_SUITE("strings")
 {
-    TEST_CASE("string")
+    TEST_CASE("str")
     {
-        test<std::string>("string");
+        test<std::string>("str");
     }
 }
 
-TEST_SUITE("sequential_complex")
+TEST_SUITE("complex")
 {
-    TEST_CASE("employee::int32")
+    TEST_CASE("emp::i32")
     {
-        test<Employee, decltype(Employee::age)>("employee::int32");
+        test<Employee, decltype(Employee::age)>("emp::i32");
     }
-    TEST_CASE("employee::int64")
+    TEST_CASE("emp::i64")
     {
-        test<Employee, decltype(Employee::id)>("employee::int64");
+        test<Employee, decltype(Employee::id)>("emp::i64");
     }
-    TEST_CASE("employee::float")
+    TEST_CASE("emp::f32")
     {
-        test<Employee, decltype(Employee::salary_f)>("employee::float");
+        test<Employee, decltype(Employee::salary_f)>("emp::f32");
     }
-    TEST_CASE("employee::double")
+    TEST_CASE("emp::f64")
     {
-        test<Employee, decltype(Employee::salary)>("employee::double");
+        test<Employee, decltype(Employee::salary)>("emp::f64");
     }
-    TEST_CASE("employee::string")
+    TEST_CASE("emp::str")
     {
-        test<Employee, decltype(Employee::name)>("employee::string");
-    }
-}
-
-// ========================
-// -----Parallel Tests-----
-// ========================
-
-TEST_SUITE("parallel_integrals_signed") 
-{
-    TEST_CASE("int8")
-    {
-        test<std::int8_t>("int8", true);
-    }
-    TEST_CASE("int16")
-    {
-        test<std::int16_t>("int16", true);
-    }
-    TEST_CASE("int32")
-    {
-        test<std::int32_t>("int32", true);
-    }
-    TEST_CASE("int64")
-    {
-        test<std::int64_t>("int64", true);
-    }
-}
-
-TEST_SUITE("parallel_integrals_unsigned") 
-{
-    TEST_CASE("uint8")
-    {
-        test<std::uint8_t>("uint8", true);
-    }
-    TEST_CASE("uint16")
-    {
-        test<std::uint16_t>("uint16", true);
-    }
-    TEST_CASE("uint32")
-    {
-        test<std::uint32_t>("uint32", true);
-    }
-    TEST_CASE("uint64")
-    {
-        test<std::uint64_t>("uint64", true);
-    }
-}
-
-TEST_SUITE("parallel_floating_point")
-{
-    TEST_CASE("float")
-    {
-        test<float>("float", true);
-    }
-    TEST_CASE("double")
-    {
-        test<double>("double", true);
-    }
-}
-
-TEST_SUITE("parallel_strings")
-{
-    TEST_CASE("string")
-    {
-        test<std::string>("string", true);
-    }
-}
-
-TEST_SUITE("parallel_complex")
-{
-    TEST_CASE("employee::int32")
-    {
-        test<Employee, decltype(Employee::age)>("employee::int32", true);
-    }
-    TEST_CASE("employee::int64")
-    {
-        test<Employee, decltype(Employee::id)>("employee::int64", true);
-    }
-    TEST_CASE("employee::float")
-    {
-        test<Employee, decltype(Employee::salary_f)>("employee::float", true);
-    }
-    TEST_CASE("employee::double")
-    {
-        test<Employee, decltype(Employee::salary)>("employee::double", true);
-    }
-    TEST_CASE("employee::string")
-    {
-        test<Employee, decltype(Employee::name)>("employee::string", true);
+        test<Employee, decltype(Employee::name)>("emp::str");
     }
 }

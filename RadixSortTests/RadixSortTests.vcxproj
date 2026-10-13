@@ -127,9 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="arg_parser.hpp" />
     <ClInclude Include="doctest.h" />
+    <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="arg_parser.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
