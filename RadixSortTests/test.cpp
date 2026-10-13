@@ -100,6 +100,10 @@ namespace
     {
         switch (sizeConfig)
         {
+            case SizeConfig::SPECIFIC:
+            {
+                return specificSize;
+            }
             case SizeConfig::SMALL:
             {
                 return GENERATE(static_cast<std::size_t>(0), 1, 10, 100, 1'000, 10'000,
